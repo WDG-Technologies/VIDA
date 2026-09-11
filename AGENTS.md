@@ -2,7 +2,7 @@
 
 ## Version
 
-Current: `0.8.1+10` — **0.8.1 (Beta)** (see `pubspec.yaml`). Release APK at project root as `VIDA.apk`.
+Current: `0.9.0+11` — **0.9 (Beta)** (see `pubspec.yaml`). Release APK at project root as `VIDA.apk`.
 
 ## Commands
 
@@ -28,7 +28,7 @@ flutter build apk --release  # build release APK → build/app/outputs/flutter-a
 
 - **Entrypoint**: `lib/main.dart` — `VidaApp`, light-only M3 theme, no `debugShowCheckedModeBanner`.
 - **Splash flow**: `SplashScreen` (`lib/screens/splash_screen.dart`) asks user's name via `TextField` (word-capitalized) → saves to `SharedPreferences` → calls `VidaApp.of(context).setUserName(name)`. Name accessed via `VidaApp.of(context).userName`.
-- **Home screen**: `HomeScreen` (`lib/screens/home_screen.dart`) shows greeting, `VidaVerseCard`, streak widget, 6 `ToolCard` tools (the 6th is "Evangelízate"), and a "Mini Arcade" row.
+- **Home screen**: `HomeScreen` (`lib/screens/home_screen.dart`) shows greeting, smart card stack (VIDA / daily verse from `favVerses` / prayer), streak widget, 6 `ToolCard` tools (the 6th is "Evangelízate"), and a "Mini Arcade" row.
 - **Placeholder tabs**: Tabs 2–4 (Biblia / VIDA / Perfil) are `_PlaceholderScreen` (private class in `main.dart`) — "En construcción" stubs.
 - **Widgets**: `lib/widgets/` — `vida_verse_card.dart`, `tool_card.dart`, `fade_in.dart`, `contra_pecado_card.dart`, `favorito_card.dart`.
 - **Data layer**: `lib/data/` — `phrases.dart` (7 daily phrases), `fav.dart` (50 `FavVerse` objects), `bible_study.dart` (CRUD via SharedPreferences JSON), `consejo.dart` + `consejos_data.dart` (situation advice), `gallery_images.dart` (20 image paths), `streak.dart` (`StreakService`), `evangelizate_data.dart` (6 categories parsed from `guide.md`).
@@ -39,7 +39,7 @@ flutter build apk --release  # build release APK → build/app/outputs/flutter-a
 - **Biblia local**: `BibliaScreen` loads `assets/bible/rvr1909.json` (Reina-Valera 1909, public domain) via `BibleService` (`lib/data/bible_data.dart`). Offline reader with book/chapter pickers. Version selector keeps RVR1909 local; other versions deep-link to YouVersion app/store.
 - **Image editor**: `GalleryScreen` → `ImageEditorScreen` renders background + editable text overlay, captures via `RepaintBoundary.toImage()`, shares via `share_plus`.
 - **Bible study**: `EstudioBiblicoScreen` — CRUD list stored as JSON string in SharedPreferences, swipe-to-delete with `Dismissible`.
-- **Mapa Iglesias**: `MapaIglesiasScreen` (`lib/screens/mapa_iglesias_screen.dart`) — interactive map via `flutter_map` + OpenStreetMap/CartoDB tiles. Churches stored in Firestore `iglesias` collection with `asistentes` array for attendance tracking. "Yo asisto aquí" button updates via real-time `snapshots()` stream. Search by name/city, add church with Nominatim address search, Google Maps directions.
+- **Mapa Iglesias**: `MapaIglesiasScreen` — `flutter_map` + Carto tiles; churches in Firestore `iglesias`. First open runs `IglesiaSeedService` from `assets/data/iglesias_mexico.json` (~400 Protestant/evangelical OSM places in Mexico).
 - **Community**: `CommunityScreen` (`lib/screens/community_screen.dart`) — Firebase Auth login/register, post feed from `community_posts` collection, like/unlike, comments via nested subcollection.
 - **Dependencies** (from `pubspec.yaml`): `google_fonts`, `flutter_svg` (unused in Dart code), `cupertino_icons`, `shared_preferences`, `home_widget`, `webview_flutter`, `connectivity_plus`, `share_plus`, `path_provider`, `url_launcher`, `firebase_core`, `cloud_firestore`, `firebase_auth`, `flutter_map`, `latlong2`, `geolocator`. Dev: `flutter_test`, `flutter_lints`.
 - **Evangelízate**: `EvangelizateScreen` + `EvangelizateDetalleScreen` — 6 categories (obras, sin Cristo, ateo, agnóstico, métodos, consejos) with attributed sections. Content in `lib/data/evangelizate_data.dart` drawn from Ray Comfort/Living Waters, Billy Graham (bridge), Greg Laurie/Harvest, and the Romans Road; sources listed in-screen and in Perfil credits.

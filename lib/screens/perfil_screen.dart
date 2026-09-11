@@ -12,6 +12,7 @@ import '../services/update_service.dart';
 import '../theme/app_theme.dart';
 import 'appearance_screen.dart';
 import 'community_screen.dart';
+import 'privacy_screen.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -178,29 +179,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   void _showPrivacy() {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Privacidad y datos'),
-        content: const SingleChildScrollView(
-          child: Text(
-            'VIDA guarda en tu dispositivo: tu nombre, racha, preferencias, '
-            'estudios, resaltados, widgets y señales del versículo VIDA.\n\n'
-            'Si usas Comunidad o el Mapa de iglesias, se envían a Firebase '
-            '(cuenta, publicaciones, comentarios y datos de iglesias).\n\n'
-            'No vendemos datos ni mostramos publicidad.\n\n'
-            'Puedes salir de la cuenta de Comunidad desde esa misma pantalla.',
-            style: TextStyle(height: 1.45),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Entendido'),
-          ),
-        ],
-      ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const PrivacyScreen()),
     );
   }
 
@@ -212,7 +193,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
         title: const Text('Acerca de VIDA'),
         content: Text(
           'VIDA ${UpdateService.currentLabel}\n'
-          'Versión ${UpdateService.currentVersion}+9\n\n'
+          'Versión ${UpdateService.currentVersion}\n\n'
           'Compañero espiritual diario: Biblia, oración, racha, '
           'evangelismo y comunidad.\n\n'
           'Gratis · Sin publicidad · WDG Technologies',
@@ -527,8 +508,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 const Divider(height: 1, indent: 56),
                 _SettingsTile(
                   icon: Icons.privacy_tip_outlined,
-                  title: 'Privacidad y datos',
-                  subtitle: 'Qué se guarda en el dispositivo y en la nube',
+                  title: 'Privacidad y términos',
+                  subtitle: 'Datos locales, Firebase y uso de la app',
                   onTap: _showPrivacy,
                 ),
                 const Divider(height: 1, indent: 56),

@@ -9,6 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../data/iglesia_seed.dart';
 import '../theme/app_theme.dart';
 import 'community_screen.dart';
 
@@ -84,6 +85,7 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
 
   Future<void> _loadIglesias() async {
     try {
+      await IglesiaSeedService.ensureSeeded();
       final snap = await _db.collection('iglesias').get();
       if (!mounted) return;
       _churches = snap.docs.map((d) {
@@ -305,6 +307,29 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
             ],
           ),
         ),
+        if (!_loading && _churches.isEmpty)
+          Positioned(
+            left: 16,
+            right: 72,
+            bottom: 24,
+            child: Material(
+              elevation: 2,
+              borderRadius: BorderRadius.circular(14),
+              color: Theme.of(context).colorScheme.surface,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                child: Text(
+                  'Aún no hay iglesias en el mapa. Toca + para agregar la tuya.',
+                  style: TextStyle(
+                    fontFamily: 'DM Sans',
+                    fontSize: 13,
+                    height: 1.35,
+                    color: AppColors.emerald700,
+                  ),
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -782,7 +807,10 @@ class _AddChurchSheetState extends State<_AddChurchSheet> {
       }
       final url = Uri.parse(urlStr);
       final request = await client.getUrl(url);
-      request.headers.set('User-Agent', 'VIDA/1.0');
+      request.headers.set(
+        'User-Agent',
+        'VIDA/0.9.0 (com.vida.project; https://github.com/WDG-Technologies/VIDA)',
+      );
       final response = await request.close().timeout(const Duration(seconds: 12));
       final body = await response
           .transform(utf8.decoder)
@@ -972,7 +1000,8 @@ class _AddChurchSheetState extends State<_AddChurchSheet> {
                       children: [
                         TileLayer(
                           urlTemplate:
-                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+                          subdomains: const ['a', 'b', 'c'],
                           userAgentPackageName: 'com.vida.project',
                         ),
                         MarkerLayer(

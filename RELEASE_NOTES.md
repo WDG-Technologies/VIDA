@@ -1,25 +1,31 @@
-# VIDA 0.8.1 (Beta) — Notas de la versión
+# VIDA 0.9 (Beta) — Notas de la versión
 
-**Build:** `0.8.1+10`  
+**Build:** `0.9.0+11`  
 **APK:** [`VIDA.apk`](./VIDA.apk)
 
-Parche de estabilidad sobre 0.8. Sin cambios notables de diseño ni flujo.
+Versión previa a la oficial en tiendas. Aún en progreso.
 
 ---
 
-## Correcciones
+## Hecho en 0.9 (hasta ahora)
 
-- Arranque más resistente: si Firebase o notificaciones fallan, la app igual abre.
-- Prefs corruptas (estudios, racha, señales VIDA, guardados) ya no tumban pantallas.
-- Menos crashes por `setState` / `context` tras cerrar pantalla (estudio, racha, favorito, mapa, comunidad).
-- Menos dobles toques: guardar estudio, compartir imagen, testimonios.
-- Mapa: búsqueda con timer seguro; descripción y listas de Firestore más tolerantes; Nominatim sin `parse` frágil.
-- Widget Favorito: bitmaps en `RGB_565` para reducir `TransactionTooLargeException`.
-- Riega: restauración de progreso con escape JSON seguro.
-- Actualizaciones y enlace de Perfil apuntan a `WDG-Technologies/VIDA`.
+- **Mapa:** mini-mapa con tiles Carto (sin aviso de “API key” de OSM).
+- **Nominatim:** User-Agent identificable.
+- **Iglesias:** semilla de ~400 congregaciones protestantes/evangélicas en México (OpenStreetMap → Firestore `iglesias`, una vez al abrir el mapa).
+- **Privacidad y términos:** pantalla completa desde Perfil.
+- **Versículo del día:** carga desde `assets/data/daily_verses.json` (placeholder hasta lista completa).
 
 ---
 
-## Incluye lo de 0.8
+## Pendiente para cerrar 0.9
 
-Mazo del inicio, oración guiada, Evangelízate ampliado, Mini Arcade (8 juegos), Perfil mejorado, etc. Ver historial de 0.8 si necesitas el detalle de features.
+- Lista completa de **versículos del día** (JSON que entregarás).
+- Donaciones: cuando haya **Stripe**.
+- Build + release GitHub `v0.9.0`.
+- Revisar/moderar iglesias sembradas (OSM no es 100 % perfecto).
+
+---
+
+## Incluye 0.8 / 0.8.1
+
+Mazo del inicio, oración guiada, Evangelízate, Mini Arcade, Perfil, estabilidad, updates desde Releases.

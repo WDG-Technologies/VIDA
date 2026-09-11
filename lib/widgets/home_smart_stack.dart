@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../data/daily_verse.dart';
 import '../data/fav.dart';
 import '../data/gallery_images.dart';
 import '../screens/image_editor_screen.dart';
@@ -29,22 +30,7 @@ class HomeSmartStack extends StatefulWidget {
   final VoidCallback? onShareVida;
   final VoidCallback? onSaveVida;
 
-  static int _dayIndex() {
-    final now = DateTime.now();
-    return DateTime(now.year, now.month, now.day)
-        .difference(DateTime(2024, 1, 1))
-        .inDays
-        .abs();
-  }
-
-  static FavVerse dailyVerse() {
-    return const FavVerse(
-      referencia: 'Hebreos 11:1',
-      versiculo:
-          'Es, pues, la fe la sustancia de las cosas que se esperan, '
-          'la demostración de las cosas que no se ven.',
-    );
-  }
+  static int _dayIndex() => DailyVerseService.dayIndex();
 
   static String dailyGalleryAsset() {
     if (galleryAssets.isEmpty) return '';
@@ -72,11 +58,19 @@ class _HomeSmartStackState extends State<HomeSmartStack>
   /// Solo avance: 0 = reposo, 1 = cambio completado.
   double _progress = 0;
   bool _busy = false;
+  FavVerse _daily = DailyVerseService.fallback;
 
   @override
   void initState() {
     super.initState();
     _ctrl = AnimationController(vsync: this);
+    _loadDaily();
+  }
+
+  Future<void> _loadDaily() async {
+    final v = await DailyVerseService.forToday();
+    if (!mounted) return;
+    setState(() => _daily = v);
   }
 
   @override
@@ -88,7 +82,7 @@ class _HomeSmartStackState extends State<HomeSmartStack>
   int _cardAt(int offset) => (_index + offset) % _n;
 
   Future<void> _shareDaily() async {
-    final v = HomeSmartStack.dailyVerse();
+    final v = _daily;
     await Share.share(
       '${v.referencia}\n'
       '"${v.versiculo}"\n'
@@ -100,7 +94,7 @@ class _HomeSmartStackState extends State<HomeSmartStack>
   void _createDailyImage() {
     final asset = HomeSmartStack.dailyGalleryAsset();
     if (asset.isEmpty) return;
-    final v = HomeSmartStack.dailyVerse();
+    final v = _daily;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -166,7 +160,7 @@ class _HomeSmartStackState extends State<HomeSmartStack>
   }
 
   List<Widget> _cards() {
-    final daily = HomeSmartStack.dailyVerse();
+    final daily = _daily;
     final bg = HomeSmartStack.dailyGalleryAsset();
     return [
       VidaVerseCard(

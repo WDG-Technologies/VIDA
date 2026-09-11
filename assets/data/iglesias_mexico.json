@@ -1,0 +1,3314 @@
+[
+  {
+    "osm_id": "node/1162004255",
+    "nombre": "Iglesia Pentecostal",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 19.193278,
+    "longitud": -96.174578
+  },
+  {
+    "osm_id": "node/1227952568",
+    "nombre": "Iglesia Bauptista Dios Todopoderoso",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 21.928363,
+    "longitud": -102.298771
+  },
+  {
+    "osm_id": "node/1335717591",
+    "nombre": "Templo Bethel (Metodista)",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 25.464649,
+    "longitud": -100.988375
+  },
+  {
+    "osm_id": "node/1356414642",
+    "nombre": "Templo Salomón",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 19.551862,
+    "longitud": -96.912063
+  },
+  {
+    "osm_id": "node/1356414646",
+    "nombre": "Templo Thalita Cumi",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 19.544049,
+    "longitud": -96.910363
+  },
+  {
+    "osm_id": "node/1537104880",
+    "nombre": "El Cordero",
+    "ciudad": "México",
+    "descripcion": "Denominación: free_evangelical",
+    "latitud": 28.716472,
+    "longitud": -106.14848
+  },
+  {
+    "osm_id": "node/1608158809",
+    "nombre": "Templo Protestante",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 25.526418,
+    "longitud": -103.229451
+  },
+  {
+    "osm_id": "node/1618425339",
+    "nombre": "Iglesia Bautista Emanuel de Xalapa",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 19.529377,
+    "longitud": -96.941856
+  },
+  {
+    "osm_id": "node/1740491925",
+    "nombre": "Iglesia 27 de Febrero",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 17.987067,
+    "longitud": -92.929134
+  },
+  {
+    "osm_id": "node/1933340471",
+    "nombre": "Oasis de Gracia",
+    "ciudad": "Los Mochis",
+    "descripcion": "Denominación: evangelical · Bienestar 153",
+    "latitud": 25.781157,
+    "longitud": -108.992799
+  },
+  {
+    "osm_id": "node/2185820851",
+    "nombre": "Templo \"La luz del mundo\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.459434,
+    "longitud": -88.209795
+  },
+  {
+    "osm_id": "node/2289931659",
+    "nombre": "Emmanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 23.62695,
+    "longitud": -103.646152
+  },
+  {
+    "osm_id": "node/2318774232",
+    "nombre": "LA IGLESIA DE DIOS DE LA PROFECIA/REFORMA2XJESUS",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 32.531707,
+    "longitud": -116.993288
+  },
+  {
+    "osm_id": "node/2375743317",
+    "nombre": "Iglesia Metodista de Mexico",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 20.519965,
+    "longitud": -100.813617
+  },
+  {
+    "osm_id": "node/2643789368",
+    "nombre": "Templo \"La nueva Jerusalem\" - Fraternidad de asambleas Cristianas Pentecoste",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.350375,
+    "longitud": -87.57614
+  },
+  {
+    "osm_id": "node/2658855648",
+    "nombre": "Mision Familair Bethlem",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 32.492597,
+    "longitud": -116.828093
+  },
+  {
+    "osm_id": "node/3164024704",
+    "nombre": "El tabernaculo de Dios",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.687385,
+    "longitud": -88.194176
+  },
+  {
+    "osm_id": "node/3164028530",
+    "nombre": "Templo \"Peniel\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.682949,
+    "longitud": -88.19276
+  },
+  {
+    "osm_id": "node/3164033101",
+    "nombre": "Templo \"El Mesías\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.684714,
+    "longitud": -88.192501
+  },
+  {
+    "osm_id": "node/3164035156",
+    "nombre": "Iglesia Cristiana Getsemaní",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.682216,
+    "longitud": -88.191655
+  },
+  {
+    "osm_id": "node/3174188994",
+    "nombre": "Templo Cristiano",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.664886,
+    "longitud": -87.932392
+  },
+  {
+    "osm_id": "node/3174189491",
+    "nombre": "Templo Cristiano",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.665297,
+    "longitud": -87.931311
+  },
+  {
+    "osm_id": "node/3331201807",
+    "nombre": "Iglesía Nacional Presbiteriana \"Eben Ezer\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 20.69841,
+    "longitud": -88.588214
+  },
+  {
+    "osm_id": "node/3331277810",
+    "nombre": "Centro Religioso \"Mahanaim\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 20.699482,
+    "longitud": -88.58545
+  },
+  {
+    "osm_id": "node/3388693047",
+    "nombre": "Templo Presbiteriano \"Peniel\"",
+    "ciudad": "San Felipe Nuevo, Tinum",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 20.68588,
+    "longitud": -88.563037
+  },
+  {
+    "osm_id": "node/3409792852",
+    "nombre": "Iglesia Palabra Viva",
+    "ciudad": "Rincón de Romos, Ags.",
+    "descripcion": "Denominación: pentecostal · Heorico Colegio Militar 403",
+    "latitud": 22.233078,
+    "longitud": -102.317186
+  },
+  {
+    "osm_id": "node/3578803663",
+    "nombre": "Templo Presbiteriano Bethel",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 19.522994,
+    "longitud": -96.929563
+  },
+  {
+    "osm_id": "node/3584671827",
+    "nombre": "Templo El Divino Redentor",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.461542,
+    "longitud": -99.135751
+  },
+  {
+    "osm_id": "node/3611738647",
+    "nombre": "Templo Peniel",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.680572,
+    "longitud": -88.159376
+  },
+  {
+    "osm_id": "node/3731225144",
+    "nombre": "Iglesia Cristiana Pentecostes \"Principe de Paz\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.695177,
+    "longitud": -88.223669
+  },
+  {
+    "osm_id": "node/3802507069",
+    "nombre": "El Galileo Eterno",
+    "ciudad": "Ciudad de México",
+    "descripcion": "Denominación: baptist · Prolongación Lucas Alamán 4403",
+    "latitud": 19.418738,
+    "longitud": -99.116584
+  },
+  {
+    "osm_id": "node/3807181509",
+    "nombre": "Iglesia Adventista del 7mo Dia",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 30.16967,
+    "longitud": -111.110959
+  },
+  {
+    "osm_id": "node/3905959507",
+    "nombre": "JESUCRISTO ES EL CAMINO",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 16.131587,
+    "longitud": -93.163967
+  },
+  {
+    "osm_id": "node/4014691509",
+    "nombre": "Templo Vida Nueva",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.545288,
+    "longitud": -96.913046
+  },
+  {
+    "osm_id": "node/4184543402",
+    "nombre": "Templo \"La Hermosa\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.696177,
+    "longitud": -88.193327
+  },
+  {
+    "osm_id": "node/4186009264",
+    "nombre": "El Camino de la Verdad",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.691841,
+    "longitud": -88.191426
+  },
+  {
+    "osm_id": "node/4216433304",
+    "nombre": "Iglesia Nacional Presbiteriana \"El Espíritu Santo\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 21.142354,
+    "longitud": -88.150161
+  },
+  {
+    "osm_id": "node/4230445589",
+    "nombre": "Iglesia Cristiana Pentecostes Roca de Salvación",
+    "ciudad": "Cancún",
+    "descripcion": "Denominación: evangelical · Avenida López Portillo",
+    "latitud": 21.168705,
+    "longitud": -86.837247
+  },
+  {
+    "osm_id": "node/4293698090",
+    "nombre": "Iglesia Adventista del Séptimo Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 20.695752,
+    "longitud": -88.199101
+  },
+  {
+    "osm_id": "node/4382640686",
+    "nombre": "Templo Cristiano La Profecía",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.459905,
+    "longitud": -88.21077
+  },
+  {
+    "osm_id": "node/4569120823",
+    "nombre": "Iglesia Adventista El Roble",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 20.918094,
+    "longitud": -89.679842
+  },
+  {
+    "osm_id": "node/4586332069",
+    "nombre": "Iglesia Lirio de los Valles",
+    "ciudad": "Valladolid",
+    "descripcion": "Denominación: evangelical · Calle 14",
+    "latitud": 20.699123,
+    "longitud": -88.188033
+  },
+  {
+    "osm_id": "node/4599335390",
+    "nombre": "Iglesia Adventista del 7mo día",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist · y Tetabiate",
+    "latitud": 27.50753,
+    "longitud": -109.952121
+  },
+  {
+    "osm_id": "node/4599335391",
+    "nombre": "Iglesia Adventista del Centro",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist · Puebla 357 sur",
+    "latitud": 27.491192,
+    "longitud": -109.936922
+  },
+  {
+    "osm_id": "node/4739948011",
+    "nombre": "Iglesia de Dios Evangelio Completo Principe de Paz",
+    "ciudad": "Toluca de Lerdo",
+    "descripcion": "Denominación: evangelical · Calle José María Arzate Vilchis 207",
+    "latitud": 19.296378,
+    "longitud": -99.659222
+  },
+  {
+    "osm_id": "node/5012525023",
+    "nombre": "Templo Evangélico Saron",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.462216,
+    "longitud": -99.127527
+  },
+  {
+    "osm_id": "node/5270662194",
+    "nombre": "Iglesia Bautista Puerta Abierta A.R.",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 32.523547,
+    "longitud": -117.027756
+  },
+  {
+    "osm_id": "node/5271237530",
+    "nombre": "Iglesia Cristiana",
+    "ciudad": "Col. Elpipila",
+    "descripcion": "Denominación: evangelical · Blvd. Casablanca",
+    "latitud": 32.501496,
+    "longitud": -116.874767
+  },
+  {
+    "osm_id": "node/5274003987",
+    "nombre": "Iglesia Salem",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.282896,
+    "longitud": -98.440848
+  },
+  {
+    "osm_id": "node/5276561145",
+    "nombre": "Bhetel",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 19.75662,
+    "longitud": -89.839421
+  },
+  {
+    "osm_id": "node/5302372391",
+    "nombre": "Iglesia Jesus Salva",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 26.925471,
+    "longitud": -101.387989
+  },
+  {
+    "osm_id": "node/5302372396",
+    "nombre": "Centro de Fe Esperanza y Amor",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 26.924258,
+    "longitud": -101.396658
+  },
+  {
+    "osm_id": "node/5307875400",
+    "nombre": "Iglesia Bautista Berea",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 31.643918,
+    "longitud": -106.392049
+  },
+  {
+    "osm_id": "node/5307880089",
+    "nombre": "Iglesia Bautista Emaús",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 31.677652,
+    "longitud": -106.470048
+  },
+  {
+    "osm_id": "node/5319329675",
+    "nombre": "EL CONCILIO NACIONAL DE LAS ASAMBLEAS DE DIOS A.R. \"TEMPLO LA HERMOSA\"",
+    "ciudad": "chiná, campeche",
+    "descripcion": "Denominación: pentecostal · calle 11 598",
+    "latitud": 19.769855,
+    "longitud": -90.497816
+  },
+  {
+    "osm_id": "node/5320795908",
+    "nombre": "Iglesia Lirio de los Valles",
+    "ciudad": "Villahermosa, Tabasco",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 17.97948,
+    "longitud": -93.040329
+  },
+  {
+    "osm_id": "node/5324740070",
+    "nombre": "Bethel",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 26.926391,
+    "longitud": -101.437106
+  },
+  {
+    "osm_id": "node/5326315922",
+    "nombre": "Jesus el Buen Pastor",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 17.989541,
+    "longitud": -93.375572
+  },
+  {
+    "osm_id": "node/5338688105",
+    "nombre": "Casa de Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 24.852312,
+    "longitud": -107.437768
+  },
+  {
+    "osm_id": "node/5339181078",
+    "nombre": "Iglesia bautista Bethel",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 26.911913,
+    "longitud": -101.404892
+  },
+  {
+    "osm_id": "node/5344188298",
+    "nombre": "Hechos para la vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 19.240446,
+    "longitud": -99.580036
+  },
+  {
+    "osm_id": "node/5354875621",
+    "nombre": "Iglesia Metodista de México A.R.",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 26.956923,
+    "longitud": -101.411359
+  },
+  {
+    "osm_id": "node/5368753937",
+    "nombre": "Iglesia Evangelica Gil Gal",
+    "ciudad": "Veracruz",
+    "descripcion": "Denominación: evangelical · Cultura",
+    "latitud": 19.186967,
+    "longitud": -96.154271
+  },
+  {
+    "osm_id": "node/5387990354",
+    "nombre": "mama clara",
+    "ciudad": "oaxaca",
+    "descripcion": "Denominación: baptist · Primavera",
+    "latitud": 17.006947,
+    "longitud": -96.759805
+  },
+  {
+    "osm_id": "node/5453577183",
+    "nombre": "Iglesia Presbiteriana Cristo La Luz del Mundo",
+    "ciudad": "villahermosa",
+    "descripcion": "Denominación: presbyterian · Veterinarios",
+    "latitud": 17.977634,
+    "longitud": -92.913481
+  },
+  {
+    "osm_id": "node/5519653290",
+    "nombre": "Iglesia de La Luz del Mundo",
+    "ciudad": "Mora",
+    "descripcion": "Denominación: protestant",
+    "latitud": 21.525359,
+    "longitud": -104.810412
+  },
+  {
+    "osm_id": "node/5692375926",
+    "nombre": "Iglesia Metodista",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 27.975962,
+    "longitud": -110.813679
+  },
+  {
+    "osm_id": "node/5722881370",
+    "nombre": "Centro Familiar Cristiano",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 18.493098,
+    "longitud": -97.413398
+  },
+  {
+    "osm_id": "node/5722922305",
+    "nombre": "Casa de Gozo y Manantial de Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 18.493859,
+    "longitud": -97.409642
+  },
+  {
+    "osm_id": "node/5722973287",
+    "nombre": "Igrecia Cristiana Pentecostes Preciosa Sangre",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 18.496242,
+    "longitud": -97.417981
+  },
+  {
+    "osm_id": "node/5757054221",
+    "nombre": "Tres Cruces",
+    "ciudad": "Rio Bravo",
+    "descripcion": "Denominación: methodist · Avenida las Americas",
+    "latitud": 25.983881,
+    "longitud": -98.098199
+  },
+  {
+    "osm_id": "node/5763724860",
+    "nombre": "Iglesia Bautista Monte Hebron",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 27.48131,
+    "longitud": -99.571093
+  },
+  {
+    "osm_id": "node/5764606463",
+    "nombre": "Iglesia Pentecostes Tabernaculo De Fe",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 27.483844,
+    "longitud": -99.564618
+  },
+  {
+    "osm_id": "node/5764606464",
+    "nombre": "Iglesia Adventista \"Lázaro Cárdenas\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 27.485952,
+    "longitud": -99.566533
+  },
+  {
+    "osm_id": "node/5774565487",
+    "nombre": "Iglesia Metodista Nuevo Pacto",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 27.530591,
+    "longitud": -99.557856
+  },
+  {
+    "osm_id": "node/5903156104",
+    "nombre": "Iglesia Bautista",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 25.527062,
+    "longitud": -103.255785
+  },
+  {
+    "osm_id": "node/5912101304",
+    "nombre": "Oasis de Gracia",
+    "ciudad": "Guasave",
+    "descripcion": "Denominación: evangelical · 5 de Febrero 365",
+    "latitud": 25.575222,
+    "longitud": -108.4621
+  },
+  {
+    "osm_id": "node/6029768086",
+    "nombre": "Iglesia Nuevo Amanecer",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 29.295432,
+    "longitud": -100.909573
+  },
+  {
+    "osm_id": "node/6051373786",
+    "nombre": "Iglesia de Dios (Séptimo Día) San Martín",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 19.270785,
+    "longitud": -98.831805
+  },
+  {
+    "osm_id": "node/6106420852",
+    "nombre": "Iglesia Bautista Antioquia",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 29.317171,
+    "longitud": -100.943955
+  },
+  {
+    "osm_id": "node/6231484208",
+    "nombre": "Viento Recio",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 25.819415,
+    "longitud": -97.502413
+  },
+  {
+    "osm_id": "node/6251045269",
+    "nombre": "iglesia adventista",
+    "ciudad": "Guasave",
+    "descripcion": "Denominación: adventist · Francisco Villa",
+    "latitud": 25.578009,
+    "longitud": -108.459892
+  },
+  {
+    "osm_id": "node/6274828829",
+    "nombre": "Iglesia adventista del Septimo dia",
+    "ciudad": "Cárdenas",
+    "descripcion": "Denominación: adventist · Calle Tomás Garrido Canabal",
+    "latitud": 17.992557,
+    "longitud": -93.37555
+  },
+  {
+    "osm_id": "node/6302685086",
+    "nombre": "Templo pentecostes",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 19.457991,
+    "longitud": -89.733322
+  },
+  {
+    "osm_id": "node/6341614989",
+    "nombre": "Iglesia de Dios \"Templo Monte Horeb\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist · Cerrada Décima Tercera",
+    "latitud": 19.299528,
+    "longitud": -99.082258
+  },
+  {
+    "osm_id": "node/6366786803",
+    "nombre": "Iglesia Adventista 1",
+    "ciudad": "Yaxkukul",
+    "descripcion": "Denominación: adventist · 12",
+    "latitud": 21.061806,
+    "longitud": -89.413727
+  },
+  {
+    "osm_id": "node/6366786814",
+    "nombre": "Iglesia Adventista",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist · 22 x 21 y 23",
+    "latitud": 21.061609,
+    "longitud": -89.420512
+  },
+  {
+    "osm_id": "node/6366789415",
+    "nombre": "Iglesia Pentecostal",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 21.063361,
+    "longitud": -89.416083
+  },
+  {
+    "osm_id": "node/6389594685",
+    "nombre": "Epicentro Monterrey",
+    "ciudad": "Monterrey",
+    "descripcion": "Denominación: protestant · Lateral Avenida Lázaro Cárdenas 4420",
+    "latitud": 25.616083,
+    "longitud": -100.278151
+  },
+  {
+    "osm_id": "node/6418083067",
+    "nombre": "Iglesia Adventista del Septimo dia",
+    "ciudad": "El Higo",
+    "descripcion": "Denominación: seventh_day_adventist · José Ma. Morelos",
+    "latitud": 21.767668,
+    "longitud": -98.45263
+  },
+  {
+    "osm_id": "node/6439079518",
+    "nombre": "IGLESIA NACIONAL PRESBITERIANA DE MEXICO.A.R. EMMANUEL",
+    "ciudad": "San Francisco de Campeche",
+    "descripcion": "Denominación: presbyterian · Calle Aldama 20",
+    "latitud": 19.834499,
+    "longitud": -90.543678
+  },
+  {
+    "osm_id": "node/6439533714",
+    "nombre": "Iglesia Adventista",
+    "ciudad": "Sihochac",
+    "descripcion": "Denominación: adventist · ermita",
+    "latitud": 19.500475,
+    "longitud": -90.590396
+  },
+  {
+    "osm_id": "node/6469112202",
+    "nombre": "Puerta de salvacion",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian · Calle La Palma",
+    "latitud": 17.992354,
+    "longitud": -93.367925
+  },
+  {
+    "osm_id": "node/6471515064",
+    "nombre": "Templo Pentecostés Agua de Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal · Camino Del Chino",
+    "latitud": 23.550187,
+    "longitud": -99.385892
+  },
+  {
+    "osm_id": "node/6597453909",
+    "nombre": "Iglesia Pentecostés",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 14.957059,
+    "longitud": -92.268931
+  },
+  {
+    "osm_id": "node/6653649164",
+    "nombre": "Iglesia de Dios Fuente de Vida Eterna",
+    "ciudad": "Atenco",
+    "descripcion": "Denominación: evangelical · Girasol",
+    "latitud": 19.594597,
+    "longitud": -98.96454
+  },
+  {
+    "osm_id": "node/6754318621",
+    "nombre": "Iglesia Nacional Presbiteriana Emanuel",
+    "ciudad": "Altamira",
+    "descripcion": "Denominación: presbyterian · Río Guaymas 2601",
+    "latitud": 22.350713,
+    "longitud": -97.850609
+  },
+  {
+    "osm_id": "node/6846150191",
+    "nombre": "fuente de bendicion",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 20.881462,
+    "longitud": -89.757159
+  },
+  {
+    "osm_id": "node/6872255686",
+    "nombre": "salon del reino de los testigos de jeova",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.89636,
+    "longitud": -99.145074
+  },
+  {
+    "osm_id": "node/6913606850",
+    "nombre": "MARANATHA CARDEL VERACRUZ",
+    "ciudad": "Cardel",
+    "descripcion": "Denominación: pentecostal · Diamante Mz:6 - Lt:8",
+    "latitud": 19.368095,
+    "longitud": -96.383869
+  },
+  {
+    "osm_id": "node/6949847607",
+    "nombre": "iglesia camino de salvacion",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 25.651608,
+    "longitud": -98.028142
+  },
+  {
+    "osm_id": "node/7015255822",
+    "nombre": "Templo Cristiano Pentecostal \" La Peña de Horeb\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal · Primera Privada Gregorio Gómez 6",
+    "latitud": 16.787066,
+    "longitud": -96.673168
+  },
+  {
+    "osm_id": "node/7298970640",
+    "nombre": "iglesia calvario",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 26.036465,
+    "longitud": -98.282169
+  },
+  {
+    "osm_id": "node/7322948991",
+    "nombre": "Iglesia Tabernaculo de Dios",
+    "ciudad": "San Juan Bautista, Tuxtepec, Oaxaca",
+    "descripcion": "Denominación: evangelical · Calle Camino a Tacoteno Bartolomé, Martha Luz",
+    "latitud": 18.091334,
+    "longitud": -96.16382
+  },
+  {
+    "osm_id": "node/7360141424",
+    "nombre": "El Buen Pastor",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 31.615902,
+    "longitud": -106.381456
+  },
+  {
+    "osm_id": "node/7396079074",
+    "nombre": "Templo cristiano",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 16.986449,
+    "longitud": -99.299862
+  },
+  {
+    "osm_id": "node/7396079075",
+    "nombre": "Iglesia pentecostes",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 16.984047,
+    "longitud": -99.299199
+  },
+  {
+    "osm_id": "node/7403026285",
+    "nombre": "Centro Familiar Shalom",
+    "ciudad": "Sabinas",
+    "descripcion": "Denominación: pentecostal · Calle Agua Dulce",
+    "latitud": 27.873377,
+    "longitud": -101.111048
+  },
+  {
+    "osm_id": "node/7403141239",
+    "nombre": "Iglesia de Cristo",
+    "ciudad": "Sabinas",
+    "descripcion": "Denominación: evangelical · Calle Ignacio Manuel Altamirano",
+    "latitud": 27.856939,
+    "longitud": -101.123313
+  },
+  {
+    "osm_id": "node/7512089998",
+    "nombre": "La Iglesia de Jesucristo de los Santos de los Últimos Días",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 23.921389,
+    "longitud": -106.891884
+  },
+  {
+    "osm_id": "node/7525103753",
+    "nombre": "Iglesia Adventista del 7° día",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 16.745348,
+    "longitud": -92.64619
+  },
+  {
+    "osm_id": "node/7541908514",
+    "nombre": "Iglesia Nueva Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 16.55145,
+    "longitud": -94.949188
+  },
+  {
+    "osm_id": "node/7882283333",
+    "nombre": "Iglesia Pentecostal La Gloria",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 22.126781,
+    "longitud": -100.952444
+  },
+  {
+    "osm_id": "node/7911083330",
+    "nombre": "Iglesia Cristiana Pentecostes Principe de Paz",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal · Avenida Vicente Villada 697",
+    "latitud": 19.407731,
+    "longitud": -99.002953
+  },
+  {
+    "osm_id": "node/8017967015",
+    "nombre": "Presbiteriana Damasco",
+    "ciudad": "abasolo",
+    "descripcion": "Denominación: evangelical · Calle Templo 01",
+    "latitud": 16.823176,
+    "longitud": -92.210295
+  },
+  {
+    "osm_id": "node/8432938764",
+    "nombre": "Principe de la Paz",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 17.649524,
+    "longitud": -95.884665
+  },
+  {
+    "osm_id": "node/8593141484",
+    "nombre": "Iglesia Adventista",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 19.061594,
+    "longitud": -104.287276
+  },
+  {
+    "osm_id": "node/8889299973",
+    "nombre": "Iglesia Adventista del Séptimo Día Maranatha",
+    "ciudad": "Playa del Carmen",
+    "descripcion": "Denominación: seventh_day_adventist · Calle 64 Norte",
+    "latitud": 20.646038,
+    "longitud": -87.068324
+  },
+  {
+    "osm_id": "node/8986462926",
+    "nombre": "Iglesia Bautista El Camino",
+    "ciudad": "Tijuana",
+    "descripcion": "Denominación: baptist · Circuito interior El Camino",
+    "latitud": 32.405724,
+    "longitud": -116.919455
+  },
+  {
+    "osm_id": "node/9001653880",
+    "nombre": "Iglesia Bautista Monte Olivos",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 25.667495,
+    "longitud": -100.199093
+  },
+  {
+    "osm_id": "node/9007640488",
+    "nombre": "Iglesia Nacional Presbiteriana \"El Sinaí\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 23.293306,
+    "longitud": -102.347187
+  },
+  {
+    "osm_id": "node/9136034683",
+    "nombre": "Centro Cristiano Avivamiento Mundial Maranatha",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 21.973564,
+    "longitud": -98.997251
+  },
+  {
+    "osm_id": "node/9136034686",
+    "nombre": "Iglesia Metodista de México A.R. Jesus es Rey",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 22.010552,
+    "longitud": -99.007873
+  },
+  {
+    "osm_id": "node/9136034697",
+    "nombre": "Templo Cristiano Principe de Paz",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 21.971171,
+    "longitud": -99.004531
+  },
+  {
+    "osm_id": "node/9136034715",
+    "nombre": "Iglesia de Dios del Evangelio Completo",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.002954,
+    "longitud": -98.998276
+  },
+  {
+    "osm_id": "node/9136052922",
+    "nombre": "Templo Gersemani",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.010839,
+    "longitud": -99.05001
+  },
+  {
+    "osm_id": "node/9136052948",
+    "nombre": "Iglesia Esfuerzo Magdiel Pentecostés",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 21.994078,
+    "longitud": -99.016994
+  },
+  {
+    "osm_id": "node/9136052951",
+    "nombre": "Iglesia Cristo Viene",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 21.955536,
+    "longitud": -98.994542
+  },
+  {
+    "osm_id": "node/9136052959",
+    "nombre": "Iglesia Evangélica de los Peregrinos A.R.",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.000922,
+    "longitud": -99.000487
+  },
+  {
+    "osm_id": "node/9136052960",
+    "nombre": "Templo la Rosa de Sarón",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.022692,
+    "longitud": -99.02447
+  },
+  {
+    "osm_id": "node/9136052965",
+    "nombre": "Iglesia Betel",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 21.983859,
+    "longitud": -98.991594
+  },
+  {
+    "osm_id": "node/9136052969",
+    "nombre": "Iglesia Evangélica",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.00727,
+    "longitud": -98.996739
+  },
+  {
+    "osm_id": "node/9136052971",
+    "nombre": "Templo Bautista",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 21.983205,
+    "longitud": -98.981244
+  },
+  {
+    "osm_id": "node/9136052992",
+    "nombre": "Centro Cristiano Casa de Oración",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.00797,
+    "longitud": -99.051266
+  },
+  {
+    "osm_id": "node/9136052998",
+    "nombre": "Iglesia Evangélica los Peregrinos",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.002798,
+    "longitud": -99.017318
+  },
+  {
+    "osm_id": "node/9136053014",
+    "nombre": "Iglesia Evangélica los Peregrinos A.R.",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 21.98705,
+    "longitud": -98.996466
+  },
+  {
+    "osm_id": "node/9136053017",
+    "nombre": "Templo Evangélico Emanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.017702,
+    "longitud": -98.992179
+  },
+  {
+    "osm_id": "node/9136053018",
+    "nombre": "Templo Bautista Príncipe de Dios",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 22.007188,
+    "longitud": -99.027782
+  },
+  {
+    "osm_id": "node/9136053022",
+    "nombre": "Templo Fuente de Agua Viva",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.013918,
+    "longitud": -98.990989
+  },
+  {
+    "osm_id": "node/9136053027",
+    "nombre": "Templo de Alabanza A.R.",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.011592,
+    "longitud": -99.01465
+  },
+  {
+    "osm_id": "node/9136053040",
+    "nombre": "Iglesia Adventista del Séptimo Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: adventist",
+    "latitud": 21.983895,
+    "longitud": -99.002196
+  },
+  {
+    "osm_id": "node/9136053066",
+    "nombre": "Templo Cristiano Puerta del Cielo",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.018423,
+    "longitud": -99.014646
+  },
+  {
+    "osm_id": "node/9136053072",
+    "nombre": "Iglesia Evangélica Cristiana Espiritual",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.000245,
+    "longitud": -99.017635
+  },
+  {
+    "osm_id": "node/9136053084",
+    "nombre": "Templo Bethel",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.007465,
+    "longitud": -99.033222
+  },
+  {
+    "osm_id": "node/9136053085",
+    "nombre": "Iglesia Evangélica Pentecostés Maranatha",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.016475,
+    "longitud": -98.990761
+  },
+  {
+    "osm_id": "node/9136053091",
+    "nombre": "Iglesia Bautista Ebenezer",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 21.957232,
+    "longitud": -98.99434
+  },
+  {
+    "osm_id": "node/9136053096",
+    "nombre": "Iglesia La Luz del Mundo",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 22.012699,
+    "longitud": -99.054157
+  },
+  {
+    "osm_id": "node/9136053103",
+    "nombre": "Iglesia Presbiteriana Asociada Reformada El Buen Pastor",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 22.012417,
+    "longitud": -99.055939
+  },
+  {
+    "osm_id": "node/9596586953",
+    "nombre": "Iglesia Metodista Restauración",
+    "ciudad": "Saltillo",
+    "descripcion": "Denominación: methodist · Calle Jesús R. González 356",
+    "latitud": 25.448757,
+    "longitud": -100.945829
+  },
+  {
+    "osm_id": "node/9821537085",
+    "nombre": "Templo Evangélico Pentecostes Gethsemaní MIEPI",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.185208,
+    "longitud": -99.412243
+  },
+  {
+    "osm_id": "node/9826524747",
+    "nombre": "Iglesia de Dios 7° Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.159609,
+    "longitud": -99.377446
+  },
+  {
+    "osm_id": "node/9826567947",
+    "nombre": "Iglesia de Dios Shalom",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 19.160378,
+    "longitud": -99.40539
+  },
+  {
+    "osm_id": "node/9826568581",
+    "nombre": "Iglesia Evangélica Monte Sinaí",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.172936,
+    "longitud": -99.393466
+  },
+  {
+    "osm_id": "node/9861903660",
+    "nombre": "Iglesia Evangelica Misionera Apóstoles y Profetas",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.155592,
+    "longitud": -99.481526
+  },
+  {
+    "osm_id": "node/9934909401",
+    "nombre": "Eben Ezer",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 17.976248,
+    "longitud": -92.964487
+  },
+  {
+    "osm_id": "node/10134267013",
+    "nombre": "Iglesia mision pentecostes",
+    "ciudad": "comalcalco",
+    "descripcion": "Denominación: pentecostal · 5 3",
+    "latitud": 18.218137,
+    "longitud": -93.270777
+  },
+  {
+    "osm_id": "node/10134422929",
+    "nombre": "Iglesia jesus el buen pastor",
+    "ciudad": "comalcalco",
+    "descripcion": "Denominación: presbyterian · 2 1",
+    "latitud": 18.215773,
+    "longitud": -93.281694
+  },
+  {
+    "osm_id": "node/10134433647",
+    "nombre": "La nueva jerusalem",
+    "ciudad": "comalcalco",
+    "descripcion": "Denominación: presbyterian · Calle Las Vías 3",
+    "latitud": 18.225459,
+    "longitud": -93.266553
+  },
+  {
+    "osm_id": "node/10134433722",
+    "nombre": "Iglesia adventista del 7mo dia",
+    "ciudad": "comalcalco",
+    "descripcion": "Denominación: seventh_day_adventist · 2 11",
+    "latitud": 18.210749,
+    "longitud": -93.275482
+  },
+  {
+    "osm_id": "node/10136558302",
+    "nombre": "iglesia aqua",
+    "ciudad": "comalcalco",
+    "descripcion": "Denominación: seventh_day_adventist · 6 5",
+    "latitud": 18.258309,
+    "longitud": -93.302946
+  },
+  {
+    "osm_id": "node/10136585520",
+    "nombre": "Iglesia lluvia de gracia",
+    "ciudad": "comalcalco",
+    "descripcion": "Denominación: presbyterian · leon zarate 35",
+    "latitud": 18.22428,
+    "longitud": -93.290554
+  },
+  {
+    "osm_id": "node/10281069699",
+    "nombre": "Comunidad de Fe Lagos",
+    "ciudad": "Lagos de Moreno",
+    "descripcion": "Denominación: baptist · Privada Manzano 29",
+    "latitud": 21.330314,
+    "longitud": -101.973422
+  },
+  {
+    "osm_id": "node/10286680246",
+    "nombre": "Iglesia Apostólica",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 31.910075,
+    "longitud": -116.272624
+  },
+  {
+    "osm_id": "node/10290280891",
+    "nombre": "Templo Cristiano Maranatha",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 31.069666,
+    "longitud": -116.206969
+  },
+  {
+    "osm_id": "node/10290368359",
+    "nombre": "Iglesia Apostólica de la Fé en Cristo Jesús",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 31.065645,
+    "longitud": -116.205518
+  },
+  {
+    "osm_id": "node/10292363838",
+    "nombre": "Iglesia Apostólica de Fé en Cristo Jesús",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 30.721893,
+    "longitud": -115.989013
+  },
+  {
+    "osm_id": "node/10298638064",
+    "nombre": "Capillario Calvario Vicente Guerrero",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 30.705596,
+    "longitud": -115.986501
+  },
+  {
+    "osm_id": "node/10509208928",
+    "nombre": "Templo Emmanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 27.641627,
+    "longitud": -113.379397
+  },
+  {
+    "osm_id": "node/10563519090",
+    "nombre": "Iglesia Cristiana \"Solo un Camino\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 26.890936,
+    "longitud": -111.98767
+  },
+  {
+    "osm_id": "node/10563793579",
+    "nombre": "Iglesia Apostólica de la Fe en Cristo Jesús",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 26.887699,
+    "longitud": -111.993212
+  },
+  {
+    "osm_id": "node/10791002379",
+    "nombre": "Iglesias Bautista Emmanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 19.774854,
+    "longitud": -99.812406
+  },
+  {
+    "osm_id": "node/10800181955",
+    "nombre": "Iglesia Alcance Victoria",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 23.250861,
+    "longitud": -106.405464
+  },
+  {
+    "osm_id": "node/10879245775",
+    "nombre": "Iglesia de Dios",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 32.482229,
+    "longitud": -116.933312
+  },
+  {
+    "osm_id": "node/10879578482",
+    "nombre": "Iglesia fuente  de Agua Viva",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 25.491624,
+    "longitud": -103.138303
+  },
+  {
+    "osm_id": "node/10903703594",
+    "nombre": "Templo Rosa De Saron",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 18.821299,
+    "longitud": -97.912499
+  },
+  {
+    "osm_id": "node/10925401823",
+    "nombre": "Templo Evangelico \"Eben-Ezer\" MIEPI",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 18.818537,
+    "longitud": -97.913116
+  },
+  {
+    "osm_id": "node/11211046746",
+    "nombre": "Betesda",
+    "ciudad": "Munitepec de Madero",
+    "descripcion": "Denominación: pentecostal · Calle del Trabajo",
+    "latitud": 20.127745,
+    "longitud": -99.197078
+  },
+  {
+    "osm_id": "node/11620171296",
+    "nombre": "Amistad La Red VV Huajuapan",
+    "ciudad": "Huajuapan de León",
+    "descripcion": "Denominación: protestant · Carretera Huajuapan-Puebla",
+    "latitud": 17.841336,
+    "longitud": -97.792549
+  },
+  {
+    "osm_id": "node/11749012343",
+    "nombre": "Iglesia Bautista Emmanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 20.677665,
+    "longitud": -103.331366
+  },
+  {
+    "osm_id": "node/11774385423",
+    "nombre": "Iglesia Bautista Monte Moriah",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 19.787498,
+    "longitud": -99.808356
+  },
+  {
+    "osm_id": "node/12042711367",
+    "nombre": "Templo Bethel Miep",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.447629,
+    "longitud": -97.086971
+  },
+  {
+    "osm_id": "node/12200074071",
+    "nombre": "IAFCJ",
+    "ciudad": "Guasave",
+    "descripcion": "Denominación: pentecostal · Camino a la Florida",
+    "latitud": 25.635812,
+    "longitud": -108.470961
+  },
+  {
+    "osm_id": "node/12605189227",
+    "nombre": "Horizonte Tequisquiapan",
+    "ciudad": "Tequisquiapan",
+    "descripcion": "Denominación: evangelical · Calle Profesor Francisco Martínez Elías & Calle Juaréz Oriente S/N",
+    "latitud": 20.518052,
+    "longitud": -99.874091
+  },
+  {
+    "osm_id": "node/12763383295",
+    "nombre": "Iglesia Adventista del Séptimo Día-Placeritos",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 18.410576,
+    "longitud": -100.587502
+  },
+  {
+    "osm_id": "node/12776860533",
+    "nombre": "Iglesia Pentecostés Nuevo Testamento (ICC Monterrey)",
+    "ciudad": "Monterrey",
+    "descripcion": "Denominación: pentecostal · Avenida Alfonso Reyes 1953",
+    "latitud": 25.717894,
+    "longitud": -100.336425
+  },
+  {
+    "osm_id": "node/12845102413",
+    "nombre": "Templo \"Torre Fuerte\"",
+    "ciudad": "Santa Clara de Juárez",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 19.73137,
+    "longitud": -99.613191
+  },
+  {
+    "osm_id": "node/12900705354",
+    "nombre": "Templo Monte Sinaí",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 18.568928,
+    "longitud": -95.341894
+  },
+  {
+    "osm_id": "node/12992776189",
+    "nombre": "Familia Semilla Tapachula",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical · Calle Doiler Miler",
+    "latitud": 14.880078,
+    "longitud": -92.306998
+  },
+  {
+    "osm_id": "node/13156137652",
+    "nombre": "Iglesia Cristiana UNIFAM",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical · Avenida Las Palmas",
+    "latitud": 19.464855,
+    "longitud": -99.278312
+  },
+  {
+    "osm_id": "node/13382524838",
+    "nombre": "Iglesia Nacional Presbiteriana Conservadora \"El Divino Redentor\"",
+    "ciudad": "Ciudad de México",
+    "descripcion": "Denominación: presbyterian · Calle Independencia 26",
+    "latitud": 19.33913,
+    "longitud": -99.198697
+  },
+  {
+    "osm_id": "node/13384266847",
+    "nombre": "Iglesia Metodista Jesus de Nazareth",
+    "ciudad": "Chihuahua",
+    "descripcion": "Denominación: methodist · Lomas de San Carlos 9101",
+    "latitud": 28.688303,
+    "longitud": -106.144446
+  },
+  {
+    "osm_id": "node/13915208210",
+    "nombre": "Iglesia Cristiana Shalom",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical · Enrique H. Herrera 1152",
+    "latitud": 25.641678,
+    "longitud": -100.310744
+  },
+  {
+    "osm_id": "node/13987228785",
+    "nombre": "Iglesia Bíblica Emmanuel",
+    "ciudad": "Tehuacán",
+    "descripcion": "Denominación: evangelical · El calvario",
+    "latitud": 18.447077,
+    "longitud": -97.427258
+  },
+  {
+    "osm_id": "node/14054216139",
+    "nombre": "Iglesia de Cristo Fuente de Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.636349,
+    "longitud": -87.097967
+  },
+  {
+    "osm_id": "node/14062376090",
+    "nombre": "Remanente Escogido",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.626049,
+    "longitud": -87.095523
+  },
+  {
+    "osm_id": "node/14066968248",
+    "nombre": "Nuevo Punto de Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.639384,
+    "longitud": -87.093025
+  },
+  {
+    "osm_id": "node/14071098120",
+    "nombre": "Ministerios Ebenezer Casa de Restauración",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.632891,
+    "longitud": -87.082231
+  },
+  {
+    "osm_id": "node/14071098125",
+    "nombre": "Iglesia Adventista del Séptimo Día Sinaí",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 20.630281,
+    "longitud": -87.08556
+  },
+  {
+    "osm_id": "node/14071187572",
+    "nombre": "Casa de Fe",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.627584,
+    "longitud": -87.088227
+  },
+  {
+    "osm_id": "node/14071526438",
+    "nombre": "Casa de Oración Emuná",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.63088,
+    "longitud": -87.091568
+  },
+  {
+    "osm_id": "node/14073066806",
+    "nombre": "Iglesia Pentecostes",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.636479,
+    "longitud": -87.104151
+  },
+  {
+    "osm_id": "node/14073066829",
+    "nombre": "Iglesia Adventista del Séptimo Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 20.635059,
+    "longitud": -87.102918
+  },
+  {
+    "osm_id": "node/14073657987",
+    "nombre": "Iglesia Evangélica Pentecostés",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.630271,
+    "longitud": -87.09715
+  },
+  {
+    "osm_id": "node/14073657990",
+    "nombre": "Iglesia Bautista Autónoma Alfa y Omega Remanente Fiel",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 20.627391,
+    "longitud": -87.097957
+  },
+  {
+    "osm_id": "node/14075097959",
+    "nombre": "La Palabra de Amor",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.634794,
+    "longitud": -87.089508
+  },
+  {
+    "osm_id": "node/14075422058",
+    "nombre": "Grace Church",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.632511,
+    "longitud": -87.091221
+  },
+  {
+    "osm_id": "node/14075738415",
+    "nombre": "Grupo Renovación y Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal · 35 Avenida Sur 140",
+    "latitud": 20.623825,
+    "longitud": -87.081905
+  },
+  {
+    "osm_id": "node/14075738422",
+    "nombre": "El Camino La Verdad y La Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.624712,
+    "longitud": -87.081069
+  },
+  {
+    "osm_id": "node/14079078864",
+    "nombre": "Comunidad Bautista Emanuel Renovada",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 20.624481,
+    "longitud": -87.083336
+  },
+  {
+    "osm_id": "node/14086287975",
+    "nombre": "Iglesia Cristiana Familia Escogida",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.637304,
+    "longitud": -87.097227
+  },
+  {
+    "osm_id": "node/14086294818",
+    "nombre": "Iglesia Adventista del Séptimo Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 20.628313,
+    "longitud": -87.095502
+  },
+  {
+    "osm_id": "node/14097959414",
+    "nombre": "Iglesia Evangélica Camino Bíblico",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.623391,
+    "longitud": -87.078918
+  },
+  {
+    "osm_id": "node/14097959453",
+    "nombre": "Alfa y Omega",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 20.623053,
+    "longitud": -87.078919
+  },
+  {
+    "osm_id": "node/14119913051",
+    "nombre": "Iglesia Cristiana Buen Pastor",
+    "ciudad": "Taretan",
+    "descripcion": "Denominación: pentecostal · Calle Reforma",
+    "latitud": 19.334498,
+    "longitud": -101.918886
+  },
+  {
+    "osm_id": "node/14123273225",
+    "nombre": "Mahanaim",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.634508,
+    "longitud": -87.088723
+  },
+  {
+    "osm_id": "node/14170414981",
+    "nombre": "Iglesia Adventista del Séptimo Día",
+    "ciudad": "Playa del Carmen",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 20.66328,
+    "longitud": -87.066016
+  },
+  {
+    "osm_id": "way/100762254",
+    "nombre": "Primera Iglesia Bautista de Saltillo",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 25.419633,
+    "longitud": -100.997432
+  },
+  {
+    "osm_id": "way/152592781",
+    "nombre": "Iglesia Cristiana \"El Buen Pastor\", A.R.",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 16.754515,
+    "longitud": -93.089325
+  },
+  {
+    "osm_id": "way/157338229",
+    "nombre": "Iglesia Universitaria",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 25.191256,
+    "longitud": -99.849169
+  },
+  {
+    "osm_id": "way/183490701",
+    "nombre": "Iglesia Evangélica Cristiana Espiritual",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.196893,
+    "longitud": -100.940557
+  },
+  {
+    "osm_id": "way/197058107",
+    "nombre": "I. N. P. El Divino Salvador",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 20.966442,
+    "longitud": -89.627123
+  },
+  {
+    "osm_id": "way/215167426",
+    "nombre": "Iglesia Cristiana Principe de Paz",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.037867,
+    "longitud": -102.111814
+  },
+  {
+    "osm_id": "way/276670833",
+    "nombre": "Templo de la Santísima Trinidad (Iglesia Metodista de México)",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist · Calle Fray Pedro de Gante 5",
+    "latitud": 19.433195,
+    "longitud": -99.139862
+  },
+  {
+    "osm_id": "way/282183838",
+    "nombre": "Centro Cristiano Peniel",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 17.961166,
+    "longitud": -102.210609
+  },
+  {
+    "osm_id": "way/293837448",
+    "nombre": "KM.5 - Mennonitengemeinde",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 28.450567,
+    "longitud": -106.909989
+  },
+  {
+    "osm_id": "way/303894605",
+    "nombre": "Iglesia de los Peregrinos",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant · Calle General Blas Escontría",
+    "latitud": 21.986892,
+    "longitud": -99.015967
+  },
+  {
+    "osm_id": "way/304321206",
+    "nombre": "Centro Cristiano Tercer Cielo A.C.",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.292461,
+    "longitud": -99.042627
+  },
+  {
+    "osm_id": "way/304321207",
+    "nombre": "Centro de Integracion Agua Viva A.C.",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.391916,
+    "longitud": -99.126422
+  },
+  {
+    "osm_id": "way/305125438",
+    "nombre": "Templo Cristiano Shalom",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 28.639099,
+    "longitud": -106.096366
+  },
+  {
+    "osm_id": "way/313639903",
+    "nombre": "Iglesia Bautista del Norte",
+    "ciudad": "Cuautitlán Izcalli",
+    "descripcion": "Denominación: baptist · Zacatecas 50",
+    "latitud": 19.625912,
+    "longitud": -99.209288
+  },
+  {
+    "osm_id": "way/316891372",
+    "nombre": "Centro Familiar Cristiano Tezonco",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 19.308994,
+    "longitud": -99.072222
+  },
+  {
+    "osm_id": "way/318470473",
+    "nombre": "Comunidad de Dios",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 17.95362,
+    "longitud": -102.193834
+  },
+  {
+    "osm_id": "way/324128580",
+    "nombre": "Templo Metodista \"El Divino Salvador\", Iglesia Metodista de México",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.349262,
+    "longitud": -98.166848
+  },
+  {
+    "osm_id": "way/326551137",
+    "nombre": "Templo Metodista \"El Mesías\", Iglesia Metodista de Méxicoo",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.314596,
+    "longitud": -98.24206
+  },
+  {
+    "osm_id": "way/326566716",
+    "nombre": "Emmanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.04683,
+    "longitud": -98.200973
+  },
+  {
+    "osm_id": "way/334542084",
+    "nombre": "Horizonte Ensenada (Calvary Chapel)",
+    "ciudad": "Ensenada",
+    "descripcion": "Denominación: protestant · Riveroll 784",
+    "latitud": 31.868901,
+    "longitud": -116.620358
+  },
+  {
+    "osm_id": "way/364686283",
+    "nombre": "Iglesia Bautista \"Cristo La única esperanza\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 20.629679,
+    "longitud": -88.225742
+  },
+  {
+    "osm_id": "way/368637628",
+    "nombre": "MIEPI (Movimiento Iglesia Evangélica Pentecostés Independiente)",
+    "ciudad": "Santa Maria Tlalmimilolpan",
+    "descripcion": "Denominación: pentecostal · Calle Cuauhtémoc",
+    "latitud": 19.388565,
+    "longitud": -99.470168
+  },
+  {
+    "osm_id": "way/368974837",
+    "nombre": "Iglesia Nacional  Presbiteriana Cristo es el Camino",
+    "ciudad": "Barranca Grande Tlalmimilolpan",
+    "descripcion": "Denominación: presbyterian · Carretera a Santa María Tlalmimilolpan",
+    "latitud": 19.387433,
+    "longitud": -99.481233
+  },
+  {
+    "osm_id": "way/368987863",
+    "nombre": "Iglesia Bautista Monte Sion",
+    "ciudad": "Barranca Grande",
+    "descripcion": "Denominación: baptist · Lázaro Cárdenas Poniente",
+    "latitud": 19.389388,
+    "longitud": -99.477298
+  },
+  {
+    "osm_id": "way/371838546",
+    "nombre": "Templo Filadelfia",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.908303,
+    "longitud": -88.749996
+  },
+  {
+    "osm_id": "way/371920266",
+    "nombre": "Templo \"Apocento Alto\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.901557,
+    "longitud": -88.748259
+  },
+  {
+    "osm_id": "way/372148387",
+    "nombre": "Iglesia Presbiteriana Evangélica \"Estrella de Belen\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 20.863856,
+    "longitud": -89.203566
+  },
+  {
+    "osm_id": "way/372657966",
+    "nombre": "Templo \"La Hermosa\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.694277,
+    "longitud": -88.222684
+  },
+  {
+    "osm_id": "way/373555793",
+    "nombre": "Iglesia del Séptimo Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 20.682068,
+    "longitud": -88.182329
+  },
+  {
+    "osm_id": "way/373635323",
+    "nombre": "El Arca de Nóe",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.686843,
+    "longitud": -88.191638
+  },
+  {
+    "osm_id": "way/376384222",
+    "nombre": "Templo \"Roca del Poder\"",
+    "ciudad": "Valladolid",
+    "descripcion": "Denominación: evangelical · Calle 20 s/n",
+    "latitud": 20.686944,
+    "longitud": -88.188385
+  },
+  {
+    "osm_id": "way/378386190",
+    "nombre": "Iglesia Evangélica Emanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 23.077274,
+    "longitud": -109.723001
+  },
+  {
+    "osm_id": "way/392707080",
+    "nombre": "Primera Iglesia Bautista \"Cristo la única esperanza\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 20.718376,
+    "longitud": -88.316437
+  },
+  {
+    "osm_id": "way/396232941",
+    "nombre": "Iglesia Evangélica Bethel MIEPI",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.545937,
+    "longitud": -96.92712
+  },
+  {
+    "osm_id": "way/405346020",
+    "nombre": "Castillo del Rey Victoria",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 25.703544,
+    "longitud": -100.256363
+  },
+  {
+    "osm_id": "way/426937059",
+    "nombre": "Templo Evangélico Monte Horeb",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.528652,
+    "longitud": -96.93786
+  },
+  {
+    "osm_id": "way/461562608",
+    "nombre": "Templo",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.447199,
+    "longitud": -88.26662
+  },
+  {
+    "osm_id": "way/462393721",
+    "nombre": "Iglesia Adventista del Septimo Dia",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 23.914629,
+    "longitud": -106.890631
+  },
+  {
+    "osm_id": "way/462884361",
+    "nombre": "Templo Evangelico \"El Aposento Alto\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.697915,
+    "longitud": -88.186934
+  },
+  {
+    "osm_id": "way/480973735",
+    "nombre": "Iglesia Sión",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 22.148885,
+    "longitud": -100.977451
+  },
+  {
+    "osm_id": "way/504419670",
+    "nombre": "Iglesia Presbiteriana El Divino Redentor",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian · Calle Miguel Hidalgo",
+    "latitud": 21.986078,
+    "longitud": -99.018282
+  },
+  {
+    "osm_id": "way/523662981",
+    "nombre": "Iglesia Adventista de Asunción Ixtaltepec",
+    "ciudad": "México",
+    "descripcion": "Denominación: adventist",
+    "latitud": 16.510387,
+    "longitud": -95.049788
+  },
+  {
+    "osm_id": "way/544000119",
+    "nombre": "Templo evangélico",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.560155,
+    "longitud": -98.895848
+  },
+  {
+    "osm_id": "way/547754943",
+    "nombre": "Instituto Bíblico Horeb",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.533981,
+    "longitud": -97.473457
+  },
+  {
+    "osm_id": "way/551191015",
+    "nombre": "Templo Bethania",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 20.986827,
+    "longitud": -89.572069
+  },
+  {
+    "osm_id": "way/557081658",
+    "nombre": "Centro Familiar Salud y Excelencia",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 24.078514,
+    "longitud": -104.585313
+  },
+  {
+    "osm_id": "way/563453837",
+    "nombre": "Iglesia Evangélica Cristiana Espiritual",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 28.191749,
+    "longitud": -105.479148
+  },
+  {
+    "osm_id": "way/573418682",
+    "nombre": "Iglesia Adventista",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 17.921131,
+    "longitud": -91.169786
+  },
+  {
+    "osm_id": "way/584503588",
+    "nombre": "IASD",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 19.249606,
+    "longitud": -99.608619
+  },
+  {
+    "osm_id": "way/587002411",
+    "nombre": "Iglesia Nacional presbiteriana Emmanuel;Iglesia Nacional Presbiteriana Emmanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 21.097156,
+    "longitud": -89.579543
+  },
+  {
+    "osm_id": "way/588513536",
+    "nombre": "IGLESIA BAUTISTA ESTRELLA DE BELEN",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 19.821738,
+    "longitud": -90.513652
+  },
+  {
+    "osm_id": "way/594775152",
+    "nombre": "Iglesia Nacional Presbiteriana \"El Mesías\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 18.97413,
+    "longitud": -91.179126
+  },
+  {
+    "osm_id": "way/604430986",
+    "nombre": "Iglesia de La Luz del Mundo Hermosa Provincia",
+    "ciudad": "Tepic",
+    "descripcion": "Denominación: protestant · Calle Glorieta Benito Juárez 1",
+    "latitud": 21.481194,
+    "longitud": -104.879071
+  },
+  {
+    "osm_id": "way/611052246",
+    "nombre": "Monte MiEPi",
+    "ciudad": "Ciudad de México",
+    "descripcion": "Denominación: pentecostal · Calle Procuraduría General de Justicia 75",
+    "latitud": 19.417526,
+    "longitud": -99.088185
+  },
+  {
+    "osm_id": "way/613855924",
+    "nombre": "Sinaí",
+    "ciudad": "Mérida, Yucatan",
+    "descripcion": "Denominación: baptist · Calle 32 x7 y 39 345",
+    "latitud": 20.984645,
+    "longitud": -89.578198
+  },
+  {
+    "osm_id": "way/615114121",
+    "nombre": "Iglesia Cristiana Pentecostes Rey de Reyes",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 16.254264,
+    "longitud": -92.126402
+  },
+  {
+    "osm_id": "way/625200993",
+    "nombre": "Iglesia Bautista",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 25.527033,
+    "longitud": -103.255724
+  },
+  {
+    "osm_id": "way/625319789",
+    "nombre": "Iglesia Bautista de Chalco",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 19.273398,
+    "longitud": -98.90119
+  },
+  {
+    "osm_id": "way/626069824",
+    "nombre": "Primera Iglesia Bautista de Cd. Juárez",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 31.740549,
+    "longitud": -106.485166
+  },
+  {
+    "osm_id": "way/642079276",
+    "nombre": "Cristo La Roca",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 31.637739,
+    "longitud": -106.409342
+  },
+  {
+    "osm_id": "way/653271188",
+    "nombre": "Iglesia Pentecostes (Principe de Paz)",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 23.831284,
+    "longitud": -103.060594
+  },
+  {
+    "osm_id": "way/653288305",
+    "nombre": "Iglesia Metodista del Divino Salvador",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 20.129513,
+    "longitud": -98.731409
+  },
+  {
+    "osm_id": "way/669030433",
+    "nombre": "Iglesia Bautista Bethania",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 24.849048,
+    "longitud": -98.154627
+  },
+  {
+    "osm_id": "way/677662227",
+    "nombre": "I.B. Emmanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist · Centenario",
+    "latitud": 18.458579,
+    "longitud": -97.393472
+  },
+  {
+    "osm_id": "way/682364376",
+    "nombre": "Iglesia Prebisteriana",
+    "ciudad": "Cunduacán",
+    "descripcion": "Denominación: presbyterian · Calle Hidalgo",
+    "latitud": 18.065402,
+    "longitud": -93.17627
+  },
+  {
+    "osm_id": "way/683409934",
+    "nombre": "Iglesia de Jesucristo de los Últimos Días",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.172478,
+    "longitud": -99.053112
+  },
+  {
+    "osm_id": "way/684385009",
+    "nombre": "Iglesia Cristiana La hermosa",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.703282,
+    "longitud": -98.401391
+  },
+  {
+    "osm_id": "way/684485042",
+    "nombre": "El Buen Pastor",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.640538,
+    "longitud": -98.474773
+  },
+  {
+    "osm_id": "way/684839314",
+    "nombre": "Iglesia Cristiana Jesucristo es Rey",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.205323,
+    "longitud": -98.888215
+  },
+  {
+    "osm_id": "way/685025184",
+    "nombre": "Iglesia de Jesucristo de los Santos de los Últimos Días",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.058952,
+    "longitud": -99.218696
+  },
+  {
+    "osm_id": "way/688874103",
+    "nombre": "Cristo Vive",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 20.000699,
+    "longitud": -99.216558
+  },
+  {
+    "osm_id": "way/689248785",
+    "nombre": "Templo Presbiteriano Solo Cristo Salva",
+    "ciudad": "Villahermosa, Centro.",
+    "descripcion": "Denominación: presbyterian · Calle Francisco Villa",
+    "latitud": 17.845275,
+    "longitud": -92.879815
+  },
+  {
+    "osm_id": "way/691104522",
+    "nombre": "Alcance Bingú",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.593411,
+    "longitud": -99.143698
+  },
+  {
+    "osm_id": "way/691219930",
+    "nombre": "Filadelfia IEPMAR",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.620193,
+    "longitud": -99.143413
+  },
+  {
+    "osm_id": "way/691946275",
+    "nombre": "Iglesia Pentecostés",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.028014,
+    "longitud": -98.306666
+  },
+  {
+    "osm_id": "way/693300115",
+    "nombre": "Iglesia Pentecostés Jesucristo es la Roca de la Salvación",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.026992,
+    "longitud": -98.324945
+  },
+  {
+    "osm_id": "way/693997504",
+    "nombre": "Iglesia Evangélica Cristiana Espiritual A.R.",
+    "ciudad": "Francisco I. Madero",
+    "descripcion": "Denominación: evangelical · Martirez de Cananea",
+    "latitud": 25.780705,
+    "longitud": -103.273695
+  },
+  {
+    "osm_id": "way/698761922",
+    "nombre": "Iglesia Adventista del 7° día",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 20.874582,
+    "longitud": -89.735693
+  },
+  {
+    "osm_id": "way/699293482",
+    "nombre": "Iglesia Bautista Cristo Viene",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 21.159574,
+    "longitud": -98.930555
+  },
+  {
+    "osm_id": "way/699482300",
+    "nombre": "Iglesia del Nazareno",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 20.886888,
+    "longitud": -89.751409
+  },
+  {
+    "osm_id": "way/699488891",
+    "nombre": "Templo Adventista del 7° Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 20.8813,
+    "longitud": -89.748993
+  },
+  {
+    "osm_id": "way/699489183",
+    "nombre": "Templo de la Cruz",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 20.881947,
+    "longitud": -89.752036
+  },
+  {
+    "osm_id": "way/699608834",
+    "nombre": "Iglesia Evangélica Príncipe de Paz",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 21.116126,
+    "longitud": -99.003313
+  },
+  {
+    "osm_id": "way/699891831",
+    "nombre": "Iglesia Evangélica Filadelfia",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.329451,
+    "longitud": -99.229512
+  },
+  {
+    "osm_id": "way/700227777",
+    "nombre": "Templo Alcance Getsemaní",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.392636,
+    "longitud": -99.230071
+  },
+  {
+    "osm_id": "way/700744893",
+    "nombre": "Asambleas de Dios",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 20.175206,
+    "longitud": -90.132089
+  },
+  {
+    "osm_id": "way/703510828",
+    "nombre": "Iglesia Cristiana Puerta La Hermosa",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 19.658026,
+    "longitud": -98.543956
+  },
+  {
+    "osm_id": "way/706041010",
+    "nombre": "Roca Eterna Miepi",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 25.66531,
+    "longitud": -100.465293
+  },
+  {
+    "osm_id": "way/706795950",
+    "nombre": "El Calvario",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 25.687294,
+    "longitud": -100.43422
+  },
+  {
+    "osm_id": "way/709053165",
+    "nombre": "Bethesda",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 25.690524,
+    "longitud": -100.450194
+  },
+  {
+    "osm_id": "way/717377299",
+    "nombre": "Templo El Mesías",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 20.242798,
+    "longitud": -99.023827
+  },
+  {
+    "osm_id": "way/725704569",
+    "nombre": "Iglesia Evangelica CBV",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.545908,
+    "longitud": -100.48635
+  },
+  {
+    "osm_id": "way/732423692",
+    "nombre": "Iglesia Bautista de San Luis Potosí",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 22.135566,
+    "longitud": -100.992268
+  },
+  {
+    "osm_id": "way/749336582",
+    "nombre": "Iglesia Adventista del Séptimo Día",
+    "ciudad": "Guerrero Negro",
+    "descripcion": "Denominación: seventh_day_adventist · Calle Manuel Liera Ibarra",
+    "latitud": 27.971715,
+    "longitud": -114.035945
+  },
+  {
+    "osm_id": "way/766161503",
+    "nombre": "Iglesia Cristiana Bautista \"Dios es Amor\"",
+    "ciudad": "Cuautitlán Izcalli",
+    "descripcion": "Denominación: baptist · Avenida del Parque 12",
+    "latitud": 19.594941,
+    "longitud": -99.189966
+  },
+  {
+    "osm_id": "way/771011164",
+    "nombre": "Templo evangélico \"Sendero de Luz\"",
+    "ciudad": "Rafael Delgado",
+    "descripcion": "Denominación: protestant · Calle 2",
+    "latitud": 18.810732,
+    "longitud": -97.068553
+  },
+  {
+    "osm_id": "way/787282946",
+    "nombre": "El Cordero de Dios",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 31.615206,
+    "longitud": -106.379227
+  },
+  {
+    "osm_id": "way/787824344",
+    "nombre": "Camino a Casa",
+    "ciudad": "Parques del Pedregal",
+    "descripcion": "Denominación: evangelical · Avenida Insurgentes Sur 4903-1",
+    "latitud": 19.301268,
+    "longitud": -99.18659
+  },
+  {
+    "osm_id": "way/816905868",
+    "nombre": "Templo Metodista \"Monte de Sion\", Iglesia Metodista de México",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.341691,
+    "longitud": -98.048914
+  },
+  {
+    "osm_id": "way/820389338",
+    "nombre": "Centro Cristiano El Alfarero",
+    "ciudad": "SAN LUIS RIO COLORADO",
+    "descripcion": "Denominación: pentecostal · Avenida Tlaxcala 48",
+    "latitud": 32.441114,
+    "longitud": -114.729783
+  },
+  {
+    "osm_id": "way/823950791",
+    "nombre": "Iglesia de Dios 7mo. Día \"Emmanuel\"",
+    "ciudad": "Hermosillo",
+    "descripcion": "Denominación: seventh_day_adventist · Avenida Artículo 123 463",
+    "latitud": 29.121887,
+    "longitud": -110.981031
+  },
+  {
+    "osm_id": "way/825372587",
+    "nombre": "Iglesia Cristiana Vida Abundante",
+    "ciudad": "Hermosillo",
+    "descripcion": "Denominación: protestant · Avenida Constituyentes 435",
+    "latitud": 29.121656,
+    "longitud": -110.979359
+  },
+  {
+    "osm_id": "way/827094397",
+    "nombre": "Templo Metoodista Siloé",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.359254,
+    "longitud": -98.075743
+  },
+  {
+    "osm_id": "way/831358098",
+    "nombre": "Iglesia Cristo la Roca",
+    "ciudad": "Colima",
+    "descripcion": "Denominación: baptist · Calle Ignacio López Rayón 1407",
+    "latitud": 19.237102,
+    "longitud": -103.696224
+  },
+  {
+    "osm_id": "way/835857478",
+    "nombre": "testigos de jehova",
+    "ciudad": "Pinotepa de Don Luis",
+    "descripcion": "Denominación: baptist · Calle Constitución S/N",
+    "latitud": 16.424778,
+    "longitud": -97.983403
+  },
+  {
+    "osm_id": "way/869982372",
+    "nombre": "Iglesia Bautista Príncipe de Paz",
+    "ciudad": "Monterrey",
+    "descripcion": "Denominación: baptist · Carlos Osuna 40",
+    "latitud": 25.647896,
+    "longitud": -100.288362
+  },
+  {
+    "osm_id": "way/877727816",
+    "nombre": "La Luz del Mundo",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 17.981244,
+    "longitud": -102.222207
+  },
+  {
+    "osm_id": "way/880877642",
+    "nombre": "Iglesia Adventista del Séptimo Día",
+    "ciudad": "Col. Luis Echeverría, Cuautitlán Izcalli",
+    "descripcion": "Denominación: seventh_day_adventist · Acapulco s/n",
+    "latitud": 19.622528,
+    "longitud": -99.193997
+  },
+  {
+    "osm_id": "way/887084549",
+    "nombre": "Centro de Fé el Shaddai Asambleas de Dios",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 19.503756,
+    "longitud": -90.58594
+  },
+  {
+    "osm_id": "way/895112517",
+    "nombre": "Primer Iglesia Bautista La Única Esperanza",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 24.844327,
+    "longitud": -100.321857
+  },
+  {
+    "osm_id": "way/902950556",
+    "nombre": "Palabra Viva",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 28.633036,
+    "longitud": -106.130395
+  },
+  {
+    "osm_id": "way/947416409",
+    "nombre": "Iglesia Adventista De Atongo",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 25.357568,
+    "longitud": -99.989307
+  },
+  {
+    "osm_id": "way/974491306",
+    "nombre": "Iglesia Cristiana Nueva Esperanza",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 20.107476,
+    "longitud": -98.779316
+  },
+  {
+    "osm_id": "way/988652398",
+    "nombre": "Iglesia Ríos de Agua Viva A.R.",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 21.980561,
+    "longitud": -98.987132
+  },
+  {
+    "osm_id": "way/1003196746",
+    "nombre": "Iglesia Adventista del Séptimo día",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 27.083933,
+    "longitud": -109.450706
+  },
+  {
+    "osm_id": "way/1003204095",
+    "nombre": "Iglesia Adventista del Séptimo Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 27.000901,
+    "longitud": -109.52831
+  },
+  {
+    "osm_id": "way/1028181596",
+    "nombre": "Palabra Viva Juárez",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 31.69899,
+    "longitud": -106.430496
+  },
+  {
+    "osm_id": "way/1028186244",
+    "nombre": "Iglesia Betania",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 31.711946,
+    "longitud": -106.506633
+  },
+  {
+    "osm_id": "way/1028186581",
+    "nombre": "Templo Agape",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 31.746298,
+    "longitud": -106.491936
+  },
+  {
+    "osm_id": "way/1028523602",
+    "nombre": "Iglesia Nacional Presbiteriana Bethel",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 18.924816,
+    "longitud": -99.237909
+  },
+  {
+    "osm_id": "way/1029190974",
+    "nombre": "Nueva Jerusalen",
+    "ciudad": "cuernavaca",
+    "descripcion": "Denominación: presbyterian · No Reelección 42",
+    "latitud": 18.926438,
+    "longitud": -99.236529
+  },
+  {
+    "osm_id": "way/1052817850",
+    "nombre": "Templo de San Pablo",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 32.530503,
+    "longitud": -117.117885
+  },
+  {
+    "osm_id": "way/1058686018",
+    "nombre": "Iglesia Bautista Cristo es el Camino",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 21.971294,
+    "longitud": -98.977433
+  },
+  {
+    "osm_id": "way/1060341272",
+    "nombre": "Templo Casa de Fe",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 21.981323,
+    "longitud": -99.008637
+  },
+  {
+    "osm_id": "way/1065962866",
+    "nombre": "Templo Bíblico Bautista",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 22.017497,
+    "longitud": -99.011402
+  },
+  {
+    "osm_id": "way/1067205892",
+    "nombre": "Iglesia Fuente de Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 15.953408,
+    "longitud": -97.355191
+  },
+  {
+    "osm_id": "way/1069057046",
+    "nombre": "Iglesia Nacional Presbiteriana El Divino Salvador",
+    "ciudad": "Nazareno Etla",
+    "descripcion": "Denominación: presbyterian · Calle Hidalgo",
+    "latitud": 17.177241,
+    "longitud": -96.821783
+  },
+  {
+    "osm_id": "way/1074580384",
+    "nombre": "Iglesia Cristiana Eliaquim",
+    "ciudad": "Pueblo Nuevo Tlalmimilolpan",
+    "descripcion": "Denominación: pentecostal · Carretera Amomolulco - Tramo Carretero (Toluca - Palmillas)",
+    "latitud": 19.395891,
+    "longitud": -99.496234
+  },
+  {
+    "osm_id": "way/1074587919",
+    "nombre": "Iglesia Cristiana Evangelica Gethsemani",
+    "ciudad": "santa maria tlalmimilolpan",
+    "descripcion": "Denominación: evangelical · Calle Matamoros manzana 16",
+    "latitud": 19.390724,
+    "longitud": -99.473717
+  },
+  {
+    "osm_id": "way/1075470792",
+    "nombre": "Iglesia Nacional Presbiteriana \"El Divino Salvador\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 19.310499,
+    "longitud": -99.068236
+  },
+  {
+    "osm_id": "way/1087998799",
+    "nombre": "Iglesia Adventista Del Septimo Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 25.401318,
+    "longitud": -100.129145
+  },
+  {
+    "osm_id": "way/1090847453",
+    "nombre": "Iglesia Apoestolica de la Fe en Cristo Jesús (IAFCJ).",
+    "ciudad": "Guasave",
+    "descripcion": "Denominación: protestant · Calle Cacalotán",
+    "latitud": 25.551491,
+    "longitud": -108.318079
+  },
+  {
+    "osm_id": "way/1094325399",
+    "nombre": "Iglesia Nacional Presbiteriana A.R. Templo Resurreción",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 21.99224,
+    "longitud": -99.006978
+  },
+  {
+    "osm_id": "way/1107652260",
+    "nombre": "Iglesia Roca de Salvación",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 20.123819,
+    "longitud": -98.762068
+  },
+  {
+    "osm_id": "way/1110083431",
+    "nombre": "Templo Cordero de Dios",
+    "ciudad": "Marquelia",
+    "descripcion": "Denominación: baptist",
+    "latitud": 16.578747,
+    "longitud": -98.813887
+  },
+  {
+    "osm_id": "way/1135570772",
+    "nombre": "Iglesia Cristiana UNIFAM, El Barbecho - Huautla",
+    "ciudad": "Huautla",
+    "descripcion": "Denominación: protestant · Carretera Huautla - Atlapexco",
+    "latitud": 21.030877,
+    "longitud": -98.311661
+  },
+  {
+    "osm_id": "way/1136763027",
+    "nombre": "Iglesia adventista villas de oriente",
+    "ciudad": "San nicolas de los Garza",
+    "descripcion": "Denominación: seventh_day_adventist · Río Pilón 613",
+    "latitud": 25.731425,
+    "longitud": -100.244859
+  },
+  {
+    "osm_id": "way/1136763757",
+    "nombre": "Iglesia adventista Vallarta",
+    "ciudad": "Monterrey",
+    "descripcion": "Denominación: seventh_day_adventist · Calle Ignacio Luis Vallarta 644",
+    "latitud": 25.671738,
+    "longitud": -100.328298
+  },
+  {
+    "osm_id": "way/1153013777",
+    "nombre": "Casa de Oración Caborca",
+    "ciudad": "Caborca",
+    "descripcion": "Denominación: evangelical · 17",
+    "latitud": 30.724918,
+    "longitud": -112.169759
+  },
+  {
+    "osm_id": "way/1161144042",
+    "nombre": "Iglesia",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 20.688025,
+    "longitud": -88.211962
+  },
+  {
+    "osm_id": "way/1173177907",
+    "nombre": "Templo Evangélico Fuente de Esperanza",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.676511,
+    "longitud": -88.193564
+  },
+  {
+    "osm_id": "way/1174840880",
+    "nombre": "Iglesia presbiteriana",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 21.457048,
+    "longitud": -98.840266
+  },
+  {
+    "osm_id": "way/1178477873",
+    "nombre": "Bethel",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 19.497839,
+    "longitud": -99.064038
+  },
+  {
+    "osm_id": "way/1180050000",
+    "nombre": "Rosa se Saron",
+    "ciudad": "Atoyatempan",
+    "descripcion": "Denominación: evangelical · Calle 2 Norte",
+    "latitud": 18.821181,
+    "longitud": -97.912381
+  },
+  {
+    "osm_id": "way/1180050002",
+    "nombre": "Templo Evangelico \"Eben-Ezer\"",
+    "ciudad": "Atoyatempan",
+    "descripcion": "Denominación: evangelical · Avenida Nacional",
+    "latitud": 18.818521,
+    "longitud": -97.91306
+  },
+  {
+    "osm_id": "way/1200729061",
+    "nombre": "Templo Metodista \"Jesús de Nazaret\", Iglesia Metodista de México",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.388413,
+    "longitud": -98.146914
+  },
+  {
+    "osm_id": "way/1200729062",
+    "nombre": "Templo Metodista \"Monte Nebo\", Iglesia Metodista de México",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.373843,
+    "longitud": -98.184796
+  },
+  {
+    "osm_id": "way/1200740551",
+    "nombre": "Templo Metodista \"Casa de Dios\", Iglesia Metodista de México",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.311908,
+    "longitud": -98.270721
+  },
+  {
+    "osm_id": "way/1200740552",
+    "nombre": "Templo Metodista \"Templo de Jesús\", Iglesia Metodista de México",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 19.375864,
+    "longitud": -98.091387
+  },
+  {
+    "osm_id": "way/1206244568",
+    "nombre": "Iglesia Bíblica en Delicias",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant",
+    "latitud": 28.165194,
+    "longitud": -105.455874
+  },
+  {
+    "osm_id": "way/1210169753",
+    "nombre": "Iglesia Cristiana Evangelica Bethesda",
+    "ciudad": "Munitepec de Madero",
+    "descripcion": "Denominación: protestant · Calle del Trabajo",
+    "latitud": 20.127717,
+    "longitud": -99.197019
+  },
+  {
+    "osm_id": "way/1225572299",
+    "nombre": "El Sembrador",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 19.48814,
+    "longitud": -99.046842
+  },
+  {
+    "osm_id": "way/1233220314",
+    "nombre": "La Iglesia de Jesucristo de los Santos de los Últimos Días",
+    "ciudad": "Acapulco de Juárez",
+    "descripcion": "Denominación: protestant · Calle el Tigre",
+    "latitud": 16.866569,
+    "longitud": -99.875077
+  },
+  {
+    "osm_id": "way/1233886933",
+    "nombre": "Catedral de Vida",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 23.731026,
+    "longitud": -105.691117
+  },
+  {
+    "osm_id": "way/1235284169",
+    "nombre": "Iglesia Pentecostal Unida Latinoamericana",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 19.486508,
+    "longitud": -99.06679
+  },
+  {
+    "osm_id": "way/1271949243",
+    "nombre": "Efeso",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical · Avenida 2 64",
+    "latitud": 19.480616,
+    "longitud": -99.058818
+  },
+  {
+    "osm_id": "way/1298677872",
+    "nombre": "Iglesia Presbiteriana “Antioquia”",
+    "ciudad": "San Miguel de Cozumel",
+    "descripcion": "Denominación: presbyterian · Calle Bis",
+    "latitud": 20.483332,
+    "longitud": -86.956202
+  },
+  {
+    "osm_id": "way/1308083528",
+    "nombre": "Iglesia Presbiteriana Morelos Piedra",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 18.146051,
+    "longitud": -93.222412
+  },
+  {
+    "osm_id": "way/1316241515",
+    "nombre": "Iglesia Evangelica Crsitiana Espiritual",
+    "ciudad": "San Nicolás de los Garza",
+    "descripcion": "Denominación: evangelical · Calle Pericles 1475",
+    "latitud": 25.752059,
+    "longitud": -100.26041
+  },
+  {
+    "osm_id": "way/1318513834",
+    "nombre": "Templo \"Bethel\"",
+    "ciudad": "Santa Clara de Juárez",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 19.720194,
+    "longitud": -99.607411
+  },
+  {
+    "osm_id": "way/1318943194",
+    "nombre": "Templo \"Dios con nosotros\"",
+    "ciudad": "Santa Clara de Juárez",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 19.708268,
+    "longitud": -99.605518
+  },
+  {
+    "osm_id": "way/1318943197",
+    "nombre": "Templo \"Monte de los Olivos\"",
+    "ciudad": "Santa Clara de Juárez",
+    "descripcion": "Denominación: pentecostal · Calle Justo Sierra",
+    "latitud": 19.717096,
+    "longitud": -99.612349
+  },
+  {
+    "osm_id": "way/1325259905",
+    "nombre": "Templo Evangélico Eben Ezer",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 18.852084,
+    "longitud": -97.106147
+  },
+  {
+    "osm_id": "way/1338471385",
+    "nombre": "Tabernáculo \"El Nazareno\", Iglesia Cristiana Interdenominacional A.R.",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical · Calle Los Higos",
+    "latitud": 17.020089,
+    "longitud": -96.75548
+  },
+  {
+    "osm_id": "way/1342046568",
+    "nombre": "Iglesia Vid Abudante de México",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 20.12119,
+    "longitud": -98.759354
+  },
+  {
+    "osm_id": "way/1360958987",
+    "nombre": "Templo Evangélico Peniel MIEPI (Movimiento Iglesia Evangélica Pentecostés Independiente)",
+    "ciudad": "Lerma",
+    "descripcion": "Denominación: pentecostal · Calle Independencia manzana 10",
+    "latitud": 19.385248,
+    "longitud": -99.475945
+  },
+  {
+    "osm_id": "way/1360971649",
+    "nombre": "Iglesia Nacional el Divino Salvador",
+    "ciudad": "Santa MarÍa Tlalmimilolpan",
+    "descripcion": "Denominación: presbyterian · Calle Insurgentes esquina con calle dolores",
+    "latitud": 19.392935,
+    "longitud": -99.470189
+  },
+  {
+    "osm_id": "way/1361276585",
+    "nombre": "Templo Cristo el Salvador",
+    "ciudad": "Colonia Alvaro Obregon Tlalmimilolpan",
+    "descripcion": "Denominación: presbyterian · Calle 20 de Noviembre 20",
+    "latitud": 19.376885,
+    "longitud": -99.494417
+  },
+  {
+    "osm_id": "way/1361852730",
+    "nombre": "Iglesia de Cristo, Cristo te ama",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist · Avenida Chignahuapan",
+    "latitud": 19.313132,
+    "longitud": -99.479565
+  },
+  {
+    "osm_id": "way/1361852751",
+    "nombre": "Iglesia cristiana Jesus el Buen Pastor",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical · Calle Independencia",
+    "latitud": 19.308111,
+    "longitud": -99.388707
+  },
+  {
+    "osm_id": "way/1362250519",
+    "nombre": "Cristo Viene",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal · Avenida Tomacoco 64",
+    "latitud": 19.479591,
+    "longitud": -99.045108
+  },
+  {
+    "osm_id": "way/1363157703",
+    "nombre": "Iglesia Cristiana de alabanza y oración",
+    "ciudad": "La concepción Xochicuautla",
+    "descripcion": "Denominación: evangelical · Rio Seco",
+    "latitud": 19.375373,
+    "longitud": -99.443023
+  },
+  {
+    "osm_id": "way/1363157705",
+    "nombre": "Tabernaculo Cristiano",
+    "ciudad": "San Francisco Xochicuautla",
+    "descripcion": "Denominación: evangelical · Chabacano, manzana 045",
+    "latitud": 19.374469,
+    "longitud": -99.446522
+  },
+  {
+    "osm_id": "way/1363180014",
+    "nombre": "Templo Evangélico \"Bethel\" MIEPI",
+    "ciudad": "San Francisco Xochicuautla",
+    "descripcion": "Denominación: pentecostal · Calle Miguel Alemán 47",
+    "latitud": 19.364163,
+    "longitud": -99.451736
+  },
+  {
+    "osm_id": "way/1363667070",
+    "nombre": "El Divino Salvador",
+    "ciudad": "Atenco",
+    "descripcion": "Denominación: methodist · Calle Palma Poniente",
+    "latitud": 19.554108,
+    "longitud": -98.916964
+  },
+  {
+    "osm_id": "way/1364865853",
+    "nombre": "El Aposento Alto",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.544469,
+    "longitud": -98.910806
+  },
+  {
+    "osm_id": "way/1372257801",
+    "nombre": "Templo El Mesías",
+    "ciudad": "Ciudad de México",
+    "descripcion": "Denominación: methodist · Avenida Balderas 47",
+    "latitud": 19.433903,
+    "longitud": -99.147786
+  },
+  {
+    "osm_id": "way/1385591674",
+    "nombre": "Iglesia Cristiana Pentecostés \"Emanuel\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 16.425078,
+    "longitud": -95.008241
+  },
+  {
+    "osm_id": "way/1387350770",
+    "nombre": "Templo \"Gran Consolación\"",
+    "ciudad": "Santa Clara de Juárez",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 19.718951,
+    "longitud": -99.605388
+  },
+  {
+    "osm_id": "way/1388060780",
+    "nombre": "Templo \"Fuente de Vida\"",
+    "ciudad": "Santa Clara de Juárez",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.714896,
+    "longitud": -99.603427
+  },
+  {
+    "osm_id": "way/1388060783",
+    "nombre": "Templo \"Eben-Ezer\"",
+    "ciudad": "Santa Clara de Juárez",
+    "descripcion": "Denominación: pentecostal",
+    "latitud": 19.707017,
+    "longitud": -99.596638
+  },
+  {
+    "osm_id": "way/1410213920",
+    "nombre": "Iglesia Universal del Reino de Dios",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.432891,
+    "longitud": -98.931568
+  },
+  {
+    "osm_id": "way/1427820193",
+    "nombre": "Primera Iglesia Bautista de la Ciudad de México",
+    "ciudad": "Ciudad de México",
+    "descripcion": "Denominación: baptist · Heroes 31",
+    "latitud": 19.439938,
+    "longitud": -99.146897
+  },
+  {
+    "osm_id": "way/1429267746",
+    "nombre": "Iglesia Hefzi-ba",
+    "ciudad": "México",
+    "descripcion": "Denominación: protestant · Calle Beethoven 174",
+    "latitud": 19.461379,
+    "longitud": -99.137863
+  },
+  {
+    "osm_id": "way/1429421422",
+    "nombre": "Iglesia Nacional Prebiteriana de México \"Monte Sinaí\"",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 19.465086,
+    "longitud": -99.269349
+  },
+  {
+    "osm_id": "way/1431435079",
+    "nombre": "Presbiteriana Emanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian · Calle 25 34",
+    "latitud": 19.415664,
+    "longitud": -99.092296
+  },
+  {
+    "osm_id": "way/1432418186",
+    "nombre": "Iglesia Presbiteriana",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 17.065243,
+    "longitud": -92.149779
+  },
+  {
+    "osm_id": "way/1432418187",
+    "nombre": "Iglesia Presbiteriana",
+    "ciudad": "México",
+    "descripcion": "Denominación: presbyterian",
+    "latitud": 17.065116,
+    "longitud": -92.149809
+  },
+  {
+    "osm_id": "way/1432445050",
+    "nombre": "Iglesia Metodista del Divino Salvador",
+    "ciudad": "México",
+    "descripcion": "Denominación: methodist",
+    "latitud": 28.194019,
+    "longitud": -105.470188
+  },
+  {
+    "osm_id": "way/1433712723",
+    "nombre": "Salem",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 19.415315,
+    "longitud": -99.079088
+  },
+  {
+    "osm_id": "way/1469927673",
+    "nombre": "Templo Evangélico Betsan",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical · Calle Hacienda de La Purísima 66",
+    "latitud": 19.479473,
+    "longitud": -99.044208
+  },
+  {
+    "osm_id": "way/1476427213",
+    "nombre": "Iglesia Adventista del Séptimo Día",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 19.793268,
+    "longitud": -90.500161
+  },
+  {
+    "osm_id": "way/1481668106",
+    "nombre": "Iglesia Emmanuel",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.433442,
+    "longitud": -99.09378
+  },
+  {
+    "osm_id": "way/1508007741",
+    "nombre": "Villanueva",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 18.694651,
+    "longitud": -95.990616
+  },
+  {
+    "osm_id": "way/1526022253",
+    "nombre": "Iglesia De Dios Séptimo Día Rodeo",
+    "ciudad": "México",
+    "descripcion": "Denominación: seventh_day_adventist",
+    "latitud": 19.394375,
+    "longitud": -99.084531
+  },
+  {
+    "osm_id": "way/1537057098",
+    "nombre": "Templo Monte Carmelo",
+    "ciudad": "México",
+    "descripcion": "Denominación: evangelical",
+    "latitud": 19.425017,
+    "longitud": -99.097755
+  },
+  {
+    "osm_id": "way/1544904041",
+    "nombre": "Primera Iglesia Bautista de Corregidora",
+    "ciudad": "Corregidora",
+    "descripcion": "Denominación: baptist · Calle Anturio 109",
+    "latitud": 20.55363,
+    "longitud": -100.400553
+  },
+  {
+    "osm_id": "way/1547356973",
+    "nombre": "Iglesia Bautista Berea",
+    "ciudad": "México",
+    "descripcion": "Denominación: baptist",
+    "latitud": 25.548487,
+    "longitud": -100.228572
+  }
+]
