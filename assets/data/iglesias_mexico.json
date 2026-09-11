@@ -434,7 +434,7 @@
   {
     "osm_id": "node/5319329675",
     "nombre": "EL CONCILIO NACIONAL DE LAS ASAMBLEAS DE DIOS A.R. \"TEMPLO LA HERMOSA\"",
-    "ciudad": "chiná, campeche",
+    "ciudad": "Chiná, Campeche",
     "descripcion": "Denominación: pentecostal · calle 11 598",
     "latitud": 19.769855,
     "longitud": -90.497816
@@ -506,7 +506,7 @@
   {
     "osm_id": "node/5387990354",
     "nombre": "mama clara",
-    "ciudad": "oaxaca",
+    "ciudad": "Oaxaca",
     "descripcion": "Denominación: baptist · Primavera",
     "latitud": 17.006947,
     "longitud": -96.759805
@@ -514,7 +514,7 @@
   {
     "osm_id": "node/5453577183",
     "nombre": "Iglesia Presbiteriana Cristo La Luz del Mundo",
-    "ciudad": "villahermosa",
+    "ciudad": "Villahermosa",
     "descripcion": "Denominación: presbyterian · Veterinarios",
     "latitud": 17.977634,
     "longitud": -92.913481
@@ -784,14 +784,6 @@
     "longitud": -89.757159
   },
   {
-    "osm_id": "node/6872255686",
-    "nombre": "salon del reino de los testigos de jeova",
-    "ciudad": "México",
-    "descripcion": "Denominación: methodist",
-    "latitud": 19.89636,
-    "longitud": -99.145074
-  },
-  {
     "osm_id": "node/6913606850",
     "nombre": "MARANATHA CARDEL VERACRUZ",
     "ciudad": "Cardel",
@@ -914,7 +906,7 @@
   {
     "osm_id": "node/8017967015",
     "nombre": "Presbiteriana Damasco",
-    "ciudad": "abasolo",
+    "ciudad": "Abasolo",
     "descripcion": "Denominación: evangelical · Calle Templo 01",
     "latitud": 16.823176,
     "longitud": -92.210295
@@ -1242,7 +1234,7 @@
   {
     "osm_id": "node/10134267013",
     "nombre": "Iglesia mision pentecostes",
-    "ciudad": "comalcalco",
+    "ciudad": "Comalcalco",
     "descripcion": "Denominación: pentecostal · 5 3",
     "latitud": 18.218137,
     "longitud": -93.270777
@@ -1250,7 +1242,7 @@
   {
     "osm_id": "node/10134422929",
     "nombre": "Iglesia jesus el buen pastor",
-    "ciudad": "comalcalco",
+    "ciudad": "Comalcalco",
     "descripcion": "Denominación: presbyterian · 2 1",
     "latitud": 18.215773,
     "longitud": -93.281694
@@ -1258,7 +1250,7 @@
   {
     "osm_id": "node/10134433647",
     "nombre": "La nueva jerusalem",
-    "ciudad": "comalcalco",
+    "ciudad": "Comalcalco",
     "descripcion": "Denominación: presbyterian · Calle Las Vías 3",
     "latitud": 18.225459,
     "longitud": -93.266553
@@ -1266,7 +1258,7 @@
   {
     "osm_id": "node/10134433722",
     "nombre": "Iglesia adventista del 7mo dia",
-    "ciudad": "comalcalco",
+    "ciudad": "Comalcalco",
     "descripcion": "Denominación: seventh_day_adventist · 2 11",
     "latitud": 18.210749,
     "longitud": -93.275482
@@ -1274,7 +1266,7 @@
   {
     "osm_id": "node/10136558302",
     "nombre": "iglesia aqua",
-    "ciudad": "comalcalco",
+    "ciudad": "Comalcalco",
     "descripcion": "Denominación: seventh_day_adventist · 6 5",
     "latitud": 18.258309,
     "longitud": -93.302946
@@ -1282,7 +1274,7 @@
   {
     "osm_id": "node/10136585520",
     "nombre": "Iglesia lluvia de gracia",
-    "ciudad": "comalcalco",
+    "ciudad": "Comalcalco",
     "descripcion": "Denominación: presbyterian · leon zarate 35",
     "latitud": 18.22428,
     "longitud": -93.290554
@@ -2017,7 +2009,7 @@
   },
   {
     "osm_id": "way/461562608",
-    "nombre": "Templo",
+    "nombre": "Templo evangélico",
     "ciudad": "México",
     "descripcion": "Denominación: evangelical",
     "latitud": 20.447199,
@@ -2560,14 +2552,6 @@
     "longitud": -103.696224
   },
   {
-    "osm_id": "way/835857478",
-    "nombre": "testigos de jehova",
-    "ciudad": "Pinotepa de Don Luis",
-    "descripcion": "Denominación: baptist · Calle Constitución S/N",
-    "latitud": 16.424778,
-    "longitud": -97.983403
-  },
-  {
     "osm_id": "way/869982372",
     "nombre": "Iglesia Bautista Príncipe de Paz",
     "ciudad": "Monterrey",
@@ -2690,7 +2674,7 @@
   {
     "osm_id": "way/1029190974",
     "nombre": "Nueva Jerusalen",
-    "ciudad": "cuernavaca",
+    "ciudad": "Cuernavaca",
     "descripcion": "Denominación: presbyterian · No Reelección 42",
     "latitud": 18.926438,
     "longitud": -99.236529
@@ -2754,7 +2738,7 @@
   {
     "osm_id": "way/1074587919",
     "nombre": "Iglesia Cristiana Evangelica Gethsemani",
-    "ciudad": "santa maria tlalmimilolpan",
+    "ciudad": "Santa Maria Tlalmimilolpan",
     "descripcion": "Denominación: evangelical · Calle Matamoros manzana 16",
     "latitud": 19.390724,
     "longitud": -99.473717
@@ -2818,7 +2802,7 @@
   {
     "osm_id": "way/1136763027",
     "nombre": "Iglesia adventista villas de oriente",
-    "ciudad": "San nicolas de los Garza",
+    "ciudad": "San Nicolas de los Garza",
     "descripcion": "Denominación: seventh_day_adventist · Río Pilón 613",
     "latitud": 25.731425,
     "longitud": -100.244859
@@ -2841,7 +2825,7 @@
   },
   {
     "osm_id": "way/1161144042",
-    "nombre": "Iglesia",
+    "nombre": "Iglesia bautista",
     "ciudad": "México",
     "descripcion": "Denominación: baptist",
     "latitud": 20.688025,
@@ -3098,7 +3082,7 @@
   {
     "osm_id": "way/1363157703",
     "nombre": "Iglesia Cristiana de alabanza y oración",
-    "ciudad": "La concepción Xochicuautla",
+    "ciudad": "La Concepción Xochicuautla",
     "descripcion": "Denominación: evangelical · Rio Seco",
     "latitud": 19.375373,
     "longitud": -99.443023

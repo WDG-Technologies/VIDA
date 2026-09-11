@@ -205,9 +205,28 @@ class NotificationService {
     final prefs = await SharedPreferences.getInstance();
     final last = prefs.getString('last_open_date') ?? '';
     if (last.isEmpty) return 0;
-    final lastDate = DateTime.tryParse(last);
-    if (lastDate == null) return 0;
-    return DateTime.now().difference(lastDate).inDays;
+
+    // Streak guarda yyyy-MM-dd en calendario local; no usar DateTime.parse (UTC).
+    DateTime? lastDay;
+    final parts = last.split('-');
+    if (parts.length == 3) {
+      final y = int.tryParse(parts[0]);
+      final m = int.tryParse(parts[1]);
+      final d = int.tryParse(parts[2]);
+      if (y != null && m != null && d != null) {
+        lastDay = DateTime(y, m, d);
+      }
+    }
+    lastDay ??= () {
+      final p = DateTime.tryParse(last);
+      if (p == null) return null;
+      return DateTime(p.year, p.month, p.day);
+    }();
+    if (lastDay == null) return 0;
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    return today.difference(lastDay).inDays;
   }
 
   static Future<bool> shouldShowToday() async {

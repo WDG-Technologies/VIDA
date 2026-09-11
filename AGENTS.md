@@ -2,7 +2,7 @@
 
 ## Version
 
-Current: `0.9.11+13` — **0.9.11 (Beta)** (see `pubspec.yaml`). Release APK at project root as `VIDA.apk`.
+Current: `0.9.2+14` — **0.9.2 (Beta)** (see `pubspec.yaml`). Release APK at project root as `VIDA.apk`.
 
 ## Commands
 
@@ -28,7 +28,7 @@ flutter build apk --release  # build release APK → build/app/outputs/flutter-a
 
 - **Entrypoint**: `lib/main.dart` — `VidaApp`, light-only M3 theme, no `debugShowCheckedModeBanner`.
 - **Splash flow**: `SplashScreen` (`lib/screens/splash_screen.dart`) asks user's name via `TextField` (word-capitalized) → saves to `SharedPreferences` → calls `VidaApp.of(context).setUserName(name)`. Name accessed via `VidaApp.of(context).userName`.
-- **Home screen**: `HomeScreen` (`lib/screens/home_screen.dart`) shows greeting, smart card stack (VIDA / daily verse from `favVerses` / prayer), streak widget, 6 `ToolCard` tools (the 6th is "Evangelízate"), and a "Mini Arcade" row.
+- **Home screen**: `HomeScreen` (`lib/screens/home_screen.dart`) shows greeting, smart card stack (VIDA / versículo del día from `assets/data/daily_verses.json` / prayer), streak widget, tool cards, and a "Mini Arcade" row.
 - **Placeholder tabs**: Tabs 2–4 (Biblia / VIDA / Perfil) are `_PlaceholderScreen` (private class in `main.dart`) — "En construcción" stubs.
 - **Widgets**: `lib/widgets/` — `vida_verse_card.dart`, `tool_card.dart`, `fade_in.dart`, `contra_pecado_card.dart`, `favorito_card.dart`.
 - **Data layer**: `lib/data/` — `phrases.dart` (7 daily phrases), `fav.dart` (50 `FavVerse` objects), `bible_study.dart` (CRUD via SharedPreferences JSON), `consejo.dart` + `consejos_data.dart` (situation advice), `gallery_images.dart` (20 image paths), `streak.dart` (`StreakService`), `evangelizate_data.dart` (6 categories parsed from `guide.md`).

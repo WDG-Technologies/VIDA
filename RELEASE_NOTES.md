@@ -1,30 +1,26 @@
-# VIDA 0.9.11 (Beta) — Parche
+# VIDA 0.9.2 (Beta) — Notas de la versión
 
-**Build:** `0.9.11+13`  
+**Build:** `0.9.2+14`  
 **APK:** [`VIDA.apk`](./VIDA.apk)
-
-Parche sobre **0.9.1**. Los cambios grandes siguen para **0.9.2+**.
 
 ---
 
-## En este parche
+## En esta versión
 
-- Comunidad: UI más clara, `@` alineado con la fecha
-- Eliminar publicaciones propias (menú ⋯)
-- Fecha en respuestas / comentarios
-- Menú de cuenta en Comunidad (avisos, info, cerrar sesión)
-- Avisos push de likes y respuestas (FCM + inbox; desplegar `functions/`)
-- Mapa: solo «© OpenStreetMap» (sin `flutter_map`)
-- Tiles OSM (sin watermark de Carto)
+- Botón **Reportar un bug** en Perfil (GitHub Issues)
+- Comunidad ya no aparece en Perfil (sigue en Inicio)
+- Cambiar el nombre en Perfil actualiza Comunidad (Firebase Auth + posts + comentarios)
+- Revisión seed iglesias MX: quitar Testigos, nombres genéricos y ciudades capitalizadas
+- Avisos de Comunidad **gratis**: bandeja Firestore + notificaciones locales (sin Cloud Functions / Blaze)
+- Badge de no leídos en Inicio → Comunidad; se marcan leídos al abrir Comunidad
+- Deep link `vida://post/{id}` abre el post en Comunidad
+- Versículo del día: lista completa (~149 citas) en `daily_verses.json`
+- Donaciones Stripe cableadas pero **deshabilitadas** hasta 1.0
+- Incluye el parche **0.9.11** (UI Comunidad, mapa OSM)
 
-## Incluye 0.9.1
+## Para la siguiente beta / 1.0
 
-Crashlytics/Analytics, reportar/ocultar, PRIVACY.md, tips, deep links, búsqueda Biblia, Formita, icono de notificaciones, listing draft.
-
-## Sigue para 0.9.2+
-
-- JSON completo de versículos del día  
-- Stripe  
-- Play / TestFlight + keystore  
-- `firebase deploy --only functions` si aún no está en Firebase  
-- Revisar iglesias sembradas  
+- Donaciones Stripe con link **live**
+- Play / TestFlight + keystore de upload
+- **Versión web**: despliegue + recorte de funciones
+- (Opcional) Push remoto con FCM + Cloud Functions (plan Blaze)

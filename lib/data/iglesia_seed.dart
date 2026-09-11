@@ -7,8 +7,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// Siembra iglesias protestantes/evangélicas de México (OpenStreetMap)
 /// en la colección Firestore `iglesias`, una sola vez por dispositivo/flag.
 class IglesiaSeedService {
-  static const prefsKey = 'iglesias_mexico_seed_v1';
+  static const prefsKey = 'iglesias_mexico_seed_v2';
   static const assetPath = 'assets/data/iglesias_mexico.json';
+
+  /// OSM ids a retirar (p. ej. fuera del alcance protestante/evangélico).
+  static const removeOsmIds = <String>[
+    'node/6872255686', // Testigos de Jehová
+    'way/835857478', // Testigos de Jehová
+  ];
 
   /// Idempotente: doc id = osm_id; merge no duplica.
   static Future<int> ensureSeeded({bool force = false}) async {
@@ -68,6 +74,16 @@ class IglesiaSeedService {
       for (final item in chunk) {
         batch.set(col.doc(item.id), item.data, SetOptions(merge: true));
         written++;
+      }
+      await batch.commit();
+    }
+
+    // Retira entradas que ya no deben estar en el mapa.
+    if (removeOsmIds.isNotEmpty) {
+      final batch = FirebaseFirestore.instance.batch();
+      for (final osmId in removeOsmIds) {
+        final id = osmId.replaceAll('/', '_');
+        batch.delete(col.doc(id));
       }
       await batch.commit();
     }

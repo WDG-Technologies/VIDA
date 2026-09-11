@@ -1,4 +1,5 @@
-﻿import 'package:firebase_auth/firebase_auth.dart';
+﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,13 +9,13 @@ import 'package:url_launcher/url_launcher.dart';
 import '../data/streak.dart';
 import '../data/vida_algorithm.dart';
 import '../main.dart';
+import '../services/donate_config.dart';
 import '../services/notification_service.dart';
 import '../services/update_service.dart';
 import '../theme/app_theme.dart';
-import 'appearance_screen.dart';
-import 'community_screen.dart';
-import 'privacy_screen.dart';
 import '../widgets/user_avatar.dart';
+import 'appearance_screen.dart';
+import 'privacy_screen.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -62,6 +63,18 @@ class _PerfilScreenState extends State<PerfilScreen> {
     launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 
+  Future<void> _openDonateInApp() async {
+    final uri = Uri.parse(DonateConfig.paymentLinkUrl);
+    try {
+      final ok = await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+      if (!ok) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
+    } catch (_) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   void _soon(String msg) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -106,7 +119,66 @@ class _PerfilScreenState extends State<PerfilScreen> {
     await prefs.setString('user_name', name);
     if (!mounted) return;
     VidaApp.of(context).setUserName(name);
+    await _syncNameToCommunity(name);
+    if (!mounted) return;
     _soon('Nombre actualizado');
+  }
+
+  /// Auth displayName + posts propios en Comunidad (Firebase).
+  Future<void> _syncNameToCommunity(String name) async {
+    try {
+      if (Firebase.apps.isEmpty) return;
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.isAnonymous) return;
+
+      await user.updateDisplayName(name);
+      await user.reload();
+
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'displayName': name,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+
+      final posts = await FirebaseFirestore.instance
+          .collection('community_posts')
+          .where('userId', isEqualTo: user.uid)
+          .limit(100)
+          .get();
+      var batch = FirebaseFirestore.instance.batch();
+      var n = 0;
+      Future<void> flush() async {
+        if (n == 0) return;
+        await batch.commit();
+        batch = FirebaseFirestore.instance.batch();
+        n = 0;
+      }
+
+      for (final doc in posts.docs) {
+        batch.update(doc.reference, {'authorName': name});
+        n++;
+        if (n >= 400) await flush();
+      }
+
+      // Comentarios propios en cualquier post (índice collection group si hace falta).
+      try {
+        final comments = await FirebaseFirestore.instance
+            .collectionGroup('comments')
+            .where('userId', isEqualTo: user.uid)
+            .limit(100)
+            .get();
+        for (final doc in comments.docs) {
+          batch.update(doc.reference, {'authorName': name});
+          n++;
+          if (n >= 400) await flush();
+        }
+      } catch (_) {
+        // Sin índice / reglas: posts ya actualizados.
+      }
+
+      await flush();
+    } catch (_) {
+      // Offline / reglas: el nombre local igual quedó guardado.
+    }
   }
 
   Future<void> _toggleNotifs(bool value) async {
@@ -219,38 +291,72 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   void _showDonate() {
+    if (!DonateConfig.enabled) {
+      showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Text('Apoyar VIDA'),
+          content: const Text(
+            'Gracias por querer apoyar el proyecto.\n\n'
+            'Aún no hay un método de donación activo. Cuando lo habilitemos, '
+            'aparecerá aquí. Mientras tanto, compartir la app ya ayuda mucho.',
+            style: TextStyle(height: 1.45),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Entendido'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Apoyar VIDA'),
-        content: const Text(
-          'Gracias por querer apoyar el proyecto.\n\n'
-          'Aún no hay un método de donación activo. Cuando lo habilitemos, '
-          'aparecerá aquí. Mientras tanto, compartir la app ya ayuda mucho.',
-          style: TextStyle(height: 1.45),
+        content: Text(
+          DonateConfig.isTestLink
+              ? 'Gracias por querer apoyar el proyecto.\n\n'
+                  'Te llevamos a Stripe (modo prueba). '
+                  'Usa la tarjeta 4242 4242 4242 4242 para simular un pago.'
+              : 'Gracias por querer apoyar el proyecto.\n\n'
+                  'Te llevamos a una página segura de Stripe para completar '
+                  'tu donación.',
+          style: const TextStyle(height: 1.45),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Entendido'),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              _openDonateInApp();
+            },
+            child: const Text('Continuar'),
           ),
         ],
       ),
     );
   }
 
-  String get _communityStatus {
-    try {
-      if (Firebase.apps.isEmpty) return 'Sin cuenta (explorar)';
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null || user.isAnonymous) return 'Sin cuenta (explorar)';
-      final name = user.displayName?.trim();
-      if (name != null && name.isNotEmpty) return name;
-      return user.email ?? 'Cuenta conectada';
-    } catch (_) {
-      return 'Sin cuenta (explorar)';
-    }
+  void _reportBug() {
+    _openUrl(
+      'https://github.com/WDG-Technologies/VIDA/issues/new'
+      '?title=${Uri.encodeComponent('[Bug] ')}'
+      '&body=${Uri.encodeComponent(
+        '**Versión:** ${UpdateService.currentFull}\n'
+        '**Qué pasó:**\n\n'
+        '**Pasos para reproducir:**\n1.\n2.\n',
+      )}',
+    );
   }
 
   @override
@@ -466,22 +572,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
               ],
             ),
 
-            _section('Cuenta'),
-            _SettingsCard(
-              children: [
-                _SettingsTile(
-                  icon: Icons.groups_rounded,
-                  title: 'Comunidad',
-                  subtitle: _communityStatus,
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const CommunityScreen()),
-                  ),
-                ),
-              ],
-            ),
-
             _section('Aplicación'),
             _SettingsCard(
               children: [
@@ -502,6 +592,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
                       ? 'Nueva versión: ${_update!.remoteVersion}'
                       : 'v${UpdateService.currentVersion} · GitHub Releases',
                   onTap: _checkingUpdate ? null : _checkUpdates,
+                ),
+                const Divider(height: 1, indent: 56),
+                _SettingsTile(
+                  icon: Icons.bug_report_outlined,
+                  title: 'Reportar un bug',
+                  subtitle: 'Abrir un issue en GitHub',
+                  onTap: _reportBug,
                 ),
                 const Divider(height: 1, indent: 56),
                 _SettingsTile(

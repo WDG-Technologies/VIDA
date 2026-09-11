@@ -7,6 +7,7 @@ class ToolCard extends StatefulWidget {
   final String subtitle;
   final VoidCallback? onTap;
   final bool isActive;
+  final int badgeCount;
 
   const ToolCard({
     super.key,
@@ -15,6 +16,7 @@ class ToolCard extends StatefulWidget {
     required this.subtitle,
     this.onTap,
     this.isActive = false,
+    this.badgeCount = 0,
   });
 
   @override
@@ -60,7 +62,31 @@ class _ToolCardState extends State<ToolCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(widget.icon, size: 28, color: cs.primary),
+                Row(
+                  children: [
+                    Icon(widget.icon, size: 28, color: cs.primary),
+                    if (widget.badgeCount > 0) ...[
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 7, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.redAccent,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          widget.badgeCount > 9 ? '9+' : '${widget.badgeCount}',
+                          style: const TextStyle(
+                            fontFamily: 'DM Sans',
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
                 const SizedBox(height: 10),
                 Text(
                   widget.title,

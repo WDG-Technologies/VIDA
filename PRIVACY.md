@@ -37,7 +37,7 @@ Si activas **Formita** en Apariencia, se pide un avatar a [blobatar.dev](https:/
 
 ## Notificaciones de Comunidad
 
-Si activas avisos de Comunidad, guardamos un token FCM en tu perfil (`users/{uid}/fcmTokens`) para enviarte notificaciones de likes y respuestas. Puedes desactivarlas en Comunidad → cuenta. No usamos eso para publicidad.
+Si activas avisos de Comunidad, los likes y respuestas se guardan en tu bandeja (`users/{uid}/inbox`). La app muestra una notificación local al abrirla o si ya está en uso. Puedes desactivarlos en Comunidad → cuenta. No usamos eso para publicidad ni dependemos de Cloud Functions.
 
 ## Controles
 

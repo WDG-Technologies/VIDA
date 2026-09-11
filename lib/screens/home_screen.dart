@@ -25,6 +25,7 @@ import 'community_screen.dart';
 import 'guardados_screen.dart';
 import 'oracion_guiada_screen.dart';
 import '../data/oracion_guiada.dart';
+import '../services/community_push.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -473,14 +474,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   FadeIn(
                     index: 12,
-                    child: ToolCard(
-                      icon: Icons.forum_rounded,
-                      title: 'Comunidad',
-                      subtitle: 'Conecta con otros',
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const CommunityScreen()),
-                      ),
+                    child: ValueListenableBuilder<int>(
+                      valueListenable: CommunityPushService.unreadCount,
+                      builder: (context, unread, _) {
+                        return ToolCard(
+                          icon: Icons.forum_rounded,
+                          title: 'Comunidad',
+                          subtitle: unread > 0
+                              ? '$unread aviso${unread == 1 ? '' : 's'} nuevo${unread == 1 ? '' : 's'}'
+                              : 'Conecta con otros',
+                          badgeCount: unread,
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const CommunityScreen()),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],

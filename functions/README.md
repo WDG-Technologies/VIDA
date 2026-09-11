@@ -1,6 +1,10 @@
-# Cloud Functions — push Comunidad
+# Cloud Functions — push remoto (opcional)
 
-## Una sola vez
+La app **ya no depende** de estas Functions. Los avisos de Comunidad usan bandeja Firestore + notificaciones locales (plan Spark / gratis).
+
+Este código queda por si algún día se activa plan **Blaze** y se quiere push remoto con FCM.
+
+## Deploy (solo con Blaze)
 
 ```bash
 firebase login
@@ -12,11 +16,10 @@ firebase deploy --only functions
 
 Proyecto: `vida-86307` (ver `.firebaserc`).
 
-## Qué hace
+Sin Blaze, el deploy falla al habilitar Artifact Registry / Cloud Build.
+
+## Qué haría
 
 - `dispatchCommunityPush`: al crear docs en `fcm_dispatch`, envía FCM al `toUid`.
-- `onCommunityComment` / `onCommunityLike`: respaldo si el cliente no encoló.
 
-## Firestore (reglas sugeridas)
-
-Permitir que un usuario autenticado cree inbox para otro y `fcm_dispatch` (o restringe a Cloud Functions solo y quita la escritura cliente de `fcm_dispatch` si prefieres máxima seguridad).
+Hoy el cliente **no escribe** en `fcm_dispatch`; solo en `users/{uid}/inbox`.

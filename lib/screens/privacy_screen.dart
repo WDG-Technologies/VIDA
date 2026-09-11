@@ -66,9 +66,11 @@ class PrivacyScreen extends StatelessWidget {
           ),
           _heading('Avisos de Comunidad'),
           _p(
-            'Si activas avisos en Comunidad → cuenta, usamos Firebase Cloud Messaging '
-            'para avisarte de likes y respuestas. El token se guarda en tu perfil; '
-            'puedes desactivarlo cuando quieras. No es publicidad.',
+            'Si activas avisos en Comunidad → cuenta, se guarda un aviso en tu '
+            'bandeja (Firestore) cuando alguien da like o responde. La app te lo '
+            'muestra con una notificación local al abrirla o si ya está en uso. '
+            'Puedes desactivarlos cuando quieras. No es publicidad ni requiere '
+            'servidores de pago.',
           ),
           _heading('Términos de uso'),
           _p(

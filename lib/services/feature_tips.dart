@@ -49,6 +49,7 @@ class FeatureTips {
         body:
             'Aquí puedes compartir con otros creyentes.\n\n'
             'Necesitas una cuenta (correo) para publicar. '
+            'En Cuenta puedes activar avisos de likes y respuestas. '
             'Sé respetuoso; puedes reportar contenido inapropiado.',
       );
 

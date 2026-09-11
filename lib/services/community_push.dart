@@ -1,34 +1,31 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'notification_service.dart';
 
-/// Push / inbox de Comunidad (likes y respuestas).
+/// Avisos de Comunidad **sin Cloud Functions** (gratis).
 ///
-/// - Tokens en `users/{uid}/fcmTokens/{id}`
-/// - Preferencia local + `users/{uid}.communityPushEnabled`
-/// - Inbox `users/{toUid}/inbox` (aviso con la app abierta)
-/// - Cola `fcm_dispatch` + Cloud Functions para FCM con la app cerrada
+/// - Escribe en `users/{toUid}/inbox`
+/// - Con la app abierta: notificación local al llegar un aviso
+/// - Al abrir la app: resumen de no leídos
+/// - Contador [unreadCount] para badges en la UI
 class CommunityPushService {
   CommunityPushService._();
 
   static const _kEnabled = 'community_push_enabled';
+  static const _kLastSummaryCount = 'community_unread_summary_n';
   static StreamSubscription<QuerySnapshot>? _inboxSub;
-  // ignore: unused_field
-  static StreamSubscription<String>? _tokenSub;
-  // ignore: unused_field
-  static StreamSubscription<RemoteMessage>? _fgSub;
-  // ignore: unused_field
   static StreamSubscription<User?>? _authSub;
   static bool _started = false;
   static final Set<String> _seenInbox = {};
+
+  /// No leídos (para badge).
+  static final ValueNotifier<int> unreadCount = ValueNotifier<int>(0);
 
   static bool get _firebaseReady {
     try {
@@ -43,52 +40,13 @@ class CommunityPushService {
     _started = true;
 
     try {
-      await FirebaseMessaging.instance.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-      await FirebaseMessaging.instance
-          .setForegroundNotificationPresentationOptions(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-
-      FirebaseMessaging.onBackgroundMessage(
-          firebaseMessagingBackgroundHandler);
-
-      _fgSub = FirebaseMessaging.onMessage.listen((msg) {
-        final title = msg.notification?.title ??
-            (msg.data['title'] as String?) ??
-            'Comunidad VIDA';
-        final body = msg.notification?.body ??
-            (msg.data['body'] as String?) ??
-            '';
-        final postId = msg.data['postId'];
-        NotificationService.showCommunity(
-          title: title,
-          body: body,
-          payload: postId != null && postId.isNotEmpty
-              ? 'vida://post/$postId'
-              : 'vida://comunidad',
-        );
-      });
-
-      FirebaseMessaging.onMessageOpenedApp.listen(_openFromMessage);
-      final initial = await FirebaseMessaging.instance.getInitialMessage();
-      if (initial != null) {
-        Future<void>.delayed(const Duration(milliseconds: 800), () {
-          _openFromMessage(initial);
-        });
-      }
-
-      await syncToken();
-      _tokenSub =
-          FirebaseMessaging.instance.onTokenRefresh.listen((_) => syncToken());
+      await _refreshUnread();
+      await _notifyUnreadSummary();
       await _listenInbox();
+      await _authSub?.cancel();
       _authSub = FirebaseAuth.instance.userChanges().listen((_) async {
-        await syncToken();
+        _seenInbox.clear();
+        await _refreshUnread();
         await _listenInbox();
       });
     } catch (_) {
@@ -105,81 +63,83 @@ class CommunityPushService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_kEnabled, enabled);
     final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null || uid.isEmpty || !_firebaseReady) return;
+    if (uid != null && uid.isNotEmpty && _firebaseReady) {
+      try {
+        await FirebaseFirestore.instance.collection('users').doc(uid).set({
+          'communityAlertsEnabled': enabled,
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      } catch (_) {}
+    }
+    if (enabled) {
+      await NotificationService.requestPermission();
+      await _refreshUnread();
+      await _listenInbox();
+    } else {
+      await _inboxSub?.cancel();
+      _inboxSub = null;
+      unreadCount.value = 0;
+      await prefs.setInt(_kLastSummaryCount, 0);
+    }
+  }
+
+  static CollectionReference<Map<String, dynamic>>? _inboxRef() {
+    if (!_firebaseReady) return null;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || user.isAnonymous) return null;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('inbox');
+  }
+
+  static Future<void> _refreshUnread() async {
+    final ref = _inboxRef();
+    if (ref == null || !await isEnabled()) {
+      unreadCount.value = 0;
+      return;
+    }
     try {
-      await FirebaseFirestore.instance.collection('users').doc(uid).set({
-        'communityPushEnabled': enabled,
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-      if (enabled) {
-        await syncToken();
-        await _listenInbox();
-      } else {
-        await _clearToken();
-        await _inboxSub?.cancel();
-        _inboxSub = null;
+      final snap = await ref.where('read', isEqualTo: false).limit(50).get();
+      unreadCount.value = snap.docs.length;
+    } catch (_) {
+      // Sin índice o offline: no tumbar la app.
+      try {
+        final snap = await ref.orderBy('createdAt', descending: true).limit(30).get();
+        unreadCount.value =
+            snap.docs.where((d) => d.data()['read'] != true).length;
+      } catch (_) {
+        unreadCount.value = 0;
       }
-    } catch (_) {}
+    }
   }
 
-  static Future<void> syncToken() async {
-    if (!_firebaseReady || !await isEnabled()) return;
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null || user.isAnonymous) return;
-    try {
-      final token = await FirebaseMessaging.instance.getToken();
-      if (token == null || token.isEmpty) return;
-      final platform = Platform.isIOS
-          ? 'ios'
-          : Platform.isAndroid
-              ? 'android'
-              : 'other';
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .collection('fcmTokens')
-          .doc(token.hashCode.toRadixString(16))
-          .set({
-        'token': token,
-        'platform': platform,
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'communityPushEnabled': true,
-        'updatedAt': FieldValue.serverTimestamp(),
-      }, SetOptions(merge: true));
-    } catch (_) {}
-  }
-
-  static Future<void> _clearToken() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null || !_firebaseReady) return;
-    try {
-      final token = await FirebaseMessaging.instance.getToken();
-      if (token == null) return;
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .collection('fcmTokens')
-          .doc(token.hashCode.toRadixString(16))
-          .delete();
-    } catch (_) {}
+  /// Al arrancar: una notificación resumen si hay pendientes nuevos.
+  static Future<void> _notifyUnreadSummary() async {
+    if (!await isEnabled()) return;
+    final n = unreadCount.value;
+    if (n <= 0) return;
+    final prefs = await SharedPreferences.getInstance();
+    final last = prefs.getInt(_kLastSummaryCount) ?? 0;
+    if (n <= last) return;
+    await prefs.setInt(_kLastSummaryCount, n);
+    await NotificationService.showCommunity(
+      title: 'Comunidad VIDA',
+      body: n == 1
+          ? 'Tienes 1 aviso nuevo'
+          : 'Tienes $n avisos nuevos',
+      payload: 'vida://comunidad',
+    );
   }
 
   static Future<void> _listenInbox() async {
     await _inboxSub?.cancel();
     _inboxSub = null;
     if (!_firebaseReady || !await isEnabled()) return;
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null || user.isAnonymous) return;
+    final ref = _inboxRef();
+    if (ref == null) return;
 
-    final query = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .collection('inbox')
-        .orderBy('createdAt', descending: true)
-        .limit(20);
-
+    final query = ref.orderBy('createdAt', descending: true).limit(30);
     var primed = false;
     _inboxSub = query.snapshots().listen((snap) {
       if (!primed) {
@@ -187,6 +147,7 @@ class CommunityPushService {
           _seenInbox.add(d.id);
         }
         primed = true;
+        _refreshUnread();
         return;
       }
       for (final change in snap.docChanges) {
@@ -195,7 +156,8 @@ class CommunityPushService {
         if (_seenInbox.contains(id)) continue;
         _seenInbox.add(id);
         final data = change.doc.data();
-        if (data == null) return;
+        if (data == null) continue;
+        if (data['read'] == true) continue;
         final title = (data['title'] as String?)?.trim() ?? 'Comunidad VIDA';
         final body = (data['body'] as String?)?.trim() ?? '';
         final postId = data['postId'] as String?;
@@ -207,10 +169,52 @@ class CommunityPushService {
               : 'vida://comunidad',
         );
       }
-    });
+      _refreshUnread();
+    }, onError: (_) {});
   }
 
-  /// Aviso para el autor del post (like o respuesta).
+  /// Marca todo el inbox como leído (al abrir Comunidad).
+  static Future<void> markAllRead() async {
+    final ref = _inboxRef();
+    if (ref == null) {
+      unreadCount.value = 0;
+      return;
+    }
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(_kLastSummaryCount, 0);
+
+      for (var round = 0; round < 5; round++) {
+        QuerySnapshot<Map<String, dynamic>> snap;
+        try {
+          snap = await ref.where('read', isEqualTo: false).limit(40).get();
+        } catch (_) {
+          final all =
+              await ref.orderBy('createdAt', descending: true).limit(40).get();
+          final unread =
+              all.docs.where((d) => d.data()['read'] != true).toList();
+          if (unread.isEmpty) break;
+          final batch = FirebaseFirestore.instance.batch();
+          for (final d in unread) {
+            batch.update(d.reference, {'read': true});
+          }
+          await batch.commit();
+          if (unread.length < 40) break;
+          continue;
+        }
+        if (snap.docs.isEmpty) break;
+        final batch = FirebaseFirestore.instance.batch();
+        for (final d in snap.docs) {
+          batch.update(d.reference, {'read': true});
+        }
+        await batch.commit();
+        if (snap.docs.length < 40) break;
+      }
+      unreadCount.value = 0;
+    } catch (_) {}
+  }
+
+  /// Aviso para el autor del post (like o respuesta) → solo inbox.
   static Future<void> notifyAuthor({
     required String toUid,
     required String type, // like | comment
@@ -221,6 +225,14 @@ class CommunityPushService {
     final me = FirebaseAuth.instance.currentUser;
     if (me == null || me.isAnonymous) return;
     if (toUid.isEmpty || toUid == me.uid) return;
+
+    // Respeta si el destinatario desactivó avisos (best-effort).
+    try {
+      final dest = await FirebaseFirestore.instance.collection('users').doc(toUid).get();
+      if (dest.exists && dest.data()?['communityAlertsEnabled'] == false) {
+        return;
+      }
+    } catch (_) {}
 
     final name = fromName.trim().isEmpty ? 'Alguien' : fromName.trim();
     const title = 'Comunidad VIDA';
@@ -244,33 +256,5 @@ class CommunityPushService {
         'read': false,
       });
     } catch (_) {}
-
-    try {
-      await FirebaseFirestore.instance.collection('fcm_dispatch').add({
-        'toUid': toUid,
-        'title': title,
-        'body': body,
-        'data': {
-          'type': type,
-          'postId': postId,
-          'host': 'comunidad',
-        },
-        'createdAt': FieldValue.serverTimestamp(),
-        'source': 'client',
-      });
-    } catch (_) {}
   }
-
-  static void _openFromMessage(RemoteMessage msg) {
-    final postId = msg.data['postId'];
-    final uri = (postId != null && postId.isNotEmpty)
-        ? Uri(scheme: 'vida', host: 'post', pathSegments: [postId])
-        : Uri(scheme: 'vida', host: 'comunidad');
-    NotificationService.openDeepLink?.call(uri);
-  }
-}
-
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // El sistema muestra la notificación; no hace falta UI aquí.
 }

@@ -122,9 +122,19 @@ class _VidaAppState extends State<VidaApp> {
 
     switch (uri.host) {
       case 'post':
+        final postId = uri.pathSegments.isNotEmpty
+            ? uri.pathSegments.first
+            : (uri.path.isNotEmpty
+                ? uri.path.replaceFirst('/', '')
+                : null);
+        go(CommunityScreen(
+          focusPostId: (postId != null && postId.isNotEmpty) ? postId : null,
+        ));
+        Telemetry.log('deep_link', {'host': 'post'});
+        break;
       case 'comunidad':
         go(const CommunityScreen());
-        Telemetry.log('deep_link', {'host': uri.host});
+        Telemetry.log('deep_link', {'host': 'comunidad'});
         break;
       case 'iglesia':
         go(const MapaIglesiasScreen());

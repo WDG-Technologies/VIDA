@@ -58,7 +58,8 @@ class _HomeSmartStackState extends State<HomeSmartStack>
   /// Solo avance: 0 = reposo, 1 = cambio completado.
   double _progress = 0;
   bool _busy = false;
-  FavVerse _daily = DailyVerseService.fallback;
+  FavVerse? _daily;
+  bool _dailyReady = false;
 
   @override
   void initState() {
@@ -70,7 +71,10 @@ class _HomeSmartStackState extends State<HomeSmartStack>
   Future<void> _loadDaily() async {
     final v = await DailyVerseService.forToday();
     if (!mounted) return;
-    setState(() => _daily = v);
+    setState(() {
+      _daily = v;
+      _dailyReady = true;
+    });
   }
 
   @override
@@ -83,18 +87,19 @@ class _HomeSmartStackState extends State<HomeSmartStack>
 
   Future<void> _shareDaily() async {
     final v = _daily;
+    if (v == null) return;
     await Share.share(
       '${v.referencia}\n'
       '"${v.versiculo}"\n'
-      '— Versículo del día · VIDA · RVR1909',
+      '— Versículo del día · VIDA',
       subject: 'Versículo del día',
     );
   }
 
   void _createDailyImage() {
     final asset = HomeSmartStack.dailyGalleryAsset();
-    if (asset.isEmpty) return;
     final v = _daily;
+    if (asset.isEmpty || v == null) return;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -162,6 +167,12 @@ class _HomeSmartStackState extends State<HomeSmartStack>
   List<Widget> _cards() {
     final daily = _daily;
     final bg = HomeSmartStack.dailyGalleryAsset();
+    final verseText = !_dailyReady
+        ? 'Cargando…'
+        : (daily?.versiculo ?? DailyVerseService.fallback.versiculo);
+    final reference = !_dailyReady
+        ? ''
+        : (daily?.referencia ?? DailyVerseService.fallback.referencia);
     return [
       VidaVerseCard(
         margin: EdgeInsets.zero,
@@ -173,11 +184,11 @@ class _HomeSmartStackState extends State<HomeSmartStack>
         onSave: widget.onSaveVida,
       ),
       _DailyVerseCard(
-        verseText: daily.versiculo,
-        reference: daily.referencia,
+        verseText: verseText,
+        reference: reference,
         imageAsset: bg,
-        onShare: _shareDaily,
-        onCreateImage: _createDailyImage,
+        onShare: _dailyReady ? _shareDaily : null,
+        onCreateImage: _dailyReady ? _createDailyImage : null,
       ),
       _PrayerCard(onTap: () => openOracionGuiada(context)),
     ];

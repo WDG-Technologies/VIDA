@@ -4,10 +4,7 @@ import 'package:flutter/services.dart';
 
 import 'fav.dart';
 
-/// Versículo del día desde `assets/data/daily_verses.json`.
-///
-/// Mañana se reemplaza el JSON con la lista completa; hasta entonces
-/// solo hay un placeholder (Hebreos 11:1).
+/// Versículo del día desde `assets/data/daily_verses.json` (~149 citas).
 class DailyVerseService {
   DailyVerseService._();
 
@@ -31,7 +28,7 @@ class DailyVerseService {
         if (ref.isEmpty || text.isEmpty) continue;
         list.add(FavVerse(referencia: ref, versiculo: text));
       }
-      _cache = list.isEmpty ? const [fallback] : list;
+      _cache = list.isEmpty ? const [fallback] : List.unmodifiable(list);
     } catch (_) {
       _cache = const [fallback];
     }
@@ -58,6 +55,7 @@ class DailyVerseService {
     return all[dayIndex(now) % all.length];
   }
 
+  /// Solo si falla la carga del asset.
   static const fallback = FavVerse(
     referencia: 'Hebreos 11:1',
     versiculo:

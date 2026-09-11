@@ -8,12 +8,12 @@
 
 Gratis · Sin publicidad · En español
 
-**v0.9.11 (Beta)** · build `+13` · WDG Technologies
+**v0.9.2 (Beta)** · build `+14` · WDG Technologies
 
 [![Platform](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)](#-disponibilidad)
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)](#%EF%B8%8F-tecnolog%C3%ADas)
 [![License](https://img.shields.io/badge/MIT-green)](#-licencia)
-[![Version](https://img.shields.io/badge/versión-0.9.11%2B13-0F766E)](#-disponibilidad)
+[![Version](https://img.shields.io/badge/versión-0.9.2%2B14-0F766E)](#-disponibilidad)
 
 </div>
 
@@ -93,7 +93,7 @@ Apariencia (claro / oscuro / sistema, estilos Esmeralda · Océano · Ámbar · 
 ## Disponibilidad
 
 - **Plataforma:** Android (APK)
-- **Versión:** `0.9.11+13` — **0.9.11 (Beta)**
+- **Versión:** `0.9.2+14` — **0.9.2 (Beta)**
 - **Descarga:** [`VIDA.apk`](./VIDA.apk) en la raíz del repositorio
 - **Release:** [VIDA.apk en GitHub Releases](https://github.com/WDG-Technologies/VIDA/releases)
 
@@ -116,7 +116,7 @@ Apariencia (claro / oscuro / sistema, estilos Esmeralda · Océano · Ámbar · 
 
 ## Estado Beta
 
-VIDA sigue en evolución. Algunas piezas (por ejemplo el versículo del día con lista completa, o donaciones) pueden ampliarse en próximas versiones. Si encuentras un fallo, reportarlo ayuda mucho.
+VIDA sigue en evolución. Algunas piezas (por ejemplo donaciones Stripe en 1.0) pueden ampliarse en próximas versiones. Si encuentras un fallo, reportarlo ayuda mucho.
 
 ---
 
@@ -132,6 +132,6 @@ Texto completo: [`LICENSE`](LICENSE).
 
 Hecho para fortalecer la fe, animar la lectura de la Biblia y construir comunidad en Cristo.
 
-© WDG Technologies — **VIDA** · v0.9.11 (Beta)
+© WDG Technologies — **VIDA** · v0.9.2 (Beta)
 
 </div>

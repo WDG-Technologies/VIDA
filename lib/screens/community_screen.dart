@@ -10,7 +10,9 @@ import '../theme/app_theme.dart';
 import '../widgets/user_avatar.dart';
 
 class CommunityScreen extends StatefulWidget {
-  const CommunityScreen({super.key});
+  final String? focusPostId;
+
+  const CommunityScreen({super.key, this.focusPostId});
 
   @override
   State<CommunityScreen> createState() => _CommunityScreenState();
@@ -29,6 +31,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) FeatureTips.community(context);
+      CommunityPushService.markAllRead();
     });
   }
 
@@ -63,7 +66,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
       ),
       body: isAnonymous
           ? _AuthView(onAuthed: _refreshAuth)
-          : const _FeedView(),
+          : _FeedView(focusPostId: widget.focusPostId),
     );
   }
 
@@ -110,7 +113,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                           color: AppColors.emerald600),
                       title: const Text('Avisos de Comunidad'),
                       subtitle: const Text(
-                        'Likes y respuestas a tus publicaciones',
+                        'Likes y respuestas (con la app abierta o al volver)',
                       ),
                       value: pushOn,
                       onChanged: (v) async {
@@ -566,7 +569,9 @@ String _formatCommunityDate(Timestamp? ts) {
 // ─────────────── Feed View ───────────────
 
 class _FeedView extends StatefulWidget {
-  const _FeedView();
+  final String? focusPostId;
+
+  const _FeedView({this.focusPostId});
 
   @override
   State<_FeedView> createState() => _FeedViewState();
@@ -578,6 +583,7 @@ class _FeedViewState extends State<_FeedView> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _posting = false;
   Set<String> _hidden = {};
+  bool _focusChecked = false;
 
   @override
   void initState() {
@@ -686,6 +692,27 @@ class _FeedViewState extends State<_FeedView> {
                 final key = ReportService.keyFor('post', d.id);
                 return !_hidden.contains(key);
               }).toList();
+              final focusId = widget.focusPostId?.trim();
+              if (!_focusChecked &&
+                  focusId != null &&
+                  focusId.isNotEmpty &&
+                  posts.isNotEmpty) {
+                _focusChecked = true;
+                final found = posts.any((d) => d.id == focusId);
+                if (!found) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'No se encontró esa publicación (puede haberse borrado).',
+                        ),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  });
+                }
+              }
               if (posts.isEmpty) {
                 return Center(
                   child: Column(
@@ -707,6 +734,7 @@ class _FeedViewState extends State<_FeedView> {
                 itemBuilder: (context, i) => _PostCard(
                   key: ValueKey(posts[i].id),
                   postDoc: posts[i],
+                  expandComments: focusId != null && posts[i].id == focusId,
                   onHidden: () => _loadHidden(),
                 ),
               );
@@ -723,14 +751,21 @@ class _FeedViewState extends State<_FeedView> {
 class _PostCard extends StatefulWidget {
   final QueryDocumentSnapshot postDoc;
   final VoidCallback? onHidden;
-  const _PostCard({super.key, required this.postDoc, this.onHidden});
+  final bool expandComments;
+
+  const _PostCard({
+    super.key,
+    required this.postDoc,
+    this.onHidden,
+    this.expandComments = false,
+  });
 
   @override
   State<_PostCard> createState() => _PostCardState();
 }
 
 class _PostCardState extends State<_PostCard> {
-  bool _showComments = false;
+  late bool _showComments = widget.expandComments;
   bool _liking = false;
   bool _commenting = false;
   final _commentCtrl = TextEditingController();

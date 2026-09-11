@@ -1,6 +1,599 @@
 [
   {
+    "referencia": "1 Juan 4:16",
+    "versiculo": "Y nosotros hemos conocido y creído el amor que Dios tiene para con nosotros. Dios es amor; y el que permanece en amor, permanece en Dios, y Dios en él."
+  },
+  {
+    "referencia": "Santiago 2:26",
+    "versiculo": "Porque como el cuerpo sin espíritu está muerto, así también la fe sin obras está muerta."
+  },
+  {
+    "referencia": "Santiago 2:22",
+    "versiculo": "¿No ves que la fe actuó juntamente con sus obras, y que la fe se perfeccionó por las obras?"
+  },
+  {
+    "referencia": "Santiago 2:19",
+    "versiculo": "Tú crees que Dios es uno; bien haces. También los demonios creen, y tiemblan."
+  },
+  {
+    "referencia": "Santiago 4:15",
+    "versiculo": "En lugar de lo cual deberíais decir: Si el Señor quiere, viviremos y haremos esto o aquello."
+  },
+  {
+    "referencia": "Deuteronomio 8:5-6",
+    "versiculo": "Reconoce asimismo en tu corazón, que como castiga el hombre a su hijo, así Jehová tu Dios te castiga. Guardarás, pues, los mandamientos de Jehová tu Dios, andando en sus caminos, y temiéndole."
+  },
+  {
+    "referencia": "Deuteronomio 10:12-13",
+    "versiculo": "Ahora, pues, Israel, ¿qué pide Jehová tu Dios de ti, sino que temas a Jehová tu Dios, que andes en todos sus caminos, y que lo ames, y sirvas a Jehová tu Dios con todo tu corazón y con toda tu alma; que guardes los mandamientos de Jehová y sus estatutos, que yo te prescribo hoy, para que tengas prosperidad?"
+  },
+  {
+    "referencia": "Deuteronomio 11:12",
+    "versiculo": "tierra de la cual Jehová tu Dios cuida; siempre están sobre ella los ojos de Jehová tu Dios, desde el principio del año hasta el fin."
+  },
+  {
+    "referencia": "1 Corintios 3:6-7",
+    "versiculo": "Yo planté, Apolos regó; pero el crecimiento lo ha dado Dios. Así que ni el que planta es algo, ni el que riega, sino Dios, que da el crecimiento."
+  },
+  {
+    "referencia": "Eclesiastés 5:20",
+    "versiculo": "Porque no se acordará mucho de los días de su vida; pues Dios le llenará de alegría el corazón."
+  },
+  {
+    "referencia": "Gálatas 3:26",
+    "versiculo": "pues todos sois hijos de Dios por la fe en Cristo Jesús."
+  },
+  {
+    "referencia": "Eclesiastés 5:5",
+    "versiculo": "Mejor es que no prometas, y no que prometas y no cumplas."
+  },
+  {
+    "referencia": "Eclesiastés 5:3",
+    "versiculo": "Porque de la mucha ocupación viene el sueño, y de la multitud de las palabras la voz del necio."
+  },
+  {
+    "referencia": "Eclesiastés 4:9",
+    "versiculo": "Mejores son dos que uno; porque tienen mejor paga de su trabajo."
+  },
+  {
+    "referencia": "Gálatas 5:13",
+    "versiculo": "Porque vosotros, hermanos, a libertad fuisteis llamados; solamente que no uséis la libertad como ocasión para la carne, sino servíos por amor los unos a los otros."
+  },
+  {
+    "referencia": "Gálatas 6:1",
+    "versiculo": "Hermanos, si alguno fuere sorprendido en alguna falta, vosotros que sois espirituales, restauradle con espíritu de mansedumbre, considerándote a ti mismo, no sea que tú también seas tentado."
+  },
+  {
+    "referencia": "Mateo 9:29",
+    "versiculo": "Entonces les tocó los ojos, diciendo: Conforme a vuestra fe os sea hecho."
+  },
+  {
+    "referencia": "Mateo 10:19-20",
+    "versiculo": "Mas cuando os entreguen, no os preocupéis por cómo o qué hablaréis; porque en aquella hora os será dado lo que habéis de hablar. Porque no sois vosotros los que habláis, sino el Espíritu de vuestro Padre que habla en vosotros."
+  },
+  {
+    "referencia": "Mateo 10:22",
+    "versiculo": "Y seréis aborrecidos de todos por causa de mi nombre; mas el que persevere hasta el fin, este será salvo."
+  },
+  {
+    "referencia": "Mateo 10:32",
+    "versiculo": "A cualquiera, pues, que me confiese delante de los hombres, yo también le confesaré delante de mi Padre que está en los cielos."
+  },
+  {
+    "referencia": "Mateo 10:37",
+    "versiculo": "El que ama a padre o madre más que a mí, no es digno de mí; el que ama a hijo o hija más que a mí, no es digno de mí."
+  },
+  {
+    "referencia": "Mateo 10:39",
+    "versiculo": "El que halla su vida, la perderá; y el que pierde su vida por causa de mí, la hallará."
+  },
+  {
+    "referencia": "Filipenses 2:13",
+    "versiculo": "Porque Dios es el que en vosotros produce así el querer como el hacer, por su buena voluntad."
+  },
+  {
+    "referencia": "Éxodo 14:14",
+    "versiculo": "Jehová peleará por vosotros, y vosotros estaréis tranquilos."
+  },
+  {
+    "referencia": "Romanos 8:21",
+    "versiculo": "Porque también la creación misma será libertada de la esclavitud de corrupción, a la libertad gloriosa de los hijos de Dios."
+  },
+  {
+    "referencia": "Salmo 121:1-2",
+    "versiculo": "Alzaré mis ojos a los montes; ¿De dónde vendrá mi socorro? Mi socorro viene de Jehová, que hizo los cielos y la tierra."
+  },
+  {
+    "referencia": "Filipenses 1:29",
+    "versiculo": "Porque a vosotros os es concedido a causa de Cristo, no solo que creáis en él, sino también que padezcáis por él."
+  },
+  {
+    "referencia": "Mateo 18:7",
+    "versiculo": "¡Ay del mundo por los tropiezos!, porque es necesario que vengan tropiezos, pero ¡ay de aquel hombre por quien viene el tropiezo!"
+  },
+  {
+    "referencia": "Mateo 18:8-9",
+    "versiculo": "Por tanto, si tu mano o tu pie te es ocasión de caer, córtalo y échalo de ti; mejor te es entrar en la vida cojo o manco, que teniendo dos manos o dos pies ser echado en el fuego eterno. Y si tu ojo te es ocasión de caer, sácalo y échalo de ti; mejor te es entrar con un solo ojo en la vida, que teniendo dos ojos ser echado en el infierno de fuego."
+  },
+  {
+    "referencia": "Romanos 8:37",
+    "versiculo": "Antes, en todas estas cosas somos más que vencedores por medio de aquel que nos amó."
+  },
+  {
+    "referencia": "Salmo 94:17-18",
+    "versiculo": "Si tú no me hubieras ayudado, muy pronto habría perdido la vida; pero te llamé al sentir que me caía, y tú, con mucho amor, me sostuviste.",
+    "version": "TLA"
+  },
+  {
+    "referencia": "Mateo 6:33-34",
+    "versiculo": "Mas buscad primeramente el reino de Dios y su justicia, y todas estas cosas vendrán por añadidura. Así que, no os afanéis por el día de mañana, porque el día de mañana traerá su propio afán. Basta a cada día su propio mal."
+  },
+  {
+    "referencia": "Mateo 7:11",
+    "versiculo": "Pues si vosotros, siendo malos, sabéis dar buenas dádivas a vuestros hijos, ¿cuánto más vuestro Padre que está en los cielos dará buenas cosas a los que le pidan?"
+  },
+  {
+    "referencia": "Mateo 7:13-14",
+    "versiculo": "Entrad por la puerta estrecha; porque ancha es la puerta, y espacioso el camino que lleva a la perdición, y muchos son los que entran por ella; porque estrecha es la puerta, y angosto el camino que lleva a la vida, y pocos son los que la hallan."
+  },
+  {
+    "referencia": "Mateo 7:16",
+    "versiculo": "Por sus frutos los conoceréis. ¿Acaso se recogen uvas de los espinos, o higos de los abrojos?"
+  },
+  {
+    "referencia": "Mateo 7:18",
+    "versiculo": "No puede el buen árbol dar malos frutos, ni el árbol malo dar buenos frutos."
+  },
+  {
+    "referencia": "Josué 6:1",
+    "versiculo": "Ahora, Jericó estaba cerrado, bien cerrado, a causa de los hijos de Israel; nadie entraba ni salía."
+  },
+  {
+    "referencia": "2 Corintios 10:4-5",
+    "versiculo": "Porque las armas de nuestra milicia no son carnales, sino poderosas en Dios para la destrucción de fortalezas, derribando argumentos y toda altivez que se levanta contra el conocimiento de Dios."
+  },
+  {
+    "referencia": "Mateo 5:14-15",
+    "versiculo": "Vosotros sois la luz del mundo; una ciudad asentada sobre un monte no se puede esconder. Ni se enciende una luz y se pone debajo de un almud, sino sobre el candelero, y alumbra a todos los que están en casa."
+  },
+  {
+    "referencia": "Romanos 1:16",
+    "versiculo": "Porque no me avergüenzo del evangelio, porque es poder de Dios para salvación a todo aquel que cree."
+  },
+  {
+    "referencia": "Juan 16:8",
+    "versiculo": "Y cuando él venga, convencerá al mundo de pecado, de justicia y de juicio."
+  },
+  {
+    "referencia": "Ezequiel 36:26",
+    "versiculo": "Os daré corazón nuevo, y pondré espíritu nuevo dentro de vosotros; y quitaré de vuestra carne el corazón de piedra, y os daré un corazón de carne."
+  },
+  {
+    "referencia": "Romanos 8:10",
+    "versiculo": "Pero si Cristo está en vosotros, el cuerpo está muerto a causa del pecado, mas el espíritu vive a causa de la justicia."
+  },
+  {
+    "referencia": "Romanos 8:1",
+    "versiculo": "Ahora, pues, ninguna condenación hay para los que están en Cristo Jesús, los que no andan conforme a la carne, sino conforme al Espíritu."
+  },
+  {
+    "referencia": "Romanos 8:11",
+    "versiculo": "Y si el Espíritu de aquel que levantó de los muertos a Jesús mora en vosotros, el que levantó de los muertos a Cristo Jesús vivificará también vuestros cuerpos mortales por su Espíritu que mora en vosotros."
+  },
+  {
+    "referencia": "Romanos 8:14",
+    "versiculo": "Porque todos los que son guiados por el Espíritu de Dios, estos son hijos de Dios."
+  },
+  {
+    "referencia": "Romanos 8:18",
+    "versiculo": "Pues tengo por cierto que las aflicciones del tiempo presente no son comparables con la gloria venidera que en nosotros ha de manifestarse."
+  },
+  {
+    "referencia": "Proverbios 3:5",
+    "versiculo": "Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia."
+  },
+  {
+    "referencia": "Mateo 5:16",
+    "versiculo": "Así alumbre vuestra luz delante de los hombres, para que vean vuestras buenas obras, y glorifiquen a vuestro Padre que está en los cielos."
+  },
+  {
+    "referencia": "Romanos 12:2",
+    "versiculo": "No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento, para lo cual sea la buena voluntad de Dios, agradable y perfecta."
+  },
+  {
+    "referencia": "Romanos 12:9",
+    "versiculo": "El amor sea sin fingimiento. Aborreced lo malo, seguid lo bueno."
+  },
+  {
+    "referencia": "Romanos 12:10",
+    "versiculo": "Amaos los unos a los otros con amor fraternal; en cuanto a honra, prefiriéndoos los unos a los otros."
+  },
+  {
+    "referencia": "Romanos 12:12",
+    "versiculo": "Gozosos en la esperanza; sufridos en la tribulación; constantes en la oración."
+  },
+  {
+    "referencia": "Romanos 12:16",
+    "versiculo": "Unánimes entre vosotros; no altivos, sino asociándoos con los humildes. No seáis sabios en vuestra propia opinión."
+  },
+  {
+    "referencia": "Romanos 12:21",
+    "versiculo": "No seas vencido de lo malo, sino vence con el bien el mal."
+  },
+  {
+    "referencia": "Mateo 9:12",
+    "versiculo": "Los sanos no tienen necesidad de médico, sino los enfermos."
+  },
+  {
+    "referencia": "Mateo 9:13",
+    "versiculo": "Porque no he venido a llamar a justos, sino a pecadores, al arrepentimiento."
+  },
+  {
+    "referencia": "Mateo 9:22",
+    "versiculo": "Ten ánimo; tu fe te ha salvado."
+  },
+  {
+    "referencia": "Hebreos 12:11",
+    "versiculo": "Es verdad que ninguna disciplina al presente parece ser causa de gozo, sino de tristeza; pero después da fruto apacible de justicia a los que en ella han sido ejercitados."
+  },
+  {
+    "referencia": "Romanos 10:9",
+    "versiculo": "Que si confesares con tu boca que Jesús es el Señor, y creyeres en tu corazón que Dios le levantó de los muertos, serás salvo."
+  },
+  {
+    "referencia": "Romanos 10:10",
+    "versiculo": "Porque con el corazón se cree para justicia, pero con la boca se confiesa para salvación."
+  },
+  {
+    "referencia": "Romanos 10:13-14",
+    "versiculo": "Porque todo aquel que invocare el nombre del Señor, será salvo. ¿Cómo, pues, invocarán a aquel en el cual no han creído? ¿Y cómo creerán en aquel de quien no han oído? ¿Y cómo oirán sin haber quien les predique?"
+  },
+  {
+    "referencia": "1 Tesalonicenses 5:17",
+    "versiculo": "Orad sin cesar."
+  },
+  {
     "referencia": "Hebreos 11:1",
-    "versiculo": "Es, pues, la fe la sustancia de las cosas que se esperan, la demostración de las cosas que no se ven."
+    "versiculo": "Es, pues, la fe la certeza de lo que se espera, la convicción de lo que no se ve."
+  },
+  {
+    "referencia": "Eclesiastés 3:1",
+    "versiculo": "Todo tiene su tiempo, y todo lo que se quiere debajo del cielo tiene su hora."
+  },
+  {
+    "referencia": "Lucas 22:42",
+    "versiculo": "Diciendo: Padre, si quieres, pasa de mí esta copa; pero no se haga mi voluntad, sino la tuya."
+  },
+  {
+    "referencia": "Salmo 126:5",
+    "versiculo": "Los que sembraron con lágrimas, con regocijo segarán."
+  },
+  {
+    "referencia": "Salmo 62:5-8",
+    "versiculo": "Alma mía, en Dios solamente reposa, porque de él es mi esperanza. Él solamente es mi roca y mi salvación; es mi refugio, no resbalaré. En Dios está mi salvación y mi gloria; en Dios está mi refugio fuerte, y mi esperanza. Esperad en él en todo tiempo, oh pueblos; derramad delante de él vuestro corazón; Dios es nuestro refugio."
+  },
+  {
+    "referencia": "Colosenses 1:15-17",
+    "versiculo": "Él es la imagen del Dios invisible, el primogénito de toda creación. Porque en él fueron creadas todas las cosas, las que hay en los cielos y las que hay en la tierra, visibles e invisibles; sean tronos, sean dominios, sean principados, sean potestades; todo fue creado por medio de él y para él. Y él es antes de todas las cosas, y todas las cosas en él subsisten."
+  },
+  {
+    "referencia": "Colosenses 2:2-3",
+    "versiculo": "Para que sean consolados sus corazones, unidos en amor, hasta alcanzar todas las riquezas de pleno entendimiento, a fin de conocer el misterio de Dios el Padre, y de Cristo, en quien están escondidos todos los tesoros de la sabiduría y del conocimiento."
+  },
+  {
+    "referencia": "Colosenses 2:6",
+    "versiculo": "Por tanto, de la manera que habéis recibido al Señor Jesucristo, andad en él."
+  },
+  {
+    "referencia": "Colosenses 2:13",
+    "versiculo": "Y a vosotros, estando muertos en pecados y en la incircuncisión de vuestra carne, os dio vida juntamente con él, perdonándoos todos los pecados."
+  },
+  {
+    "referencia": "Efesios 2:4-5",
+    "versiculo": "Pero Dios, que es rico en misericordia, por su gran amor con que nos amó, aun estando nosotros muertos en pecados, nos dio vida juntamente con Cristo (por gracia sois salvos)."
+  },
+  {
+    "referencia": "Efesios 2:8-9",
+    "versiculo": "Porque por gracia sois salvos por medio de la fe; y esto no de vosotros, pues es don de Dios; no por obras, para que nadie se gloríe."
+  },
+  {
+    "referencia": "Efesios 2:19-20",
+    "versiculo": "Así que ya no sois extranjeros ni advenedizos, sino conciudadanos de los santos, y miembros de la familia de Dios, edificados sobre el fundamento de los apóstoles y profetas, siendo la principal piedra del ángulo Jesucristo mismo."
+  },
+  {
+    "referencia": "Efesios 3:14",
+    "versiculo": "Por esta causa doblo mis rodillas ante el Padre de nuestro Señor Jesucristo."
+  },
+  {
+    "referencia": "Efesios 3:19",
+    "versiculo": "Y de conocer el amor de Cristo, que excede a todo conocimiento, para que seáis llenos de toda la plenitud de Dios."
+  },
+  {
+    "referencia": "Efesios 3:17",
+    "versiculo": "Para que habite Cristo por la fe en vuestros corazones, a fin de que, arraigados y cimentados en amor."
+  },
+  {
+    "referencia": "Efesios 4:2",
+    "versiculo": "Con toda humildad y mansedumbre, soportándoos con paciencia los unos a los otros en amor."
+  },
+  {
+    "referencia": "Efesios 4:5-6",
+    "versiculo": "Un Señor, una fe, un bautismo, un Dios y Padre de todos, el cual es sobre todos, y por todos, y en todos."
+  },
+  {
+    "referencia": "Efesios 4:15",
+    "versiculo": "Sino que siguiendo la verdad en amor, crezcamos en todo en aquel que es la cabeza, esto es, Cristo."
+  },
+  {
+    "referencia": "Efesios 4:20-21",
+    "versiculo": "Mas vosotros no habéis aprendido así a Cristo, si en verdad le habéis oído, y habéis sido por él enseñados, conforme a la verdad que está en Jesús."
+  },
+  {
+    "referencia": "Efesios 4:23-24",
+    "versiculo": "Y renovaos en el espíritu de vuestra mente, y vestíos del nuevo hombre, creado según Dios en la justicia y santidad de la verdad."
+  },
+  {
+    "referencia": "Efesios 4:29",
+    "versiculo": "Ninguna palabra corrompida salga de vuestra boca, sino la que sea buena para la necesaria edificación, a fin de dar gracia a los oyentes."
+  },
+  {
+    "referencia": "Efesios 4:32",
+    "versiculo": "Antes sed benignos unos con otros, misericordiosos, perdonándoos unos a otros, como Dios también os perdonó a vosotros en Cristo."
+  },
+  {
+    "referencia": "Efesios 5:1",
+    "versiculo": "Sed, pues, imitadores de Dios como hijos amados."
+  },
+  {
+    "referencia": "Efesios 5:2",
+    "versiculo": "Y andad en amor, como también Cristo nos amó, y se entregó a sí mismo por nosotros, ofrenda y sacrificio a Dios en olor fragante."
+  },
+  {
+    "referencia": "Efesios 5:11",
+    "versiculo": "Y no participéis en las obras infructuosas de las tinieblas, sino más bien reprendedlas."
+  },
+  {
+    "referencia": "Efesios 5:19",
+    "versiculo": "Hablando entre vosotros con salmos, con himnos y cánticos espirituales, cantando y alabando al Señor en vuestros corazones."
+  },
+  {
+    "referencia": "Efesios 5:20",
+    "versiculo": "Dando siempre gracias por todo al Dios y Padre, en el nombre de nuestro Señor Jesucristo."
+  },
+  {
+    "referencia": "Efesios 5:21",
+    "versiculo": "Someteos unos a otros en el temor de Dios."
+  },
+  {
+    "referencia": "Efesios 5:31",
+    "versiculo": "Por esto dejará el hombre a su padre y a su madre, y se unirá a su mujer, y los dos serán una sola carne."
+  },
+  {
+    "referencia": "Efesios 6:2",
+    "versiculo": "Honra a tu padre y a tu madre, que es el primer mandamiento con promesa."
+  },
+  {
+    "referencia": "Efesios 6:4",
+    "versiculo": "Y vosotros, padres, no provoquéis a ira a vuestros hijos, sino criadlos en disciplina y amonestación del Señor."
+  },
+  {
+    "referencia": "Efesios 6:7",
+    "versiculo": "Sirviendo de buena voluntad, como al Señor, y no a los hombres."
+  },
+  {
+    "referencia": "Efesios 6:11",
+    "versiculo": "Vestíos de toda la armadura de Dios, para que podáis estar firmes contra las asechanzas del diablo."
+  },
+  {
+    "referencia": "Efesios 6:12",
+    "versiculo": "Porque no tenemos lucha contra sangre y carne, sino contra principados, contra potestades, contra los gobernadores de las tinieblas de este siglo, contra huestes espirituales de maldad en las regiones celestes."
+  },
+  {
+    "referencia": "Filipenses 1:6",
+    "versiculo": "Estando persuadido de esto, que el que comenzó en vosotros la buena obra, la perfeccionará hasta el día de Jesucristo."
+  },
+  {
+    "referencia": "Filipenses 1:11",
+    "versiculo": "Llenos de frutos de justicia, que son por medio de Jesucristo, para gloria y alabanza de Dios."
+  },
+  {
+    "referencia": "Filipenses 1:18",
+    "versiculo": "¿Qué, pues? Que no obstante, de todas maneras, o por pretexto o por verdad, Cristo es anunciado; y en esto me gozo."
+  },
+  {
+    "referencia": "Romanos 8:6",
+    "versiculo": "Porque el ocuparse de la carne es muerte, pero el ocuparse del Espíritu es vida y paz."
+  },
+  {
+    "referencia": "Gálatas 5:16",
+    "versiculo": "Andad en el Espíritu, y no satisfagáis los deseos de la carne."
+  },
+  {
+    "referencia": "Filipenses 1:27",
+    "versiculo": "Solamente que os comportéis como es digno del evangelio de Cristo."
+  },
+  {
+    "referencia": "Proverbios 28:1",
+    "versiculo": "Huye el impío sin que nadie lo persiga; mas el justo está confiado como un león."
+  },
+  {
+    "referencia": "Proverbios 20:7",
+    "versiculo": "Camina en su integridad el justo; sus hijos son dichosos después de él."
+  },
+  {
+    "referencia": "Jeremías 29:12",
+    "versiculo": "Entonces me invocaréis, y vendréis y oraréis a mí, y yo os oiré."
+  },
+  {
+    "referencia": "Mateo 5:43-45",
+    "versiculo": "Oísteis que fue dicho: Amarás a tu prójimo, y aborrecerás a tu enemigo. Pero yo os digo: Amad a vuestros enemigos, bendecid a los que os maldicen, haced bien a los que os aborrecen, y orad por los que os ultrajan y os persiguen; para que seáis hijos de vuestro Padre que está en los cielos, que hace salir su sol sobre malos y buenos, y que hace llover sobre justos e injustos."
+  },
+  {
+    "referencia": "Filipenses 2:3-4",
+    "versiculo": "Nada hagáis por contienda o por vanagloria; antes bien con humildad, estimando cada uno a los demás como superiores a él mismo; no mirando cada uno por lo suyo propio, sino cada cual también por lo de los otros."
+  },
+  {
+    "referencia": "Filipenses 2:5-8",
+    "versiculo": "Haya, pues, en vosotros este sentir que hubo también en Cristo Jesús, el cual, siendo en forma de Dios, no estimó el ser igual a Dios como cosa a que aferrarse, sino que se despojó a sí mismo, tomando forma de siervo, hecho semejante a los hombres; y estando en la condición de hombre, se humilló a sí mismo, haciéndose obediente hasta la muerte, y muerte de cruz."
+  },
+  {
+    "referencia": "Filipenses 2:9-11",
+    "versiculo": "Por lo cual Dios también le exaltó hasta lo sumo, y le dio un nombre que es sobre todo nombre, para que en el nombre de Jesús se doble toda rodilla de los que están en los cielos, y en la tierra, y debajo de la tierra; y toda lengua confiese que Jesucristo es el Señor, para gloria de Dios Padre."
+  },
+  {
+    "referencia": "Filipenses 2:12-13",
+    "versiculo": "Ocupaos en vuestra salvación con temor y temblor, porque Dios es el que en vosotros produce así el querer como el hacer, por su buena voluntad."
+  },
+  {
+    "referencia": "Santiago 1:3-4",
+    "versiculo": "Sabiendo que la prueba de vuestra fe produce paciencia. Mas tenga la paciencia su obra completa, para que seáis perfectos y cabales, sin que os falte cosa alguna."
+  },
+  {
+    "referencia": "Santiago 1:5",
+    "versiculo": "Y si alguno de vosotros tiene falta de sabiduría, pídala a Dios, el cual da a todos abundantemente y sin reproche, y le será dada."
+  },
+  {
+    "referencia": "Santiago 1:12",
+    "versiculo": "Bienaventurado el varón que soporta la tentación; porque cuando haya resistido la prueba, recibirá la corona de vida, que Dios ha prometido a los que le aman."
+  },
+  {
+    "referencia": "Santiago 1:17",
+    "versiculo": "Toda buena dádiva y todo don perfecto desciende de lo alto, del Padre de las luces, en el cual no hay mudanza, ni sombra de variación."
+  },
+  {
+    "referencia": "Santiago 1:22-23",
+    "versiculo": "Pero sed hacedores de la palabra, y no solamente oidores, engañándoos a vosotros mismos. Porque si alguno es oidor de la palabra pero no hacedor de ella, éste es semejante a un hombre que considera en un espejo su rostro natural."
+  },
+  {
+    "referencia": "Santiago 1:26",
+    "versiculo": "Si alguno se cree religioso, y no refrena su lengua, sino que engaña su corazón, la religión del tal es vana."
+  },
+  {
+    "referencia": "Santiago 2:8",
+    "versiculo": "Si en verdad cumplís la ley real, conforme a la Escritura: Amarás a tu prójimo como a ti mismo, bien hacéis."
+  },
+  {
+    "referencia": "Santiago 2:17",
+    "versiculo": "Así también la fe, si no tiene obras, es muerta en sí misma."
+  },
+  {
+    "referencia": "Santiago 3:8-9",
+    "versiculo": "Pero ningún hombre puede domar la lengua, que es un mal que no puede ser refrenado, llena de veneno mortífero. Con ella bendecimos a nuestro Señor y Padre, y con ella maldecimos a los hombres, que están hechos a semejanza de Dios."
+  },
+  {
+    "referencia": "Santiago 3:12",
+    "versiculo": "Hermanos míos, ¿puede acaso la higuera producir aceitunas, o la vid higos? Así también ninguna fuente puede dar agua salada y dulce."
+  },
+  {
+    "referencia": "Santiago 3:17",
+    "versiculo": "Pero la sabiduría que es de lo alto es primeramente pura, después pacífica, amable, condescendiente, llena de misericordia y de buenos frutos, sin incertidumbre ni hipocresía."
+  },
+  {
+    "referencia": "Santiago 4:4",
+    "versiculo": "¡Oh almas adúlteras! ¿No sabéis que la amistad del mundo es enemistad contra Dios? Cualquiera, pues, que quiera ser amigo del mundo, se constituye enemigo de Dios."
+  },
+  {
+    "referencia": "Santiago 4:7",
+    "versiculo": "Someteos, pues, a Dios; resistid al diablo, y huirá de vosotros."
+  },
+  {
+    "referencia": "Santiago 4:14",
+    "versiculo": "Cuando no sabéis lo que será mañana. Porque ¿qué es vuestra vida? Ciertamente es neblina que se aparece por un poco de tiempo, y luego se desvanece."
+  },
+  {
+    "referencia": "Santiago 5:7-8",
+    "versiculo": "Por tanto, hermanos, tened paciencia hasta la venida del Señor. Mirad cómo el labrador espera el precioso fruto de la tierra, aguardándolo con paciencia, hasta que reciba la lluvia temprana y tardía. Tened también vosotros paciencia, y afirmad vuestros corazones; porque la venida del Señor se acerca."
+  },
+  {
+    "referencia": "Santiago 5:12",
+    "versiculo": "Pero sobre todo, hermanos míos, no juréis, ni por el cielo, ni por la tierra, ni por ningún otro juramento; sino que vuestro sí sea sí, y vuestro no sea no, para que no caigáis bajo juicio."
+  },
+  {
+    "referencia": "Santiago 5:13",
+    "versiculo": "¿Está alguno entre vosotros afligido? Haga oración. ¿Está alguno alegre? Cante alabanzas."
+  },
+  {
+    "referencia": "Santiago 5:15",
+    "versiculo": "Y la oración de fe salvará al enfermo, y el Señor lo levantará; y si ha cometido pecados, le serán perdonados."
+  },
+  {
+    "referencia": "Santiago 5:16",
+    "versiculo": "Confesaos vuestras faltas unos a otros, y orad unos por otros, para que seáis sanados. La oración eficaz del justo puede mucho."
+  },
+  {
+    "referencia": "1 Corintios 1:5",
+    "versiculo": "Porque en todas las cosas fuisteis enriquecidos en él, en toda palabra y en toda ciencia."
+  },
+  {
+    "referencia": "1 Corintios 1:10",
+    "versiculo": "Os exhorto, hermanos, por el nombre de nuestro Señor Jesucristo, a que habléis todos una misma cosa, y que no haya entre vosotros divisiones, sino que estéis perfectamente unidos en una misma mente y en un mismo parecer."
+  },
+  {
+    "referencia": "1 Corintios 1:18",
+    "versiculo": "Porque la palabra de la cruz es locura a los que se pierden; pero a los que se salvan, esto es, a nosotros, es poder de Dios."
+  },
+  {
+    "referencia": "1 Corintios 1:25",
+    "versiculo": "Porque lo insensato de Dios es más sabio que los hombres, y lo débil de Dios es más fuerte que los hombres."
+  },
+  {
+    "referencia": "1 Corintios 1:31",
+    "versiculo": "Para que, tal como está escrito: El que se gloría, gloríese en el Señor."
+  },
+  {
+    "referencia": "1 Corintios 2:4-5",
+    "versiculo": "Y ni mi palabra, ni mi predicación fue con palabras persuasivas de humana sabiduría, sino con demostración del Espíritu y de poder, para que vuestra fe no esté fundamentada en la sabiduría de los hombres, sino en el poder de Dios."
+  },
+  {
+    "referencia": "1 Corintios 3:16-17",
+    "versiculo": "¿No sabéis que sois templo de Dios, y que el Espíritu de Dios mora en vosotros? Si alguno destruyere el templo de Dios, Dios le destruirá a él; porque el templo de Dios, el cual sois vosotros, santo es."
+  },
+  {
+    "referencia": "1 Corintios 3:18",
+    "versiculo": "Nadie se engañe a sí mismo; si alguno entre vosotros se cree sabio en este siglo, hágase ignorante, para que llegue a ser sabio."
+  },
+  {
+    "referencia": "1 Corintios 4:1-2",
+    "versiculo": "Así, pues, téngannos los hombres por servidores de Cristo, y administradores de los misterios de Dios. Ahora bien, se requiere de los administradores, que cada uno sea hallado fiel."
+  },
+  {
+    "referencia": "1 Corintios 4:5",
+    "versiculo": "Así que, no juzguéis nada antes de tiempo, hasta que venga el Señor, el cual aclarará también lo oculto de las tinieblas, y manifestará las intenciones de los corazones; y entonces cada uno recibirá su alabanza de Dios."
+  },
+  {
+    "referencia": "1 Corintios 4:20",
+    "versiculo": "Porque el reino de Dios no consiste en palabras, sino en poder."
+  },
+  {
+    "referencia": "Mateo 25:23",
+    "versiculo": "Su señor le dijo: Bien, buen siervo y fiel; sobre poco has sido fiel, sobre mucho te pondré; entra en el gozo de tu señor."
+  },
+  {
+    "referencia": "Gálatas 1:8",
+    "versiculo": "Mas si aun nosotros, o un ángel del cielo, os anunciare otro evangelio diferente del que os hemos anunciado, sea anatema."
+  },
+  {
+    "referencia": "Gálatas 2:16",
+    "versiculo": "Sabiendo que el hombre no es justificado por las obras de la ley, sino por la fe de Jesucristo, nosotros también hemos creído en Jesucristo, para ser justificados por la fe de Cristo y no por las obras de la ley, por cuanto por las obras de la ley nadie será justificado."
+  },
+  {
+    "referencia": "Gálatas 2:20",
+    "versiculo": "Con Cristo estoy juntamente crucificado, y ya no vivo yo, mas vive Cristo en mí; y lo que ahora vivo en la carne, lo vivo en la fe del Hijo de Dios, el cual me amó y se entregó a sí mismo por mí."
+  },
+  {
+    "referencia": "Gálatas 3:28",
+    "versiculo": "Ya no hay judío ni griego; no hay esclavo ni libre; no hay varón ni mujer; porque todos vosotros sois uno en Cristo Jesús."
+  },
+  {
+    "referencia": "Gálatas 4:7",
+    "versiculo": "Así que ya no eres esclavo, sino hijo; y si hijo, también heredero de Dios por medio de Cristo."
+  },
+  {
+    "referencia": "Gálatas 5:14",
+    "versiculo": "Porque toda la ley en esta sola palabra se cumple: Amarás a tu prójimo como a ti mismo."
+  },
+  {
+    "referencia": "Gálatas 6:3",
+    "versiculo": "Porque el que se cree ser algo, no siendo nada, a sí mismo se engaña."
   }
 ]
