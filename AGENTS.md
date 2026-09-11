@@ -2,7 +2,7 @@
 
 ## Version
 
-Current: `0.9.0+11` — **0.9 (Beta)** (see `pubspec.yaml`). Release APK at project root as `VIDA.apk`.
+Current: `0.9.1+12` — **0.9.1 (Beta)** (see `pubspec.yaml`). Release APK at project root as `VIDA.apk`.
 
 ## Commands
 

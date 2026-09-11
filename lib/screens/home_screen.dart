@@ -6,9 +6,10 @@ import '../data/vida_algorithm.dart';
 import '../data/vida_signals.dart';
 import '../main.dart';
 import '../theme/app_theme.dart';
+import '../widgets/fade_in.dart';
 import '../widgets/home_smart_stack.dart';
 import '../widgets/tool_card.dart';
-import '../widgets/fade_in.dart';
+import '../widgets/user_avatar.dart';
 import 'contra_pecado_screen.dart';
 import 'estudio_biblico_screen.dart';
 import 'favorito_screen.dart';
@@ -236,17 +237,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       context,
                       MaterialPageRoute(builder: (_) => const PerfilScreen()),
                     ),
-                    child: CircleAvatar(
+                    child: UserAvatar(
+                      name: userName,
                       radius: 19,
                       backgroundColor: cs.primary,
-                      child: Text(
-                        userName.isNotEmpty ? userName[0].toUpperCase() : '?',
-                        style: TextStyle(fontFamily: 'DM Sans', 
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
                     ),
                   ),
                 ],
@@ -415,8 +409,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     index: 7,
                     child: ToolCard(
                       icon: Icons.collections_rounded,
-                      title: 'Plantillas',
-                      subtitle: 'Escribe lo que quieras',
+                      title: 'Crear imagen',
+                      subtitle: 'Versículo sobre un fondo',
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -429,8 +423,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     index: 8,
                     child: ToolCard(
                       icon: Icons.star_border_rounded,
-                      title: 'Widget favorito',
-                      subtitle: 'Versículo personalizado',
+                      title: 'Versículo en inicio',
+                      subtitle: 'Widget en la pantalla',
                       isActive: _favoritoEnabled,
                       onTap: () async {
                         await Navigator.push(
@@ -457,7 +451,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     index: 10,
                     child: ToolCard(
                       icon: Icons.map_rounded,
-                      title: 'Iglesias',
+                      title: 'Mapa de iglesias',
                       subtitle: 'Encuentra congregaciones',
                       onTap: () => Navigator.push(
                         context,

@@ -1,5 +1,6 @@
-import 'dart:async';
+﻿import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,14 @@ import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/streak.dart';
 import 'services/notification_service.dart';
+import 'services/telemetry.dart';
 import 'theme/app_theme.dart';
 import 'theme/theme_controller.dart';
 import 'screens/biblia_screen.dart';
+import 'screens/community_screen.dart';
 import 'screens/favorito_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/mapa_iglesias_screen.dart';
 import 'screens/perfil_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/vida_screen.dart';
@@ -30,6 +34,7 @@ void main() async {
     if (FirebaseAuth.instance.currentUser == null) {
       await FirebaseAuth.instance.signInAnonymously();
     }
+    await Telemetry.init();
   } catch (_) {
     // Offline / Play Services / config — app still launches without cloud.
   }
@@ -60,6 +65,7 @@ class _VidaAppState extends State<VidaApp> {
   String _userName = '';
   Uri? _pendingWidgetUri;
   StreamSubscription<Uri?>? _widgetClickSub;
+  StreamSubscription<Uri>? _appLinksSub;
 
   String get userName => _userName;
 
@@ -70,6 +76,7 @@ class _VidaAppState extends State<VidaApp> {
     _loadUser();
     HomeWidget.initiallyLaunchedFromHomeWidget().then(_handleWidgetUri);
     _widgetClickSub = HomeWidget.widgetClicked.listen(_handleWidgetUri);
+    _initAppLinks();
   }
 
   void _onThemeChanged() {
@@ -83,7 +90,49 @@ class _VidaAppState extends State<VidaApp> {
   void dispose() {
     ThemeController.instance.removeListener(_onThemeChanged);
     _widgetClickSub?.cancel();
+    _appLinksSub?.cancel();
     super.dispose();
+  }
+
+  Future<void> _initAppLinks() async {
+    try {
+      final links = AppLinks();
+      final initial = await links.getInitialLink();
+      if (initial != null) _handleDeepLink(initial);
+      _appLinksSub = links.uriLinkStream.listen(_handleDeepLink);
+    } catch (_) {}
+  }
+
+  void _handleDeepLink(Uri uri) {
+    if (uri.scheme != 'vida') {
+      _handleWidgetUri(uri);
+      return;
+    }
+    void go(Widget page) {
+      final nav = vidaNavigatorKey.currentState;
+      if (nav == null) {
+        _pendingWidgetUri = uri;
+        return;
+      }
+      nav.push(MaterialPageRoute<void>(builder: (_) => page));
+    }
+
+    switch (uri.host) {
+      case 'post':
+      case 'comunidad':
+        go(const CommunityScreen());
+        Telemetry.log('deep_link', {'host': uri.host});
+        break;
+      case 'iglesia':
+        go(const MapaIglesiasScreen());
+        Telemetry.log('deep_link', {'host': 'iglesia'});
+        break;
+      case 'favorito':
+        _handleWidgetUri(uri);
+        break;
+      default:
+        break;
+    }
   }
 
   void _handleWidgetUri(Uri? uri) {
@@ -126,7 +175,11 @@ class _VidaAppState extends State<VidaApp> {
     if (pending != null && _userName.isNotEmpty) {
       _pendingWidgetUri = null;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _handleWidgetUri(pending);
+        if (pending.scheme == 'vida') {
+          _handleDeepLink(pending);
+        } else {
+          _handleWidgetUri(pending);
+        }
       });
     }
 

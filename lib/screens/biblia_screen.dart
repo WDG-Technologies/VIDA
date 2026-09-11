@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/bible_data.dart';
 import '../data/bible_highlights.dart';
+import '../data/bible_search.dart';
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
 import '../widgets/verse_picker_sheet.dart';
@@ -241,6 +242,25 @@ class _BibliaScreenState extends State<BibliaScreen> {
       VidaSignals.trackBibleBook(name);
       VidaSignals.trackChapter(bookIndex, chapter);
     } catch (_) {}
+  }
+
+  Future<void> _openSearch() async {
+    final bible = _bible;
+    if (bible == null) return;
+    final hit = await showSearch<BibleSearchHit?>(
+      context: context,
+      delegate: _BibleSearchDelegate(bible),
+    );
+    if (hit == null || !mounted) return;
+    setState(() {
+      _bookIndex = hit.bookIndex;
+      _chapter = hit.chapter;
+      _scrollToVerse = hit.verse;
+    });
+    _persist();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _ensureFocusVerseVisible(retries: 8);
+    });
   }
 
   Future<void> _copyVerse(int verseNum, String text) async {
@@ -1092,6 +1112,11 @@ class _BibliaScreenState extends State<BibliaScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'Buscar en la Biblia',
+            icon: Icon(Icons.search_rounded, color: AppColors.emerald700),
+            onPressed: _bible == null ? null : _openSearch,
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 4),
             child: TextButton(
@@ -1488,6 +1513,65 @@ class _NavChip extends StatelessWidget {
           if (trailing) Icon(icon, size: 22, color: color),
         ],
       ),
+    );
+  }
+}
+
+class _BibleSearchDelegate extends SearchDelegate<BibleSearchHit?> {
+  _BibleSearchDelegate(this.bible);
+
+  final BibleVersion bible;
+
+  @override
+  String get searchFieldLabel => 'Buscar texto…';
+
+  @override
+  List<Widget>? buildActions(BuildContext context) => [
+        if (query.isNotEmpty)
+          IconButton(
+            icon: const Icon(Icons.clear_rounded),
+            onPressed: () => query = '',
+          ),
+      ];
+
+  @override
+  Widget? buildLeading(BuildContext context) => IconButton(
+        icon: const Icon(Icons.arrow_back_rounded),
+        onPressed: () => close(context, null),
+      );
+
+  @override
+  Widget buildResults(BuildContext context) => _buildList(context);
+
+  @override
+  Widget buildSuggestions(BuildContext context) => _buildList(context);
+
+  Widget _buildList(BuildContext context) {
+    final hits = BibleSearch.query(bible, query);
+    if (query.trim().length < 2) {
+      return const Center(child: Text('Escribe al menos 2 letras'));
+    }
+    if (hits.isEmpty) {
+      return const Center(child: Text('Sin resultados'));
+    }
+    return ListView.separated(
+      itemCount: hits.length,
+      separatorBuilder: (_, __) => const Divider(height: 1),
+      itemBuilder: (context, i) {
+        final h = hits[i];
+        return ListTile(
+          title: Text(
+            '${h.bookName} ${h.chapter}:${h.verse}',
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          subtitle: Text(
+            h.text,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          onTap: () => close(context, h),
+        );
+      },
     );
   }
 }

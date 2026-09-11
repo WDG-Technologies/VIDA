@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show Color;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,6 +30,9 @@ class NotificationService {
       channelDescription: 'Recordatorios espirituales',
       importance: Importance.high,
       priority: Priority.high,
+      icon: 'ic_stat_vida',
+      largeIcon: DrawableResourceAndroidBitmap('ic_notif_large'),
+      color: Color(0xFF059669),
     ),
     iOS: DarwinNotificationDetails(),
   );
@@ -45,7 +49,7 @@ class NotificationService {
     }
 
     const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@drawable/ic_stat_vida');
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../services/report_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/fade_in.dart';
 
@@ -18,6 +19,7 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
   List<Map<String, dynamic>> _testimonios = [];
   Map<String, dynamic>? _myTestimonio;
   bool _loading = true;
+  Set<String> _hidden = {};
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
       return;
     }
     try {
+      final hidden = await ReportService.hiddenIds();
       final snap = await _db
           .collection('testimonios')
           .orderBy('createdAt', descending: true)
@@ -43,11 +46,16 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
       }).toList();
       if (!mounted) return;
       setState(() {
+        _hidden = hidden;
         _myTestimonio = list.cast<Map<String, dynamic>?>().firstWhere(
               (t) => t?['userId'] == uid,
               orElse: () => null,
             );
-        _testimonios = list.where((t) => t['userId'] != uid).toList();
+        _testimonios = list
+            .where((t) => t['userId'] != uid)
+            .where((t) => !_hidden
+                .contains(ReportService.keyFor('testimonio', '${t['_id']}')))
+            .toList();
         _loading = false;
       });
     } catch (_) {
@@ -298,6 +306,29 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
                               fontSize: 10,
                               color: AppColors.emerald700,
                               fontWeight: FontWeight.w600)),
+                    )
+                  else
+                    IconButton(
+                      tooltip: 'Reportar',
+                      visualDensity: VisualDensity.compact,
+                      icon: Icon(Icons.flag_outlined,
+                          size: 18, color: AppColors.emerald400),
+                      onPressed: () async {
+                        final id = '${t['_id']}';
+                        await ReportService.submit(
+                          targetType: 'testimonio',
+                          targetId: id,
+                        );
+                        if (!mounted) return;
+                        await _load();
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'Gracias. Ocultamos este testimonio aquí.'),
+                          ),
+                        );
+                      },
                     ),
                 ],
               ),

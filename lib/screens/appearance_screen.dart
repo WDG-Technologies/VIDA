@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../main.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_controller.dart';
+import '../widgets/user_avatar.dart';
 
 class AppearanceScreen extends StatelessWidget {
   const AppearanceScreen({super.key});
@@ -247,6 +249,67 @@ class AppearanceScreen extends StatelessWidget {
                 onPressed: () => _showCustomPicker(context, ctrl),
                 icon: Icon(Icons.palette_outlined),
                 label: const Text('Mezclar color personalizado'),
+              ),
+              const SizedBox(height: 28),
+              Text(
+                'AVATAR',
+                style: TextStyle(
+                  fontFamily: 'DM Sans',
+                  fontSize: 10,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.w600,
+                  color: _sectionLabelColor(context),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Material(
+                color: isDark
+                    ? cs.surfaceContainerHighest
+                    : cs.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(14),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 12, 8, 12),
+                  child: Row(
+                    children: [
+                      UserAvatar(
+                        name: VidaApp.of(context).userName,
+                        radius: 22,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Formita',
+                              style: TextStyle(
+                                fontFamily: 'DM Sans',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                                color: cs.onSurface,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              ctrl.useFormita
+                                  ? 'Figura única según tu nombre'
+                                  : 'Ahora usas tu inicial',
+                              style: TextStyle(
+                                fontFamily: 'DM Sans',
+                                fontSize: 12,
+                                color: cs.onSurface.withValues(alpha: 0.65),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Switch.adaptive(
+                        value: ctrl.useFormita,
+                        onChanged: ctrl.setUseFormita,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

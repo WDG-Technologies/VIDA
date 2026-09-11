@@ -19,10 +19,13 @@ class ThemeController extends ChangeNotifier {
   static const _kMode = 'theme_brightness_mode';
   static const _kStyle = 'theme_style';
   static const _kAccent = 'theme_accent';
+  static const _kFormita = 'avatar_use_formita';
 
   AppBrightnessMode brightnessMode = AppBrightnessMode.system;
   AppThemeStyle style = AppThemeStyle.esmeralda;
   Color? customAccent;
+  /// Avatar «Formita» (Blobatar) en lugar de la inicial.
+  bool useFormita = false;
 
   ThemeMode get themeMode => switch (brightnessMode) {
         AppBrightnessMode.system => ThemeMode.system,
@@ -47,6 +50,7 @@ class ThemeController extends ChangeNotifier {
     style = AppThemeStyle
         .values[styleIdx.clamp(0, AppThemeStyle.values.length - 1)];
     customAccent = accentVal != null ? Color(accentVal) : null;
+    useFormita = prefs.getBool(_kFormita) ?? false;
     notifyListeners();
   }
 
@@ -73,6 +77,13 @@ class ThemeController extends ChangeNotifier {
       // ignore: deprecated_member_use
       await prefs.setInt(_kAccent, color.value);
     }
+    notifyListeners();
+  }
+
+  Future<void> setUseFormita(bool value) async {
+    useFormita = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kFormita, value);
     notifyListeners();
   }
 }

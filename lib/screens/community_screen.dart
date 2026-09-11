@@ -3,7 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
+import '../services/feature_tips.dart';
+import '../services/report_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/user_avatar.dart';
 
 class CommunityScreen extends StatefulWidget {
   const CommunityScreen({super.key});
@@ -22,6 +25,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
     // userChanges also fires on link/profile reload (authStateChanges often does not).
     _authSub = _auth.userChanges().listen((_) {
       if (mounted) setState(() {});
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) FeatureTips.community(context);
     });
   }
 
@@ -415,12 +421,6 @@ String _resolveAuthorName(User user, BuildContext context) {
 
 String _resolveAuthorEmail(User user) => user.email?.trim() ?? '';
 
-String _authorInitial(String? name) {
-  final trimmed = name?.trim() ?? '';
-  if (trimmed.isEmpty) return '?';
-  return trimmed[0].toUpperCase();
-}
-
 String _handleLocal(String value) {
   final v = value.trim();
   if (v.isEmpty) return '';
@@ -449,6 +449,18 @@ class _FeedViewState extends State<_FeedView> {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _posting = false;
+  Set<String> _hidden = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadHidden();
+  }
+
+  Future<void> _loadHidden() async {
+    final ids = await ReportService.hiddenIds();
+    if (mounted) setState(() => _hidden = ids);
+  }
 
   @override
   void dispose() {
@@ -536,7 +548,10 @@ class _FeedViewState extends State<_FeedView> {
                       color: AppColors.emerald600),
                 );
               }
-              final posts = snap.data!.docs;
+              final posts = snap.data!.docs.where((d) {
+                final key = ReportService.keyFor('post', d.id);
+                return !_hidden.contains(key);
+              }).toList();
               if (posts.isEmpty) {
                 return Center(
                   child: Column(
@@ -555,8 +570,11 @@ class _FeedViewState extends State<_FeedView> {
               return ListView.builder(
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
                 itemCount: posts.length,
-                itemBuilder: (context, i) =>
-                    _PostCard(key: ValueKey(posts[i].id), postDoc: posts[i]),
+                itemBuilder: (context, i) => _PostCard(
+                  key: ValueKey(posts[i].id),
+                  postDoc: posts[i],
+                  onHidden: () => _loadHidden(),
+                ),
               );
             },
           ),
@@ -570,7 +588,8 @@ class _FeedViewState extends State<_FeedView> {
 
 class _PostCard extends StatefulWidget {
   final QueryDocumentSnapshot postDoc;
-  const _PostCard({super.key, required this.postDoc});
+  final VoidCallback? onHidden;
+  const _PostCard({super.key, required this.postDoc, this.onHidden});
 
   @override
   State<_PostCard> createState() => _PostCardState();
@@ -697,16 +716,11 @@ class _PostCardState extends State<_PostCard> {
           children: [
             Row(
               children: [
-                CircleAvatar(
+                UserAvatar(
+                  name: authorName.isNotEmpty ? authorName : 'Usuario',
                   radius: 14,
                   backgroundColor: AppColors.emerald200,
-                  child: Text(
-                    _authorInitial(authorName),
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.emerald700),
-                  ),
+                  foregroundColor: AppColors.emerald700,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -732,6 +746,31 @@ class _PostCardState extends State<_PostCard> {
                             style: TextStyle(
                                 fontSize: 11,
                                 color: AppColors.emerald400),
+                          ),
+                          PopupMenuButton<String>(
+                            icon: Icon(Icons.more_vert_rounded,
+                                size: 18, color: AppColors.emerald400),
+                            onSelected: (v) async {
+                              if (v != 'report') return;
+                              await ReportService.submit(
+                                targetType: 'post',
+                                targetId: widget.postDoc.id,
+                              );
+                              if (!mounted) return;
+                              widget.onHidden?.call();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Gracias. Ocultamos esta publicación aquí.'),
+                                ),
+                              );
+                            },
+                            itemBuilder: (_) => const [
+                              PopupMenuItem(
+                                value: 'report',
+                                child: Text('Reportar'),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -865,7 +904,8 @@ class _CommentsList extends StatelessWidget {
           itemCount: comments.length,
           separatorBuilder: (_, __) => const SizedBox(height: 6),
           itemBuilder: (context, i) {
-            final c = comments[i].data() as Map<String, dynamic>;
+            final doc = comments[i];
+            final c = doc.data() as Map<String, dynamic>;
             final name = (c['authorName'] as String?)?.trim() ?? '';
             final handle = _displayHandle(
               c['authorEmail'] as String?,
@@ -874,12 +914,35 @@ class _CommentsList extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  name.isNotEmpty ? name : 'Usuario',
-                  style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.emerald700),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        name.isNotEmpty ? name : 'Usuario',
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.emerald700),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        await ReportService.submit(
+                          targetType: 'comment',
+                          targetId: doc.id,
+                          parentId: postId,
+                        );
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Comentario reportado'),
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.flag_outlined,
+                          size: 14, color: AppColors.emerald300),
+                    ),
+                  ],
                 ),
                 if (handle.isNotEmpty)
                   Text(

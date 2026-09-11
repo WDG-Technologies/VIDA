@@ -10,8 +10,21 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/iglesia_seed.dart';
+import '../services/feature_tips.dart';
 import '../theme/app_theme.dart';
 import 'community_screen.dart';
+
+/// Raster tiles sin API key (Carto ahora exige clave y muestra watermark).
+TileLayer vidaMapTileLayer() => TileLayer(
+      urlTemplate: 'https://tile.openstreetmap.de/{z}/{x}/{y}.png',
+      userAgentPackageName: 'com.vida.project',
+      maxZoom: 19,
+    );
+
+Widget vidaMapAttribution() => const SimpleAttributionWidget(
+      source: Text('© OpenStreetMap'),
+      alignment: Alignment.bottomLeft,
+    );
 
 class MapaIglesiasScreen extends StatefulWidget {
   const MapaIglesiasScreen({super.key});
@@ -41,6 +54,9 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
     _loadIglesias();
     _searchCtrl.addListener(_onSearch);
     _initLocation();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) FeatureTips.mapa(context);
+    });
   }
 
   @override
@@ -232,12 +248,7 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
             },
           ),
           children: [
-            TileLayer(
-              urlTemplate:
-                  'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-              subdomains: const ['a', 'b', 'c'],
-              userAgentPackageName: 'com.vida.project',
-            ),
+            vidaMapTileLayer(),
             MarkerLayer(
               markers: [
                 if (_myLocation != null)
@@ -282,6 +293,7 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
                 }).whereType<Marker>(),
               ],
             ),
+            vidaMapAttribution(),
           ],
         ),
         Positioned(
@@ -998,12 +1010,7 @@ class _AddChurchSheetState extends State<_AddChurchSheet> {
                         },
                       ),
                       children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-                          subdomains: const ['a', 'b', 'c'],
-                          userAgentPackageName: 'com.vida.project',
-                        ),
+                        vidaMapTileLayer(),
                         MarkerLayer(
                           markers: [
                             if (_myLocation != null)

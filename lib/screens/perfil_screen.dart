@@ -1,4 +1,5 @@
 ﻿import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +14,7 @@ import '../theme/app_theme.dart';
 import 'appearance_screen.dart';
 import 'community_screen.dart';
 import 'privacy_screen.dart';
+import '../widgets/user_avatar.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -239,18 +241,22 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   String get _communityStatus {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null || user.isAnonymous) return 'Sin cuenta (explorar)';
-    final name = user.displayName?.trim();
-    if (name != null && name.isNotEmpty) return name;
-    return user.email ?? 'Cuenta conectada';
+    try {
+      if (Firebase.apps.isEmpty) return 'Sin cuenta (explorar)';
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null || user.isAnonymous) return 'Sin cuenta (explorar)';
+      final name = user.displayName?.trim();
+      if (name != null && name.isNotEmpty) return name;
+      return user.email ?? 'Cuenta conectada';
+    } catch (_) {
+      return 'Sin cuenta (explorar)';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final userName = VidaApp.of(context).userName;
-    final initial = userName.isNotEmpty ? userName[0].toUpperCase() : '?';
 
     return Scaffold(
       appBar: AppBar(title: const Text('Perfil')),
@@ -270,18 +276,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   padding: const EdgeInsets.all(14),
                   child: Row(
                     children: [
-                      CircleAvatar(
+                      UserAvatar(
+                        name: userName,
                         radius: 26,
                         backgroundColor: cs.primary,
-                        child: Text(
-                          initial,
-                          style: const TextStyle(
-                            fontFamily: 'DM Sans',
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
@@ -586,14 +584,21 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     ),
                     const Divider(height: 24),
                     _creditLine(
+                      'Blobatar',
+                      'Avatares formita · blobatar.dev',
+                      Icons.face_retouching_natural_rounded,
+                      onTap: () => _openUrl('https://blobatar.dev'),
+                    ),
+                    const Divider(height: 24),
+                    _creditLine(
                       'Versión',
-                      '${UpdateService.currentLabel} · ${UpdateService.currentVersion}+9',
+                      '${UpdateService.currentLabel} · ${UpdateService.currentFull}',
                       Icons.info_outline_rounded,
                       onTap: () {
                         Clipboard.setData(
                           ClipboardData(
                             text:
-                                'VIDA ${UpdateService.currentVersion}+9 (${UpdateService.currentLabel})',
+                                'VIDA ${UpdateService.currentFull} (${UpdateService.currentLabel})',
                           ),
                         );
                         _soon('Versión copiada');
