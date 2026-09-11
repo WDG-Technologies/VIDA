@@ -2,7 +2,6 @@
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
 import '../theme/transitions.dart';
-import '../utils/platform_caps.dart';
 import 'arcade_games.dart';
 import 'quiz_screen.dart';
 import 'riega_screen.dart';
@@ -55,9 +54,7 @@ class MiniArcadeScreen extends StatelessWidget {
     ),
   ];
 
-  List<_GameData> get _games => PlatformCaps.webViewGames
-      ? _allGames
-      : _allGames.where((g) => !g.webView).toList();
+  List<_GameData> get _games => _allGames;
 
   void _open(BuildContext context, _GameData game) {
     VidaSignals.trackEvent('arcade');

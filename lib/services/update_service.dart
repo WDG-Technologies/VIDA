@@ -12,7 +12,7 @@ class UpdateService {
 
   /// Versión embebida (mantener alineada con pubspec.yaml).
   static const currentVersion = '0.9.22';
-  static const currentBuild = 16;
+  static const currentBuild = 17;
   static const currentLabel = '0.9.22 (Beta)';
   static String get currentFull => '$currentVersion+$currentBuild';
 

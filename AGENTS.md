@@ -2,7 +2,7 @@
 
 ## Version
 
-Current: `0.9.22+16` — **0.9.22 (Beta)** (see `pubspec.yaml`). Release APK at project root as `VIDA.apk`.
+Current: `0.9.22+17` — **0.9.22 (Beta)** (see `pubspec.yaml`). Release APK at project root as `VIDA.apk`.
 
 ## Commands
 
@@ -42,7 +42,7 @@ flutter build apk --release  # build release APK → build/app/outputs/flutter-a
 - **Mapa Iglesias**: `MapaIglesiasScreen` — `flutter_map` + Carto tiles; churches in Firestore `iglesias`. First open runs `IglesiaSeedService` from `assets/data/iglesias_mexico.json` (~400 Protestant/evangelical OSM places in Mexico).
 - **Community**: `CommunityScreen` (`lib/screens/community_screen.dart`) — Firebase Auth login/register, post feed from `community_posts` collection, like/unlike, comments via nested subcollection.
 - **Dependencies** (from `pubspec.yaml`): `google_fonts`, `flutter_svg` (unused in Dart code), `cupertino_icons`, `shared_preferences`, `home_widget`, `webview_flutter`, `connectivity_plus`, `share_plus`, `path_provider`, `url_launcher`, `firebase_core`, `cloud_firestore`, `firebase_auth`, `flutter_map`, `latlong2`, `geolocator`. Dev: `flutter_test`, `flutter_lints`.
-- **Evangelízate**: `EvangelizateScreen` + `EvangelizateDetalleScreen` — 6 categories (obras, sin Cristo, ateo, agnóstico, métodos, consejos) with attributed sections. Content in `lib/data/evangelizate_data.dart` drawn from Ray Comfort/Living Waters, Billy Graham (bridge), Greg Laurie/Harvest, and the Romans Road; sources listed in-screen and in Perfil credits.
+- **Evangelízate**: `EvangelizateScreen` + `EvangelizateDetalleScreen` — 10 categorías agrupadas (Empieza aquí → Situaciones → Cerca de ti). Content in `lib/data/evangelizate_data.dart` (Comfort, Graham, Laurie, Romans Road, Cru).
 - **Quiz**: `QuizScreen` (`lib/screens/quiz_screen.dart`) loads `games/quiz/index.html` **locally** via `DefaultAssetBundle` + `loadHtmlString` (no internet needed). All CSS/JS is inline in the HTML. Google Fonts `<link>` removed to avoid offline fetch errors. WebView only works on Android/iOS, not Flutter Web.
 - **`withValues(alpha:)` not `withOpacity`**: Codebase uses `Colors.white.withValues(alpha: 0.07)` — `withOpacity` is not used anywhere (deprecated in newer Flutter).
 - **Color contrast**: All text on white uses emerald600 or darker. AppBar icons use `emerald700`. NavBar indicator is `emerald100` with selected icons in `emerald700`, unselected in `emerald400`.

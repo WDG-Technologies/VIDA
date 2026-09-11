@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../theme/app_theme.dart';
+import '../widgets/html_game_frame.dart';
 
 class RiegaScreen extends StatefulWidget {
   const RiegaScreen({super.key});
@@ -13,13 +15,14 @@ class RiegaScreen extends StatefulWidget {
 }
 
 class _RiegaScreenState extends State<RiegaScreen> {
-  late final WebViewController _controller;
+  WebViewController? _controller;
   var _loading = true;
   var _error = false;
 
   @override
   void initState() {
     super.initState();
+    if (kIsWeb) return;
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..addJavaScriptChannel('RiegaChannel',
@@ -31,7 +34,9 @@ class _RiegaScreenState extends State<RiegaScreen> {
             await _restoreState();
           },
           onWebResourceError: (e) {
-            if ((e.isForMainFrame ?? true) && mounted) setState(() => _error = true);
+            if ((e.isForMainFrame ?? true) && mounted) {
+              setState(() => _error = true);
+            }
           },
         ),
       );
@@ -41,12 +46,13 @@ class _RiegaScreenState extends State<RiegaScreen> {
   }
 
   Future<void> _loadLocalHtml() async {
+    final c = _controller;
+    if (c == null) return;
     try {
       final html = await DefaultAssetBundle.of(context)
           .loadString('games/riega/index.html');
       if (!mounted) return;
-      await _controller.loadHtmlString(html,
-          baseUrl: 'https://riega-game.local/');
+      await c.loadHtmlString(html, baseUrl: 'https://riega-game.local/');
     } catch (_) {
       if (mounted) setState(() => _error = true);
     }
@@ -58,22 +64,32 @@ class _RiegaScreenState extends State<RiegaScreen> {
   }
 
   Future<void> _restoreState() async {
+    final c = _controller;
+    if (c == null) return;
     final prefs = await SharedPreferences.getInstance();
     if (!mounted) return;
     final saved = prefs.getString('riega_game_state');
     if (saved != null) {
-      // jsonEncode produces a safe JS string literal (quotes + escapes).
-      await _controller.runJavaScript('restoreFlutterState(${jsonEncode(saved)})');
+      await c.runJavaScript('restoreFlutterState(${jsonEncode(saved)})');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      // En web el juego persiste con localStorage propio del HTML.
+      return const HtmlGameFrame(
+        title: 'Riega y Crece',
+        assetPath: 'games/riega/index.html',
+      );
+    }
+
+    final controller = _controller!;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riega y Crece'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded),
+          icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -87,12 +103,12 @@ class _RiegaScreenState extends State<RiegaScreen> {
                     color: AppColors.emerald600,
                     backgroundColor: AppColors.emerald100,
                   ),
-                Expanded(child: WebViewWidget(controller: _controller)),
+                Expanded(child: WebViewWidget(controller: controller)),
               ],
             ),
             if (_error)
               Container(
-              color: Theme.of(context).colorScheme.surface,
+                color: Theme.of(context).colorScheme.surface,
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.all(32),
@@ -119,7 +135,7 @@ class _RiegaScreenState extends State<RiegaScreen> {
                             });
                             _loadLocalHtml();
                           },
-                          icon: Icon(Icons.refresh_rounded),
+                          icon: const Icon(Icons.refresh_rounded),
                           label: const Text('Reintentar'),
                         ),
                       ],

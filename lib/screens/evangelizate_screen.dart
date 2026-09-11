@@ -60,9 +60,10 @@ class EvangelizateScreen extends StatelessWidget {
                     Text(
                       'Métodos y consejos basados en pastores y ministerios '
                       'verificables: Ray Comfort (Living Waters), Billy Graham, '
-                      'Greg Laurie (Harvest), el Camino de Romanos y Cru. '
-                      'Incluye sufrimiento, objeciones, familia y seguimiento. '
-                      'Usa esto como ayuda; la autoridad final es la Biblia.',
+                      'Greg Laurie (Harvest), el Camino de Romanos y Cru.\n\n'
+                      'Empieza por Métodos y Consejos; luego elige la situación '
+                      '(obras, religioso, ateo, sufrimiento…) o cómo hablar con '
+                      'familiares. Usa esto como ayuda; la autoridad final es la Biblia.',
                       style: TextStyle(fontFamily: 'DM Sans',
                         fontSize: 13,
                         height: 1.5,
@@ -118,51 +119,10 @@ class EvangelizateScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            FadeIn(
-              index: 1,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4, bottom: 10),
-                child: Text(
-                  'SITUACIONES Y MÉTODOS',
-                  style: TextStyle(fontFamily: 'DM Sans',
-                    fontSize: 10,
-                    letterSpacing: 2,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.emerald600,
-                  ),
-                ),
-              ),
-            ),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 0.85,
-              children: List.generate(
-                evangelizateCategories.length,
-                (i) => FadeIn(
-                  index: i + 2,
-                  child: ToolCard(
-                    icon: evangelizateCategories[i].icon,
-                    title: evangelizateCategories[i].shortTitle,
-                    subtitle: evangelizateCategories[i].description,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => EvangelizateDetalleScreen(
-                          category: evangelizateCategories[i],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            ..._buildGroupedCategories(context),
             const SizedBox(height: 28),
             FadeIn(
-              index: 8,
+              index: 20,
               child: Padding(
                 padding: const EdgeInsets.only(left: 4, bottom: 10),
                 child: Text(
@@ -223,5 +183,70 @@ class EvangelizateScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> _buildGroupedCategories(BuildContext context) {
+    const groups = <(String, String)>[
+      ('EMPIEZA AQUÍ', 'empezar'),
+      ('SITUACIONES', 'situaciones'),
+      ('CERCA DE TI', 'cercanos'),
+    ];
+    final out = <Widget>[];
+    var fade = 1;
+    for (final (label, key) in groups) {
+      final cats =
+          evangelizateCategories.where((c) => c.group == key).toList();
+      if (cats.isEmpty) continue;
+      out.add(
+        FadeIn(
+          index: fade++,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 10, top: 4),
+            child: Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'DM Sans',
+                fontSize: 10,
+                letterSpacing: 2,
+                fontWeight: FontWeight.w600,
+                color: AppColors.emerald600,
+              ),
+            ),
+          ),
+        ),
+      );
+      out.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 18),
+          child: GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            childAspectRatio: 0.85,
+            children: [
+              for (final cat in cats)
+                FadeIn(
+                  index: fade++,
+                  child: ToolCard(
+                    icon: cat.icon,
+                    title: cat.shortTitle,
+                    subtitle: cat.description,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            EvangelizateDetalleScreen(category: cat),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
+    return out;
   }
 }

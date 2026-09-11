@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../theme/app_theme.dart';
+import '../widgets/html_game_frame.dart';
 
 class QuizScreen extends StatefulWidget {
   const QuizScreen({super.key});
@@ -10,13 +12,14 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  late final WebViewController _controller;
+  WebViewController? _controller;
   var _loading = true;
   var _error = false;
 
   @override
   void initState() {
     super.initState();
+    if (kIsWeb) return;
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
@@ -25,7 +28,9 @@ class _QuizScreenState extends State<QuizScreen> {
             if (mounted) setState(() => _loading = false);
           },
           onWebResourceError: (e) {
-            if ((e.isForMainFrame ?? true) && mounted) setState(() => _error = true);
+            if ((e.isForMainFrame ?? true) && mounted) {
+              setState(() => _error = true);
+            }
           },
         ),
       );
@@ -35,10 +40,12 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Future<void> _loadLocalHtml() async {
+    final c = _controller;
+    if (c == null) return;
     try {
       final html = await DefaultAssetBundle.of(context)
           .loadString('games/quiz/index.html');
-      await _controller.loadHtmlString(html);
+      await c.loadHtmlString(html);
     } catch (_) {
       if (mounted) setState(() => _error = true);
     }
@@ -46,11 +53,19 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return const HtmlGameFrame(
+        title: 'Quiz Bíblico',
+        assetPath: 'games/quiz/index.html',
+      );
+    }
+
+    final controller = _controller!;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quiz Bíblico'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded),
+          icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -63,7 +78,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   color: AppColors.emerald600,
                   backgroundColor: AppColors.emerald100,
                 ),
-              Expanded(child: WebViewWidget(controller: _controller)),
+              Expanded(child: WebViewWidget(controller: controller)),
             ],
           ),
           if (_error)
@@ -95,7 +110,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           });
                           _loadLocalHtml();
                         },
-                        icon: Icon(Icons.refresh_rounded),
+                        icon: const Icon(Icons.refresh_rounded),
                         label: const Text('Reintentar'),
                       ),
                     ],

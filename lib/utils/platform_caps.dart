@@ -12,8 +12,8 @@ class PlatformCaps {
   /// Notificaciones locales / recordatorios.
   static bool get localNotifications => !kIsWeb;
 
-  /// Juegos con WebView (Quiz, Riega).
-  static bool get webViewGames => !kIsWeb;
+  /// Juegos HTML (Quiz/Riega): en móvil WebView; en web iframe.
+  static bool get webViewGames => true;
 
   /// Actualización vía APK (móvil). En web se abre releases en el navegador.
   static bool get apkUpdates => !kIsWeb;
