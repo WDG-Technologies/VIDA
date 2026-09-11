@@ -1,4 +1,4 @@
-# Revisión seed iglesias (0.9.2)
+# Revisión seed iglesias (0.9.21)
 
 **Fuente:** `assets/data/iglesias_mexico.json` (OSM)  
 **Tras limpieza:** ~412 lugares (antes 414)

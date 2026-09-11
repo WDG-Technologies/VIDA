@@ -1,6 +1,6 @@
-# VIDA 0.9.2 (Beta) — Notas de la versión
+# VIDA 0.9.21 (Beta) — Notas de la versión
 
-**Build:** `0.9.2+14`  
+**Build:** `0.9.21+15`  
 **APK:** [`VIDA.apk`](./VIDA.apk)
 
 ---
