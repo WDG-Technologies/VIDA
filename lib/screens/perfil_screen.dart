@@ -549,7 +549,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 _SettingsTile(
                   icon: Icons.open_in_new_rounded,
                   title: 'Código y releases',
-                  subtitle: 'GitHub · AngelDev2343/VIDA-Project',
+                  subtitle: 'GitHub · WDG-Technologies/VIDA',
                   onTap: () => _openUrl(UpdateService.releasesUrl),
                 ),
               ],

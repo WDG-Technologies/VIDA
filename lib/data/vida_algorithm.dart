@@ -215,10 +215,12 @@ class VidaSavedStore {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(_key) ?? '[]';
     try {
-      final list = jsonDecode(raw) as List;
-      return list
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) return const [];
+      return decoded
+          .whereType<Map>()
           .map((e) =>
-              VidaAssignment.fromJson(Map<String, dynamic>.from(e as Map)))
+              VidaAssignment.fromJson(Map<String, dynamic>.from(e)))
           .toList();
     } catch (_) {
       return const [];

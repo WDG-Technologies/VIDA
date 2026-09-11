@@ -26,6 +26,7 @@ class _StreakScreenState extends State<StreakScreen> {
     final count = await StreakService.getCount();
     final best = await StreakService.getBest();
     final dates = await StreakService.getDates();
+    if (!mounted) return;
     setState(() {
       _streak = count;
       _best = best;

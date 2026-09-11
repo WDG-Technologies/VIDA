@@ -106,14 +106,16 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
     _searchTimer?.cancel();
     if (q.length >= 3) {
       _searchTimer = Timer(const Duration(milliseconds: 300), () {
+        if (!mounted) return;
         _doSearch();
       });
-    } else {
+    } else if (mounted) {
       setState(() => _searched = false);
     }
   }
 
   void _doSearch() {
+    if (!mounted) return;
     final q = _searchCtrl.text.trim().toLowerCase();
     setState(() {
       _searched = true;
@@ -121,8 +123,8 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
         _filtered = List.from(_churches);
       } else {
         _filtered = _churches.where((c) {
-          final nombre = (c['nombre'] as String? ?? '').toLowerCase();
-          final ciudad = (c['ciudad'] as String? ?? '').toLowerCase();
+          final nombre = '${c['nombre'] ?? ''}'.toLowerCase();
+          final ciudad = '${c['ciudad'] ?? ''}'.toLowerCase();
           return nombre.contains(q) || ciudad.contains(q);
         }).toList();
       }
@@ -509,8 +511,9 @@ class _ChurchDetailSheetState extends State<_ChurchDetailSheet> {
       final joined = await FirebaseFirestore.instance.runTransaction((tx) async {
         final snap = await tx.get(ref);
         if (!snap.exists) return false;
-        final asistentes =
-            List<String>.from(snap.data()?['asistentes'] ?? []);
+        final asistentes = (snap.data()?['asistentes'] as List<dynamic>? ?? [])
+            .map((e) => '$e')
+            .toList();
         if (asistentes.contains(uid)) return false;
         tx.update(ref, {
           'miembros': FieldValue.increment(1),
@@ -558,8 +561,9 @@ class _ChurchDetailSheetState extends State<_ChurchDetailSheet> {
                   return const SizedBox.shrink();
                 }
                 final data = snap.data!.data() as Map<String, dynamic>;
-                final asistentes =
-                    List<String>.from(data['asistentes'] ?? []);
+                final asistentes = (data['asistentes'] as List<dynamic>? ?? [])
+                    .map((e) => '$e')
+                    .toList();
                 final yaAsiste =
                     !needsLogin &&
                     uid != null &&
@@ -606,10 +610,10 @@ class _ChurchDetailSheetState extends State<_ChurchDetailSheet> {
                                 color: AppColors.emerald800)),
                       ],
                     ),
-                    if (data['descripcion'] != null &&
-                        (data['descripcion'] as String).isNotEmpty) ...[
+                    if ((data['descripcion']?.toString().trim() ?? '')
+                        .isNotEmpty) ...[
                       const SizedBox(height: 12),
-                      Text(data['descripcion'],
+                      Text(data['descripcion'].toString(),
                           style: TextStyle(
                               fontFamily: 'DM Sans',
                               fontSize: 13,
@@ -784,14 +788,24 @@ class _AddChurchSheetState extends State<_AddChurchSheet> {
           .transform(utf8.decoder)
           .join()
           .timeout(const Duration(seconds: 12));
-      final data = jsonDecode(body) as List;
+      final decoded = jsonDecode(body);
       if (!mounted) return;
-      if (data.isNotEmpty) {
-        final lat = double.parse(data[0]['lat'] as String);
-        final lng = double.parse(data[0]['lon'] as String);
-        final loc = LatLng(lat, lng);
-        setState(() => _selectedLocation = loc);
-        _miniMapController.move(loc, 15);
+      if (decoded is List && decoded.isNotEmpty) {
+        final first = decoded[0];
+        if (first is Map) {
+          final lat = double.tryParse('${first['lat']}');
+          final lng = double.tryParse('${first['lon']}');
+          if (lat != null &&
+              lng != null &&
+              lat >= -90 &&
+              lat <= 90 &&
+              lng >= -180 &&
+              lng <= 180) {
+            final loc = LatLng(lat, lng);
+            setState(() => _selectedLocation = loc);
+            _miniMapController.move(loc, 15);
+          }
+        }
       }
     } catch (_) {
     } finally {
@@ -931,6 +945,7 @@ class _AddChurchSheetState extends State<_AddChurchSheet> {
                 if (v.trim().length >= 3) {
                   _searchTimer =
                       Timer(const Duration(milliseconds: 400), () {
+                    if (!mounted) return;
                     _searchLocation(v);
                   });
                 }

@@ -40,8 +40,7 @@ class VidaSignals {
     }
 
     // Generic event counters: evangelizate, arcade, etc.
-    final eventsRaw = prefs.getString(_kEvents) ?? '{}';
-    final events = Map<String, dynamic>.from(jsonDecode(eventsRaw) as Map);
+    final events = _decodeEvents(prefs.getString(_kEvents));
     for (final e in events.entries) {
       final n = (e.value as num?)?.toDouble() ?? 0;
       for (final tag in _mapEvent(e.key)) {
@@ -128,10 +127,19 @@ class VidaSignals {
     await prefs.setString(_kLastChapter, '$bookIndex:$chapter');
   }
 
+  static Map<String, dynamic> _decodeEvents(String? raw) {
+    try {
+      final decoded = jsonDecode(raw ?? '{}');
+      if (decoded is Map) {
+        return Map<String, dynamic>.from(decoded);
+      }
+    } catch (_) {}
+    return {};
+  }
+
   static Future<void> trackEvent(String name) async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_kEvents) ?? '{}';
-    final map = Map<String, dynamic>.from(jsonDecode(raw) as Map);
+    final map = _decodeEvents(prefs.getString(_kEvents));
     map[name] = ((map[name] as num?)?.toInt() ?? 0) + 1;
     await prefs.setString(_kEvents, jsonEncode(map));
   }

@@ -65,10 +65,18 @@ class _MemoramaScreenState extends State<MemoramaScreen> {
     }
     _second = i;
     _lock = true;
+    final first = _first!;
+    final second = _second!;
     await Future<void>.delayed(const Duration(milliseconds: 650));
     if (!mounted) return;
-    final a = _cards[_first!];
-    final b = _cards[_second!];
+    if (_first != first || _second != second || first >= _cards.length || second >= _cards.length) {
+      _first = null;
+      _second = null;
+      _lock = false;
+      return;
+    }
+    final a = _cards[first];
+    final b = _cards[second];
     if (a.pairId == b.pairId) {
       setState(() {
         a.matched = true;

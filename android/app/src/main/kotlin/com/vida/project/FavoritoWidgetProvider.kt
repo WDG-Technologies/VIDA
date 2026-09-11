@@ -102,7 +102,7 @@ class FavoritoWidgetProvider : HomeWidgetProvider() {
 
             val opts = BitmapFactory.Options().apply {
                 inSampleSize = sample
-                inPreferredConfig = Bitmap.Config.ARGB_8888
+                inPreferredConfig = Bitmap.Config.RGB_565
             }
             val decoded = BitmapFactory.decodeFile(file.absolutePath, opts) ?: return null
             val w = decoded.width

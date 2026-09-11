@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -60,8 +62,8 @@ class _RiegaScreenState extends State<RiegaScreen> {
     if (!mounted) return;
     final saved = prefs.getString('riega_game_state');
     if (saved != null) {
-      final escaped = saved.replaceAll('\\', '\\\\').replaceAll("'", "\\'");
-      await _controller.runJavaScript("restoreFlutterState('$escaped')");
+      // jsonEncode produces a safe JS string literal (quotes + escapes).
+      await _controller.runJavaScript('restoreFlutterState(${jsonEncode(saved)})');
     }
   }
 

@@ -58,6 +58,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
   }
 
   Future<void> _captureAndShare() async {
+    if (_capturing || _text.isEmpty) return;
     setState(() => _capturing = true);
     await Future.delayed(const Duration(milliseconds: 200));
 
@@ -115,7 +116,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: _text.isEmpty ? null : _captureAndShare,
+            onPressed: (_text.isEmpty || _capturing) ? null : _captureAndShare,
             icon: _capturing
                 ? const SizedBox(
                     width: 20,

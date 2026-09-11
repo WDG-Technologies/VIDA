@@ -18,10 +18,19 @@ class StreakService {
     return prefs.getInt(_bestKey) ?? 0;
   }
 
+  static List<String> _decodeDates(String? raw) {
+    try {
+      final decoded = jsonDecode(raw ?? '[]');
+      if (decoded is! List) return [];
+      return decoded.map((e) => '$e').where((s) => s.isNotEmpty).toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
   static Future<Set<String>> getDates() async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_datesKey) ?? '[]';
-    return Set<String>.from(jsonDecode(raw) as List);
+    return _decodeDates(prefs.getString(_datesKey)).toSet();
   }
 
   static Future<void> checkAndUpdate() async {
@@ -33,8 +42,7 @@ class StreakService {
 
     final count = prefs.getInt(_countKey) ?? 0;
     final best = prefs.getInt(_bestKey) ?? 0;
-    final raw = prefs.getString(_datesKey) ?? '[]';
-    final dates = List<String>.from(jsonDecode(raw) as List);
+    final dates = _decodeDates(prefs.getString(_datesKey));
 
     final int newCount;
     if (lastDate == _yesterday()) {

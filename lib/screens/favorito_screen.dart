@@ -254,6 +254,7 @@ class _FavoritoScreenState extends State<FavoritoScreen> {
   Future<void> _selectVerse(int index) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('fav_index', index);
+    if (!mounted) return;
     setState(() => _selectedIndex = index);
 
     if (_enabled) {

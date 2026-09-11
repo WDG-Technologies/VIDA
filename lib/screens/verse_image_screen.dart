@@ -193,9 +193,10 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
   }
 
   Future<void> _share() async {
-    if (!_hasBg || _verseText.isEmpty) return;
+    if (_sharing || !_hasBg || _verseText.isEmpty) return;
     setState(() => _sharing = true);
     await Future<void>.delayed(const Duration(milliseconds: 120));
+    if (!mounted) return;
     try {
       final boundary = _repaintKey.currentContext?.findRenderObject()
           as RenderRepaintBoundary?;

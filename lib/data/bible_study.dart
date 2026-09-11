@@ -45,42 +45,49 @@ class BibleStudy {
       };
 
   factory BibleStudy.fromJson(Map<String, dynamic> json) => BibleStudy(
-        id: json['id'] as String,
-        name: json['name'] as String,
-        date: DateTime.parse(json['date'] as String),
-        book: json['book'] as String,
-        verses: json['verses'] as String? ?? '',
-        reflection: json['reflection'] as String? ?? '',
+        id: '${json['id'] ?? ''}',
+        name: '${json['name'] ?? ''}',
+        date: DateTime.tryParse('${json['date'] ?? ''}') ?? DateTime.now(),
+        book: '${json['book'] ?? ''}',
+        verses: '${json['verses'] ?? ''}',
+        reflection: '${json['reflection'] ?? ''}',
       );
 }
 
 class BibleStudyService {
   static const _key = 'bible_studies';
 
+  static List<BibleStudy> _decode(String? raw) {
+    try {
+      final decoded = jsonDecode(raw ?? '[]');
+      if (decoded is! List) return [];
+      return decoded
+          .whereType<Map>()
+          .map((e) => BibleStudy.fromJson(Map<String, dynamic>.from(e)))
+          .where((s) => s.id.isNotEmpty)
+          .toList()
+        ..sort((a, b) => b.date.compareTo(a.date));
+    } catch (_) {
+      return [];
+    }
+  }
+
   static Future<List<BibleStudy>> getAll() async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key) ?? '[]';
-    final list = jsonDecode(raw) as List;
-    return list
-        .map((e) => BibleStudy.fromJson(e as Map<String, dynamic>))
-        .toList()
-      ..sort((a, b) => b.date.compareTo(a.date));
+    return _decode(prefs.getString(_key));
   }
 
   static Future<void> save(BibleStudy study) async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key) ?? '[]';
-    final list = jsonDecode(raw) as List;
+    final list = _decode(prefs.getString(_key)).map((e) => e.toJson()).toList();
     list.add(study.toJson());
     await prefs.setString(_key, jsonEncode(list));
   }
 
   static Future<void> update(BibleStudy study) async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key) ?? '[]';
-    final list = jsonDecode(raw) as List;
-    final i = list.indexWhere(
-        (e) => (e as Map<String, dynamic>)['id'] == study.id);
+    final list = _decode(prefs.getString(_key)).map((e) => e.toJson()).toList();
+    final i = list.indexWhere((e) => e['id'] == study.id);
     if (i != -1) {
       list[i] = study.toJson();
       await prefs.setString(_key, jsonEncode(list));
@@ -89,9 +96,8 @@ class BibleStudyService {
 
   static Future<void> delete(String id) async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key) ?? '[]';
-    final list = jsonDecode(raw) as List;
-    list.removeWhere((e) => (e as Map<String, dynamic>)['id'] == id);
+    final list = _decode(prefs.getString(_key)).map((e) => e.toJson()).toList();
+    list.removeWhere((e) => e['id'] == id);
     await prefs.setString(_key, jsonEncode(list));
   }
 }

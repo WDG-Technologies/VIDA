@@ -23,6 +23,7 @@ class _EstudioBiblicoScreenState extends State<EstudioBiblicoScreen> {
 
   Future<void> _load() async {
     final studies = await BibleStudyService.getAll();
+    if (!mounted) return;
     setState(() => _studies = studies);
   }
 
@@ -98,8 +99,12 @@ class _EstudioBiblicoScreenState extends State<EstudioBiblicoScreen> {
                           color: Colors.white),
                     ),
                     onDismissed: (_) async {
-                      await BibleStudyService.delete(s.id);
-                      _load();
+                      setState(() =>
+                          _studies = _studies.where((e) => e.id != s.id).toList());
+                      try {
+                        await BibleStudyService.delete(s.id);
+                      } catch (_) {}
+                      if (mounted) await _load();
                     },
                     child: Card(
                       margin: const EdgeInsets.only(bottom: 10),

@@ -18,6 +18,7 @@ class _AddEstudioScreenState extends State<AddEstudioScreen> {
   final _reflectionCtrl = TextEditingController();
   final _dateCtrl = TextEditingController();
   DateTime _date = DateTime.now();
+  bool _saving = false;
 
   @override
   void initState() {
@@ -59,7 +60,7 @@ class _AddEstudioScreenState extends State<AddEstudioScreen> {
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
     );
-    if (picked != null) {
+    if (picked != null && mounted) {
       setState(() {
         _date = picked;
         _updateDateText();
@@ -68,23 +69,36 @@ class _AddEstudioScreenState extends State<AddEstudioScreen> {
   }
 
   Future<void> _save() async {
+    if (_saving) return;
     if (!_formKey.currentState!.validate()) return;
 
-    final study = BibleStudy(
-      id: widget.existing?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-      name: _nameCtrl.text.trim(),
-      date: _date,
-      book: _bookCtrl.text.trim(),
-      verses: _versesCtrl.text.trim(),
-      reflection: _reflectionCtrl.text.trim(),
-    );
+    setState(() => _saving = true);
+    try {
+      final study = BibleStudy(
+        id: widget.existing?.id ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
+        name: _nameCtrl.text.trim(),
+        date: _date,
+        book: _bookCtrl.text.trim(),
+        verses: _versesCtrl.text.trim(),
+        reflection: _reflectionCtrl.text.trim(),
+      );
 
-    if (widget.existing != null) {
-      await BibleStudyService.update(study);
-    } else {
-      await BibleStudyService.save(study);
+      if (widget.existing != null) {
+        await BibleStudyService.update(study);
+      } else {
+        await BibleStudyService.save(study);
+      }
+      if (mounted) Navigator.pop(context, true);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se pudo guardar el estudio')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
-    if (mounted) Navigator.pop(context, true);
   }
 
   @override
@@ -99,8 +113,14 @@ class _AddEstudioScreenState extends State<AddEstudioScreen> {
         title: Text(widget.existing != null ? 'Editar estudio' : 'Estudio'),
         actions: [
           TextButton(
-            onPressed: _save,
-            child: const Text('Guardar'),
+            onPressed: _saving ? null : _save,
+            child: _saving
+                ? const SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Text('Guardar'),
           ),
         ],
       ),

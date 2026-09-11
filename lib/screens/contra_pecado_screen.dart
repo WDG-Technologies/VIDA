@@ -50,9 +50,77 @@ class _ContraPecadoScreenState extends State<ContraPecadoScreen> {
       _widgetMissing = false;
     });
 
-    await HomeWidget.saveWidgetData('contra_pecado', value);
+    try {
+      await HomeWidget.saveWidgetData('contra_pecado', value);
 
-    if (value) {
+      if (value) {
+        final phrase = getTodaysPhrase();
+        await HomeWidget.saveWidgetData('phrase', phrase.text);
+        await HomeWidget.saveWidgetData('background', phrase.imageAsset);
+        await HomeWidget.updateWidget(
+          androidName: 'ContraPecadoWidgetProvider',
+          iOSName: 'ContraPecadoWidget',
+        );
+        // Pedir pin si el widget no está instalado (no solo por first_launch_pin).
+        var needPin = !(prefs.getBool('first_launch_pin') ?? false);
+        try {
+          final widgets = await HomeWidget.getInstalledWidgets();
+          final found = widgets.any(
+            (w) =>
+                (w.androidClassName?.contains('ContraPecadoWidgetProvider') ??
+                    false),
+          );
+          needPin = !found;
+        } catch (_) {}
+        if (needPin) {
+          final supported =
+              await HomeWidget.isRequestPinWidgetSupported() ?? false;
+          if (supported) {
+            await HomeWidget.requestPinWidget(
+              androidName: 'ContraPecadoWidgetProvider',
+            );
+          }
+          if (mounted && !supported) _showManualPinDialog();
+        }
+        await prefs.setBool('first_launch_pin', true);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Widget activado'),
+              duration: Duration(milliseconds: 1200),
+            ),
+          );
+          Navigator.pop(context);
+        }
+      } else {
+        await HomeWidget.saveWidgetData('phrase', '');
+        await HomeWidget.saveWidgetData('background', '');
+        await HomeWidget.updateWidget(
+          androidName: 'ContraPecadoWidgetProvider',
+          iOSName: 'ContraPecadoWidget',
+        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Widget desactivado'),
+              duration: Duration(milliseconds: 1200),
+            ),
+          );
+        }
+      }
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se pudo actualizar el widget'),
+          duration: Duration(milliseconds: 1600),
+        ),
+      );
+    }
+  }
+
+  Future<void> _repin() async {
+    try {
       final phrase = getTodaysPhrase();
       await HomeWidget.saveWidgetData('phrase', phrase.text);
       await HomeWidget.saveWidgetData('background', phrase.imageAsset);
@@ -60,77 +128,29 @@ class _ContraPecadoScreenState extends State<ContraPecadoScreen> {
         androidName: 'ContraPecadoWidgetProvider',
         iOSName: 'ContraPecadoWidget',
       );
-      // Pedir pin si el widget no está instalado (no solo por first_launch_pin).
-      var needPin = !(prefs.getBool('first_launch_pin') ?? false);
-      try {
-        final widgets = await HomeWidget.getInstalledWidgets();
-        final found = widgets.any(
-          (w) =>
-              (w.androidClassName?.contains('ContraPecadoWidgetProvider') ??
-                  false),
+      final supported =
+          await HomeWidget.isRequestPinWidgetSupported() ?? false;
+      if (supported) {
+        await HomeWidget.requestPinWidget(
+          androidName: 'ContraPecadoWidgetProvider',
         );
-        needPin = !found;
-      } catch (_) {}
-      if (needPin) {
-        final supported =
-            await HomeWidget.isRequestPinWidgetSupported() ?? false;
-        if (supported) {
-          await HomeWidget.requestPinWidget(
-            androidName: 'ContraPecadoWidgetProvider',
-          );
-        }
-        if (mounted && !supported) _showManualPinDialog();
       }
-      await prefs.setBool('first_launch_pin', true);
       if (mounted) {
+        setState(() => _widgetMissing = false);
+        if (!supported) _showManualPinDialog();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Widget activado'),
-            duration: Duration(milliseconds: 1200),
-          ),
-        );
-        Navigator.pop(context);
-      }
-    } else {
-      await HomeWidget.saveWidgetData('phrase', '');
-      await HomeWidget.saveWidgetData('background', '');
-      await HomeWidget.updateWidget(
-        androidName: 'ContraPecadoWidgetProvider',
-        iOSName: 'ContraPecadoWidget',
-      );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Widget desactivado'),
+            content: Text('Widget reinstalado'),
             duration: Duration(milliseconds: 1200),
           ),
         );
       }
-    }
-  }
-
-  Future<void> _repin() async {
-    final phrase = getTodaysPhrase();
-    await HomeWidget.saveWidgetData('phrase', phrase.text);
-    await HomeWidget.saveWidgetData('background', phrase.imageAsset);
-    await HomeWidget.updateWidget(
-      androidName: 'ContraPecadoWidgetProvider',
-      iOSName: 'ContraPecadoWidget',
-    );
-    final supported =
-        await HomeWidget.isRequestPinWidgetSupported() ?? false;
-    if (supported) {
-      await HomeWidget.requestPinWidget(
-        androidName: 'ContraPecadoWidgetProvider',
-      );
-    }
-    if (mounted) {
-      setState(() => _widgetMissing = false);
-      if (!supported) _showManualPinDialog();
+    } catch (_) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Widget reinstalado'),
-          duration: Duration(milliseconds: 1200),
+          content: Text('No se pudo reinstalar el widget'),
+          duration: Duration(milliseconds: 1600),
         ),
       );
     }

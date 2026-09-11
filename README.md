@@ -8,12 +8,12 @@
 
 Gratis · Sin publicidad · En español
 
-**v0.8.0 (Beta)** · build `+9` · WDG Technologies
+**v0.8.1 (Beta)** · build `+10` · WDG Technologies
 
 [![Platform](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white)](#-disponibilidad)
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)](#%EF%B8%8F-tecnolog%C3%ADas)
 [![License](https://img.shields.io/badge/MIT-green)](#-licencia)
-[![Version](https://img.shields.io/badge/versión-0.8.0%2B9-0F766E)](#-disponibilidad)
+[![Version](https://img.shields.io/badge/versión-0.8.1%2B10-0F766E)](#-disponibilidad)
 
 </div>
 
@@ -93,9 +93,9 @@ Apariencia (claro / oscuro / sistema, estilos Esmeralda · Océano · Ámbar · 
 ## Disponibilidad
 
 - **Plataforma:** Android (APK)
-- **Versión:** `0.8.0+9` — **0.8 (Beta)**
+- **Versión:** `0.8.1+10` — **0.8.1 (Beta)**
 - **Descarga:** [`VIDA.apk`](./VIDA.apk) en la raíz del repositorio
-- **Release:** [VIDA.apk en GitHub Releases](https://github.com/AngelDev2343/VIDA-Project/releases/download/BETA/VIDA.apk)
+- **Release:** [VIDA.apk en GitHub Releases](https://github.com/WDG-Technologies/VIDA/releases)
 
 > Widgets de inicio y juegos con WebView están pensados para Android (y iOS en código); no es una app web completa.
 
@@ -132,6 +132,6 @@ Texto completo: [`LICENSE`](LICENSE).
 
 Hecho para fortalecer la fe, animar la lectura de la Biblia y construir comunidad en Cristo.
 
-© WDG Technologies — **VIDA** · v0.8.0 (Beta)
+© WDG Technologies — **VIDA** · v0.8.1 (Beta)
 
 </div>

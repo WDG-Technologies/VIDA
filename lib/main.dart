@@ -25,14 +25,22 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await ThemeController.instance.load();
-  await Firebase.initializeApp();
-  if (FirebaseAuth.instance.currentUser == null) {
-    await FirebaseAuth.instance.signInAnonymously();
+  try {
+    await Firebase.initializeApp();
+    if (FirebaseAuth.instance.currentUser == null) {
+      await FirebaseAuth.instance.signInAnonymously();
+    }
+  } catch (_) {
+    // Offline / Play Services / config — app still launches without cloud.
   }
-  await NotificationService.init();
-  await NotificationService.requestPermission();
-  await NotificationService.scheduleAwayReminder();
-  HomeWidget.setAppGroupId('group.com.vida.project');
+  try {
+    await NotificationService.init();
+    await NotificationService.requestPermission();
+    await NotificationService.scheduleAwayReminder();
+  } catch (_) {}
+  try {
+    HomeWidget.setAppGroupId('group.com.vida.project');
+  } catch (_) {}
   runApp(const VidaApp());
 }
 
@@ -268,6 +276,7 @@ class _AppShellState extends State<AppShell> {
   void selectTab(int i) => _onTabSelected(i);
 
   Future<void> _onTabSelected(int i) async {
+    if (mounted) setState(() => _selectedIndex = i);
     if (i == 2) {
       final prefs = await SharedPreferences.getInstance();
       final shown = prefs.getBool('vida_intro_shown') ?? false;
@@ -315,7 +324,6 @@ class _AppShellState extends State<AppShell> {
         );
       }
     }
-    if (mounted) setState(() => _selectedIndex = i);
   }
 
   @override

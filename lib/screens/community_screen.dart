@@ -49,8 +49,11 @@ class _CommunityScreenState extends State<CommunityScreen> {
             IconButton(
               tooltip: 'Cerrar sesión',
               onPressed: () async {
-                await _auth.signOut();
-                await _auth.signInAnonymously();
+                try {
+                  await _auth.signOut();
+                  await _auth.signInAnonymously();
+                } catch (_) {}
+                if (mounted) setState(() {});
               },
               icon: Icon(Icons.logout_rounded,
                   color: AppColors.emerald700, size: 22),
@@ -186,6 +189,7 @@ class _AuthViewState extends State<_AuthView>
         }
       } else {
         await auth.signInWithEmailAndPassword(email: email, password: pass);
+        if (!mounted) return;
         final user = auth.currentUser;
         final fallbackName = name.isNotEmpty
             ? name
@@ -590,7 +594,8 @@ class _PostCardState extends State<_PostCard> {
       widget.postDoc.data() as Map<String, dynamic>;
 
   bool get _isLiked {
-    final likedBy = _data['likedBy'] as List<dynamic>? ?? [];
+    final raw = _data['likedBy'];
+    final likedBy = raw is List ? raw.map((e) => '$e').toList() : const <String>[];
     final uid = _auth.currentUser?.uid;
     return uid != null && likedBy.contains(uid);
   }
@@ -615,7 +620,9 @@ class _PostCardState extends State<_PostCard> {
       await _db.runTransaction((tx) async {
         final snap = await tx.get(ref);
         final data = snap.data() ?? {};
-        final likedBy = List<String>.from(data['likedBy'] ?? []);
+        final likedBy = (data['likedBy'] as List<dynamic>? ?? [])
+            .map((e) => '$e')
+            .toList();
         final liked = likedBy.contains(uid);
         if (liked) {
           likedBy.remove(uid);
@@ -661,10 +668,15 @@ class _PostCardState extends State<_PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final likedBy = List<String>.from(_data['likedBy'] ?? []);
+    final likedRaw = _data['likedBy'];
+    final likedBy = likedRaw is List
+        ? likedRaw.map((e) => '$e').toList()
+        : const <String>[];
     final likeCount = likedBy.isNotEmpty
         ? likedBy.length
-        : (_data['likeCount'] as int? ?? 0);
+        : (_data['likeCount'] is num
+            ? (_data['likeCount'] as num).toInt()
+            : 0);
     final authorName = (_data['authorName'] as String?)?.trim() ?? '';
     final handle = _displayHandle(
       _data['authorEmail'] as String?,

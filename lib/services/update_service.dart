@@ -3,15 +3,15 @@ import 'dart:io';
 
 /// Consulta releases de GitHub para detectar versiones nuevas.
 class UpdateService {
-  static const repo = 'AngelDev2343/VIDA-Project';
+  static const repo = 'WDG-Technologies/VIDA';
   static const releasesUrl =
-      'https://github.com/AngelDev2343/VIDA-Project/releases';
+      'https://github.com/WDG-Technologies/VIDA/releases';
   static const apiLatest =
-      'https://api.github.com/repos/AngelDev2343/VIDA-Project/releases/latest';
+      'https://api.github.com/repos/WDG-Technologies/VIDA/releases/latest';
 
   /// Versión embebida (mantener alineada con pubspec.yaml).
-  static const currentVersion = '0.8.0';
-  static const currentLabel = '0.8 (Beta)';
+  static const currentVersion = '0.8.1';
+  static const currentLabel = '0.8.1 (Beta)';
 
   static Future<AppUpdateInfo?> checkLatest() async {
     final client = HttpClient()

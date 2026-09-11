@@ -57,10 +57,13 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
   }
 
   bool _canEdit(Map<String, dynamic> t) {
-    final created = (t['createdAt'] as Timestamp?)?.toDate();
+    final created = _asTimestamp(t['createdAt'])?.toDate();
     if (created == null) return false;
     return DateTime.now().difference(created).inMinutes < 15;
   }
+
+  Timestamp? _asTimestamp(dynamic value) =>
+      value is Timestamp ? value : null;
 
   Future<void> _openForm() async {
     final result = await Navigator.push<bool>(
@@ -235,7 +238,7 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
               ),
               SizedBox(height: 6),
               Text(
-                _formatDate(t['createdAt'] as Timestamp?),
+                _formatDate(_asTimestamp(t['createdAt'])),
                 style: TextStyle(fontSize: 11, color: AppColors.emerald400),
               ),
               SizedBox(height: 8),
@@ -300,7 +303,7 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
               ),
               SizedBox(height: 4),
               Text(
-                _formatDate(t['createdAt'] as Timestamp?),
+                _formatDate(_asTimestamp(t['createdAt'])),
                 style: TextStyle(fontSize: 10, color: AppColors.emerald400),
               ),
               SizedBox(height: 6),
@@ -363,7 +366,7 @@ class _TestimonioFormScreenState extends State<_TestimonioFormScreen> {
 
   Future<void> _save() async {
     final contenido = _contenidoCtrl.text.trim();
-    if (contenido.isEmpty) return;
+    if (contenido.isEmpty || _saving) return;
     if (contenido.length > 4000) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Máximo 4000 caracteres')),
@@ -408,10 +411,11 @@ class _TestimonioFormScreenState extends State<_TestimonioFormScreen> {
       Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
-      setState(() => _saving = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al guardar: $e')),
       );
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
