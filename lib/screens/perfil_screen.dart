@@ -14,6 +14,7 @@ import '../services/notification_service.dart';
 import '../services/update_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/platform_caps.dart';
+import '../widgets/responsive_body.dart';
 import '../widgets/user_avatar.dart';
 import 'appearance_screen.dart';
 import 'privacy_screen.dart';
@@ -30,6 +31,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
   bool _checkingUpdate = false;
   AppUpdateInfo? _update;
   bool _notifEnabled = true;
+  bool _dailyVerseEnabled = true;
   int _streak = 0;
   int _bestStreak = 0;
 
@@ -49,12 +51,15 @@ class _PerfilScreenState extends State<PerfilScreen> {
   Future<void> _load() async {
     final a = await VidaAlgorithm.current();
     final notif = await NotificationService.areAwayRemindersEnabled();
+    final dailyVerse =
+        await NotificationService.areDailyVerseRemindersEnabled();
     final streak = await StreakService.getCount();
     final best = await StreakService.getBest();
     if (!mounted) return;
     setState(() {
       _vida = a;
       _notifEnabled = notif;
+      _dailyVerseEnabled = dailyVerse;
       _streak = streak;
       _bestStreak = best;
     });
@@ -186,10 +191,91 @@ class _PerfilScreenState extends State<PerfilScreen> {
     setState(() => _notifEnabled = value);
     await NotificationService.setAwayRemindersEnabled(value);
     if (!mounted) return;
+    if (value && !await NotificationService.areNotificationsAllowed()) {
+      _soon(
+        'Activa las notificaciones de VIDA en Ajustes del teléfono',
+      );
+      return;
+    }
     _soon(
       value
           ? 'Recordatorios activados (si pasas 2 días sin abrir VIDA)'
           : 'Recordatorios desactivados',
+    );
+  }
+
+  Future<void> _toggleDailyVerse(bool value) async {
+    setState(() => _dailyVerseEnabled = value);
+    await NotificationService.setDailyVerseRemindersEnabled(value);
+    if (!mounted) return;
+    if (value && !await NotificationService.areNotificationsAllowed()) {
+      _soon(
+        'Activa las notificaciones de VIDA en Ajustes del teléfono',
+      );
+      return;
+    }
+    _soon(
+      value
+          ? 'Versículo del día activado (aviso a las 8:00)'
+          : 'Versículo del día desactivado',
+    );
+  }
+
+  Future<void> _testNotification() async {
+    final ok = await NotificationService.showTestNotification();
+    if (!mounted) return;
+    _soon(
+      ok
+          ? 'Aviso de prueba enviado'
+          : 'No se pudo mostrar. Revisa el permiso de notificaciones',
+    );
+  }
+
+  Future<void> _testDailyVerse() async {
+    final ok = await NotificationService.showTodayVerseNow();
+    if (!mounted) return;
+    _soon(
+      ok
+          ? 'Versículo del día enviado'
+          : 'No se pudo mostrar. Revisa el permiso de notificaciones',
+    );
+  }
+
+  Future<void> _showNotifDebug() async {
+    final report = await NotificationService.debugReport();
+    if (!mounted) return;
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Diagnóstico de avisos'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: SelectableText(
+              report,
+              style: const TextStyle(
+                fontFamily: 'monospace',
+                fontSize: 11,
+                height: 1.35,
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: report));
+              if (ctx.mounted) Navigator.pop(ctx);
+              if (mounted) _soon('Diagnóstico copiado');
+            },
+            child: const Text('Copiar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -367,7 +453,9 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Perfil')),
-      body: SingleChildScrollView(
+      body: ResponsiveBody(
+        maxWidth: Breakpoints.reading,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -547,7 +635,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   ),
                 ),
                 const Divider(height: 1, indent: 56),
-                if (PlatformCaps.localNotifications)
+                if (PlatformCaps.localNotifications) ...[
                   SwitchListTile(
                     secondary: Icon(Icons.notifications_active_rounded,
                         color: AppColors.emerald600),
@@ -571,6 +659,52 @@ class _PerfilScreenState extends State<PerfilScreen> {
                     activeThumbColor: AppColors.emerald600,
                     onChanged: _toggleNotifs,
                   ),
+                  const Divider(height: 1, indent: 56),
+                  SwitchListTile(
+                    secondary: Icon(Icons.menu_book_rounded,
+                        color: AppColors.emerald600),
+                    title: Text(
+                      'Versículo del día',
+                      style: TextStyle(
+                        fontFamily: 'DM Sans',
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.emerald900,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Aviso diario a las 8:00',
+                      style: TextStyle(
+                        fontFamily: 'DM Sans',
+                        fontSize: 12,
+                        color: AppColors.emerald600,
+                      ),
+                    ),
+                    value: _dailyVerseEnabled,
+                    activeThumbColor: AppColors.emerald600,
+                    onChanged: _toggleDailyVerse,
+                  ),
+                  const Divider(height: 1, indent: 56),
+                  _SettingsTile(
+                    icon: Icons.notifications_outlined,
+                    title: 'Probar aviso',
+                    subtitle: 'Envía una notificación ahora',
+                    onTap: _testNotification,
+                  ),
+                  const Divider(height: 1, indent: 56),
+                  _SettingsTile(
+                    icon: Icons.auto_stories_outlined,
+                    title: 'Probar versículo del día',
+                    subtitle: 'Muestra el texto completo ahora',
+                    onTap: _testDailyVerse,
+                  ),
+                  const Divider(height: 1, indent: 56),
+                  _SettingsTile(
+                    icon: Icons.bug_report_outlined,
+                    title: 'Diagnóstico de avisos',
+                    subtitle: 'Debug extremo · permisos, cola y logs',
+                    onTap: _showNotifDebug,
+                  ),
+                ],
               ],
             ),
 
@@ -721,6 +855,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

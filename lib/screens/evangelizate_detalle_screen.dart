@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/evangelizate_data.dart';
 import '../theme/app_theme.dart';
+import '../widgets/responsive_body.dart';
 
 class EvangelizateDetalleScreen extends StatelessWidget {
   final EvangelizateCategory category;
@@ -11,7 +12,9 @@ class EvangelizateDetalleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(category.shortTitle)),
-      body: SingleChildScrollView(
+      body: ResponsiveBody(
+        maxWidth: Breakpoints.reading,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -20,6 +23,7 @@ class EvangelizateDetalleScreen extends StatelessWidget {
             return _buildSection(context, section);
           }),
         ),
+      ),
       ),
     );
   }

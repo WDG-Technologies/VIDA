@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/oracion_guiada.dart';
 import '../theme/transitions.dart';
+import '../widgets/responsive_body.dart';
 
 /// Oración guiada estilo “story”: a pantalla completa, paso a paso.
 class OracionGuiadaScreen extends StatefulWidget {
@@ -119,6 +120,7 @@ class _OracionGuiadaScreenState extends State<OracionGuiadaScreen>
     final isIntro = _beat < 0;
     final isAmen = _beat >= _path.length;
     final stepIdx = isIntro || isAmen ? null : _beat;
+    final edgeW = Breakpoints.isDesktop(context) ? 56.0 : 22.0;
 
     return Scaffold(
       backgroundColor: colors.first,
@@ -178,24 +180,29 @@ class _OracionGuiadaScreenState extends State<OracionGuiadaScreen>
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(28, 8, 28, 24),
-                        child: isIntro
-                            ? _IntroStory(
-                                onStart: _next,
-                                onClose: () => Navigator.pop(context),
-                              )
-                            : isAmen
-                                ? _AmenStory(
-                                    onDone: () => Navigator.pop(context),
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 640),
+                            child: isIntro
+                                ? _IntroStory(
+                                    onStart: _next,
+                                    onClose: () => Navigator.pop(context),
                                   )
-                                : _StepStory(
-                                    paso: _path[stepIdx!],
-                                    index: stepIdx + 1,
-                                    total: _path.length,
-                                    icon: _icon(_path[stepIdx].icon),
-                                    controller: _noteCtrl,
-                                    onNext: _next,
-                                    onSkip: _next,
-                                  ),
+                                : isAmen
+                                    ? _AmenStory(
+                                        onDone: () => Navigator.pop(context),
+                                      )
+                                    : _StepStory(
+                                        paso: _path[stepIdx!],
+                                        index: stepIdx + 1,
+                                        total: _path.length,
+                                        icon: _icon(_path[stepIdx].icon),
+                                        controller: _noteCtrl,
+                                        onNext: _next,
+                                        onSkip: _next,
+                                      ),
+                          ),
+                        ),
                       ),
                       // Solo márgenes estrechos; el TextField queda en el centro libre.
                       if (!isIntro && !isAmen) ...[
@@ -203,7 +210,7 @@ class _OracionGuiadaScreenState extends State<OracionGuiadaScreen>
                           top: 0,
                           bottom: 168,
                           left: 0,
-                          width: 22,
+                          width: edgeW,
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTap: _prev,
@@ -213,7 +220,7 @@ class _OracionGuiadaScreenState extends State<OracionGuiadaScreen>
                           top: 0,
                           bottom: 168,
                           right: 0,
-                          width: 22,
+                          width: edgeW,
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTap: _next,

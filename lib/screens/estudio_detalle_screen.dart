@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/bible_study.dart';
 import '../theme/app_theme.dart';
 import '../widgets/fade_in.dart';
+import '../widgets/responsive_body.dart';
 import 'add_estudio_screen.dart';
 
 class EstudioDetalleScreen extends StatefulWidget {
@@ -84,7 +85,9 @@ class _EstudioDetalleScreenState extends State<EstudioDetalleScreen> {
           ),
         ],
       ),
-      body: FadeIn(
+      body: ResponsiveBody(
+        maxWidth: Breakpoints.reading,
+        child: FadeIn(
         child: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -157,6 +160,7 @@ class _EstudioDetalleScreenState extends State<EstudioDetalleScreen> {
             ),
           ],
         ],
+      ),
       ),
       ),
     );

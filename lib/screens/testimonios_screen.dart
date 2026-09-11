@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../services/report_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/firebase_ready.dart';
 import '../widgets/fade_in.dart';
+import '../widgets/responsive_body.dart';
 
 class TestimoniosScreen extends StatefulWidget {
   const TestimoniosScreen({super.key});
@@ -13,29 +15,40 @@ class TestimoniosScreen extends StatefulWidget {
 }
 
 class _TestimoniosScreenState extends State<TestimoniosScreen> {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-
   List<Map<String, dynamic>> _testimonios = [];
   Map<String, dynamic>? _myTestimonio;
   bool _loading = true;
+  bool _firebaseOk = false;
   Set<String> _hidden = {};
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _boot();
+  }
+
+  Future<void> _boot() async {
+    for (var i = 0; i < 20 && !firebaseReady; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
+    if (!firebaseReady) {
+      if (mounted) setState(() => _loading = false);
+      return;
+    }
+    if (mounted) setState(() => _firebaseOk = true);
+    await _load();
   }
 
   Future<void> _load() async {
-    final uid = _auth.currentUser?.uid;
+    if (!firebaseReady) return;
+    final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid == null) {
       setState(() => _loading = false);
       return;
     }
     try {
       final hidden = await ReportService.hiddenIds();
-      final snap = await _db
+      final snap = await FirebaseFirestore.instance
           .collection('testimonios')
           .orderBy('createdAt', descending: true)
           .get();
@@ -92,10 +105,50 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
       appBar: AppBar(
         title: Text('Testimonios',
             style: TextStyle(fontWeight: FontWeight.w600)),
+      ),
+      body: !_firebaseOk && !_loading
+          ? ResponsiveBody(
+              maxWidth: 520,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(28),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.cloud_off_rounded,
+                          size: 56, color: AppColors.emerald400),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Testimonios no disponibles',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.emerald800,
+                        ),
                       ),
-      body: _loading
+                      const SizedBox(height: 8),
+                      Text(
+                        'No se pudo conectar con Firebase. Revisa tu conexión.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: AppColors.emerald600),
+                      ),
+                      const SizedBox(height: 20),
+                      FilledButton(
+                        onPressed: () {
+                          setState(() => _loading = true);
+                          _boot();
+                        },
+                        child: const Text('Reintentar'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          : _loading
           ? Center(child: CircularProgressIndicator(color: AppColors.emerald600))
-          : RefreshIndicator(
+          : ResponsiveBody(
+              maxWidth: Breakpoints.feed,
+              child: RefreshIndicator(
               color: AppColors.emerald600,
               onRefresh: _load,
               child: ListView(
@@ -131,6 +184,7 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
                 ],
               ),
             ),
+          ),
     );
   }
 
@@ -263,7 +317,7 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
   }
 
   Widget _testimonioCard(Map<String, dynamic> t) {
-    final isMine = t['userId'] == _auth.currentUser?.uid;
+    final isMine = t['userId'] == FirebaseAuth.instance.currentUser?.uid;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Card(
@@ -473,7 +527,9 @@ class _TestimonioFormScreenState extends State<_TestimonioFormScreen> {
           ),
         ],
       ),
-      body: ListView(
+      body: ResponsiveBody(
+        maxWidth: Breakpoints.form,
+        child: ListView(
         padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
         children: [
           TextField(
@@ -554,6 +610,7 @@ class _TestimonioFormScreenState extends State<_TestimonioFormScreen> {
               ),
             ),
         ],
+      ),
       ),
     );
   }

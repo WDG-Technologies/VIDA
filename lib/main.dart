@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/streak.dart';
+import 'firebase_options.dart';
 import 'services/community_push.dart';
 import 'services/notification_service.dart';
 import 'services/telemetry.dart';
@@ -22,17 +23,30 @@ import 'screens/perfil_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/vida_screen.dart';
 import 'utils/platform_caps.dart';
+import 'widgets/responsive_body.dart';
 
 final GlobalKey<NavigatorState> vidaNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
+  if (!PlatformCaps.isWeb) {
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+  }
   await ThemeController.instance.load();
+  // Pintar UI cuanto antes; Firebase/auth no deben bloquear el primer frame.
+  runApp(const VidaApp());
+  unawaited(_initBackgroundServices());
+}
+
+Future<void> _initBackgroundServices() async {
   try {
-    await Firebase.initializeApp();
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    }
     if (FirebaseAuth.instance.currentUser == null) {
       await FirebaseAuth.instance.signInAnonymously();
     }
@@ -44,7 +58,12 @@ void main() async {
     try {
       await NotificationService.init();
       await NotificationService.requestPermission();
-      await NotificationService.scheduleAwayReminder();
+      await NotificationService.rescheduleAll();
+    } catch (_) {}
+  }
+  // Inbox Comunidad (móvil + web) sin Cloud Functions.
+  if (PlatformCaps.communityInboxAlerts) {
+    try {
       await CommunityPushService.init();
     } catch (_) {}
   }
@@ -53,7 +72,6 @@ void main() async {
       HomeWidget.setAppGroupId('group.com.vida.project');
     } catch (_) {}
   }
-  runApp(const VidaApp());
 }
 
 class VidaApp extends StatefulWidget {
@@ -67,7 +85,7 @@ class VidaApp extends StatefulWidget {
   State<VidaApp> createState() => _VidaAppState();
 }
 
-class _VidaAppState extends State<VidaApp> {
+class _VidaAppState extends State<VidaApp> with WidgetsBindingObserver {
   bool _ready = false;
   String _userName = '';
   Uri? _pendingWidgetUri;
@@ -79,6 +97,7 @@ class _VidaAppState extends State<VidaApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     ThemeController.instance.addListener(_onThemeChanged);
     NotificationService.openDeepLink = _handleDeepLink;
     _loadUser();
@@ -87,6 +106,14 @@ class _VidaAppState extends State<VidaApp> {
       _widgetClickSub = HomeWidget.widgetClicked.listen(_handleWidgetUri);
     }
     _initAppLinks();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed &&
+        PlatformCaps.localNotifications) {
+      unawaited(NotificationService.rescheduleAll());
+    }
   }
 
   void _onThemeChanged() {
@@ -98,6 +125,7 @@ class _VidaAppState extends State<VidaApp> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     ThemeController.instance.removeListener(_onThemeChanged);
     _widgetClickSub?.cancel();
     _appLinksSub?.cancel();
@@ -105,6 +133,7 @@ class _VidaAppState extends State<VidaApp> {
   }
 
   Future<void> _initAppLinks() async {
+    if (PlatformCaps.isWeb) return;
     try {
       final links = AppLinks();
       final initial = await links.getInitialLink();
@@ -142,6 +171,15 @@ class _VidaAppState extends State<VidaApp> {
       case 'comunidad':
         go(const CommunityScreen());
         Telemetry.log('deep_link', {'host': 'comunidad'});
+        break;
+      case 'inicio':
+        final ctx = vidaNavigatorKey.currentContext;
+        if (ctx != null) {
+          AppShell.goToTab(ctx, 0);
+        } else {
+          AppShell.tabRequests.value = 0;
+        }
+        Telemetry.log('deep_link', {'host': 'inicio'});
         break;
       case 'iglesia':
         go(const MapaIglesiasScreen());
@@ -216,7 +254,7 @@ class _VidaAppState extends State<VidaApp> {
           if (daysAway >= 2 && await NotificationService.shouldShowToday()) {
             await NotificationService.showMotivational();
           }
-          await NotificationService.scheduleAwayReminder();
+          await NotificationService.rescheduleAll();
         }
         await StreakService.checkAndUpdate();
       } catch (_) {}
@@ -286,7 +324,15 @@ class _VidaAppState extends State<VidaApp> {
           styleSeed: styleSeed,
           accent: themeCtrl.accentColor,
         );
-        return child ?? const SizedBox.shrink();
+        Widget content = child ?? const SizedBox.shrink();
+        // En web: fondo continuo; el contenido usa casi todo el ancho (sin “phone frame”).
+        if (PlatformCaps.isWeb && Breakpoints.isDesktop(context)) {
+          content = ColoredBox(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: content,
+          );
+        }
+        return content;
       },
       home: _buildHome(),
     );
@@ -328,6 +374,8 @@ class AppShell extends StatefulWidget {
 
 class _AppShellState extends State<AppShell> {
   int _selectedIndex = 0;
+  /// Solo monta pestañas visitadas (evita cargar Biblia 4MB + VIDA al arrancar).
+  final Set<int> _loadedTabs = {0};
 
   @override
   void initState() {
@@ -353,7 +401,12 @@ class _AppShellState extends State<AppShell> {
   void selectTab(int i) => _onTabSelected(i);
 
   Future<void> _onTabSelected(int i) async {
-    if (mounted) setState(() => _selectedIndex = i);
+    if (mounted) {
+      setState(() {
+        _selectedIndex = i;
+        _loadedTabs.add(i);
+      });
+    }
     if (i == 2) {
       final prefs = await SharedPreferences.getInstance();
       final shown = prefs.getBool('vida_intro_shown') ?? false;
@@ -363,6 +416,7 @@ class _AppShellState extends State<AppShell> {
         await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
+            constraints: const BoxConstraints(maxWidth: 480),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -403,23 +457,99 @@ class _AppShellState extends State<AppShell> {
     }
   }
 
+  Widget _tabPage(int i) {
+    switch (i) {
+      case 0:
+        return const HomeScreen();
+      case 1:
+        return BibliaScreen(
+          isActive: _selectedIndex == 1,
+          onGoHome: () => setState(() => _selectedIndex = 0),
+        );
+      case 2:
+        return const VidaScreen();
+      case 3:
+        return const PerfilScreen();
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final pages = <Widget>[
-      const HomeScreen(),
-      BibliaScreen(
-        isActive: _selectedIndex == 1,
-        onGoHome: () => setState(() => _selectedIndex = 0),
+    final pages = List<Widget>.generate(4, (i) {
+      if (!_loadedTabs.contains(i)) return const SizedBox.shrink();
+      return _tabPage(i);
+    });
+
+    final stack = IndexedStack(
+      index: _selectedIndex,
+      children: pages,
+    );
+
+    const destinations = [
+      NavigationDestination(
+        icon: Icon(Icons.home_outlined),
+        selectedIcon: Icon(Icons.home_rounded),
+        label: 'Inicio',
       ),
-      const VidaScreen(),
-      const PerfilScreen(),
+      NavigationDestination(
+        icon: Icon(Icons.book_outlined),
+        selectedIcon: Icon(Icons.book_rounded),
+        label: 'Biblia',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.eco_outlined),
+        selectedIcon: Icon(Icons.eco_rounded),
+        label: 'VIDA',
+      ),
+      NavigationDestination(
+        icon: Icon(Icons.person_outline_rounded),
+        selectedIcon: Icon(Icons.person_rounded),
+        label: 'Perfil',
+      ),
     ];
 
+    if (ResponsiveBody.isWide(context)) {
+      return Scaffold(
+        body: Row(
+          children: [
+            NavigationRail(
+              selectedIndex: _selectedIndex,
+              onDestinationSelected: _onTabSelected,
+              labelType: NavigationRailLabelType.all,
+              destinations: const [
+                NavigationRailDestination(
+                  icon: Icon(Icons.home_outlined),
+                  selectedIcon: Icon(Icons.home_rounded),
+                  label: Text('Inicio'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.book_outlined),
+                  selectedIcon: Icon(Icons.book_rounded),
+                  label: Text('Biblia'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.eco_outlined),
+                  selectedIcon: Icon(Icons.eco_rounded),
+                  label: Text('VIDA'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.person_outline_rounded),
+                  selectedIcon: Icon(Icons.person_rounded),
+                  label: Text('Perfil'),
+                ),
+              ],
+            ),
+            const VerticalDivider(width: 1),
+            Expanded(child: stack),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: pages,
-      ),
+      body: stack,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           border: Border(
@@ -427,32 +557,11 @@ class _AppShellState extends State<AppShell> {
           ),
         ),
         child: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onTabSelected,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home_rounded),
-            label: 'Inicio',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.book_outlined),
-            selectedIcon: Icon(Icons.book_rounded),
-            label: 'Biblia',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.eco_outlined),
-            selectedIcon: Icon(Icons.eco_rounded),
-            label: 'VIDA',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline_rounded),
-            selectedIcon: Icon(Icons.person_rounded),
-            label: 'Perfil',
-          ),
-        ],
-      ),
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: _onTabSelected,
+          destinations: destinations,
         ),
+      ),
     );
   }
 }

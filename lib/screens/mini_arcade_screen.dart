@@ -2,6 +2,7 @@
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
 import '../theme/transitions.dart';
+import '../widgets/responsive_body.dart';
 import 'arcade_games.dart';
 import 'quiz_screen.dart';
 import 'riega_screen.dart';
@@ -76,19 +77,26 @@ class MiniArcadeScreen extends StatelessWidget {
     final games = _games;
     return Scaffold(
       appBar: AppBar(title: const Text('Mini Arcade')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 0.85,
-          ),
-          itemCount: games.length,
-          itemBuilder: (_, i) => _GameCard(
-            data: games[i],
-            onTap: () => _open(context, games[i]),
+      body: ResponsiveBody(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final w = constraints.maxWidth;
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: Breakpoints.arcadeColumns(w),
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: Breakpoints.arcadeAspect(w),
+                ),
+                itemCount: games.length,
+                itemBuilder: (_, i) => _GameCard(
+                  data: games[i],
+                  onTap: () => _open(context, games[i]),
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -123,17 +131,11 @@ class _GameCard extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(color: AppColors.emerald200, width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.emerald900.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
         ),
         padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               width: 42,
@@ -144,19 +146,21 @@ class _GameCard extends StatelessWidget {
               ),
               child: Icon(data.icon, color: AppColors.emerald700),
             ),
-            const Spacer(),
+            const SizedBox(height: 12),
             Text(
               data.title,
               style: TextStyle(
                 fontFamily: 'DM Sans',
-                fontWeight: FontWeight.w700,
-                fontSize: 15,
-                color: AppColors.emerald900,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               data.subtitle,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontFamily: 'DM Sans',
                 fontSize: 12,

@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import '../data/consejo.dart';
 import '../theme/app_theme.dart';
+import '../widgets/responsive_body.dart';
 
 class ConsejoDetalleScreen extends StatelessWidget {
   final Consejo consejo;
@@ -13,7 +14,9 @@ class ConsejoDetalleScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Consejo'),
       ),
-      body: SingleChildScrollView(
+      body: ResponsiveBody(
+        maxWidth: Breakpoints.reading,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,6 +86,7 @@ class ConsejoDetalleScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

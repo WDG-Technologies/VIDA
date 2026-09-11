@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/bible_study.dart';
 import '../theme/app_theme.dart';
 import '../widgets/fade_in.dart';
+import '../widgets/responsive_body.dart';
 import 'add_estudio_screen.dart';
 import 'estudio_detalle_screen.dart';
 
@@ -43,7 +44,9 @@ class _EstudioBiblicoScreenState extends State<EstudioBiblicoScreen> {
         foregroundColor: Colors.white,
         child: Icon(Icons.add_rounded),
       ),
-      body: _studies.isEmpty
+      body: ResponsiveBody(
+        maxWidth: 800,
+        child: _studies.isEmpty
           ? FadeIn(
               child: Center(
                 child: Column(
@@ -171,6 +174,7 @@ class _EstudioBiblicoScreenState extends State<EstudioBiblicoScreen> {
                 );
               },
             ),
+      ),
     );
   }
 }

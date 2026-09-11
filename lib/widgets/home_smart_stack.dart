@@ -232,7 +232,10 @@ class _HomeSmartStackState extends State<HomeSmartStack>
       );
     }
 
-    return Column(
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 640),
+        child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
@@ -260,6 +263,8 @@ class _HomeSmartStackState extends State<HomeSmartStack>
           ),
         ),
       ],
+    ),
+      ),
     );
   }
 
@@ -346,6 +351,12 @@ class _DailyVerseCard extends StatelessWidget {
             Image.asset(
               imageAsset,
               fit: BoxFit.cover,
+              // Galería es ~1920px; la card del inicio no necesita full-res.
+              cacheWidth: (MediaQuery.sizeOf(context).width.clamp(320, 960) *
+                      MediaQuery.devicePixelRatioOf(context))
+                  .round()
+                  .clamp(400, 1400),
+              filterQuality: FilterQuality.medium,
               errorBuilder: (_, __, ___) =>
                   ColoredBox(color: Theme.of(context).colorScheme.primary),
             )

@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import '../data/bible_highlights.dart';
 import '../data/vida_algorithm.dart';
 import '../theme/app_theme.dart';
+import '../widgets/responsive_body.dart';
 import 'biblia_screen.dart';
 
 class GuardadosScreen extends StatefulWidget {
@@ -192,7 +193,9 @@ class _HighlightsTab extends StatelessWidget {
       );
     }
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return ListView.separated(
+    return ResponsiveBody(
+      maxWidth: Breakpoints.reading,
+      child: ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       itemCount: items.length,
       separatorBuilder: (_, __) => const SizedBox(height: 10),
@@ -235,6 +238,7 @@ class _HighlightsTab extends StatelessWidget {
           ),
         );
       },
+    ),
     );
   }
 }
@@ -267,7 +271,9 @@ class _VidaTab extends StatelessWidget {
             'En la pestaña VIDA descubre tu versículo y tócalo en Guardar.',
       );
     }
-    return ListView.separated(
+    return ResponsiveBody(
+      maxWidth: Breakpoints.reading,
+      child: ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
       itemCount: items.length,
       separatorBuilder: (_, __) => const SizedBox(height: 10),
@@ -350,6 +356,7 @@ class _VidaTab extends StatelessWidget {
           ),
         );
       },
+    ),
     );
   }
 }

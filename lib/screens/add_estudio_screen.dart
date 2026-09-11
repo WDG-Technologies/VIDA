@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/bible_study.dart';
+import '../widgets/responsive_body.dart';
 
 class AddEstudioScreen extends StatefulWidget {
   final BibleStudy? existing;
@@ -124,7 +125,9 @@ class _AddEstudioScreenState extends State<AddEstudioScreen> {
           ),
         ],
       ),
-      body: Form(
+      body: ResponsiveBody(
+        maxWidth: Breakpoints.form,
+        child: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(20),
@@ -187,6 +190,7 @@ class _AddEstudioScreenState extends State<AddEstudioScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

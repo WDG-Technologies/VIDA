@@ -8,6 +8,7 @@ import '../data/bible_highlights.dart';
 import '../data/bible_search.dart';
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
+import '../widgets/responsive_body.dart';
 import '../widgets/verse_picker_sheet.dart';
 import 'verse_image_screen.dart';
 
@@ -54,14 +55,23 @@ class _BibliaScreenState extends State<BibliaScreen> {
   void initState() {
     super.initState();
     BibleHighlights.changes.addListener(_onHighlightsChanged);
-    _bootstrap();
+    // Carga diferida: no parsear ~4MB RVR1909 hasta abrir Biblia.
+    if (widget.isActive ||
+        widget.initialBookIndex != null ||
+        widget.initialChapter != null) {
+      _bootstrap();
+    }
   }
 
   @override
   void didUpdateWidget(covariant BibliaScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isActive && !oldWidget.isActive) {
-      _reloadHighlights();
+      if (_bible == null && _error == null) {
+        _bootstrap();
+      } else {
+        _reloadHighlights();
+      }
     }
   }
 
@@ -1153,7 +1163,9 @@ class _BibliaScreenState extends State<BibliaScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
+            child: ResponsiveBody(
+              maxWidth: Breakpoints.reading,
+              child: ListView.builder(
               controller: _scrollCtrl,
               padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
               itemCount: verses.length + 1,
@@ -1253,6 +1265,7 @@ class _BibliaScreenState extends State<BibliaScreen> {
                   ),
                 );
               },
+            ),
             ),
           ),
           Container(

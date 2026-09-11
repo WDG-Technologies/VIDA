@@ -36,7 +36,7 @@ class CommunityPushService {
   }
 
   static Future<void> init() async {
-    if (kIsWeb || _started || !_firebaseReady) return;
+    if (_started || !_firebaseReady) return;
     _started = true;
 
     try {

@@ -1,7 +1,7 @@
 name: vida_app
 description: VIDA — App espiritual cristiana con versículos, racha, estudio bíblico y más.
 publish_to: 'none'
-version: 0.9.22+17
+version: 0.9.29+24
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

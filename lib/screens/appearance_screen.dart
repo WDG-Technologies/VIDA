@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_controller.dart';
+import '../widgets/responsive_body.dart';
 import '../widgets/user_avatar.dart';
 
 class AppearanceScreen extends StatelessWidget {
@@ -77,7 +78,9 @@ class AppearanceScreen extends StatelessWidget {
       builder: (context, _) {
         return Scaffold(
           appBar: AppBar(title: const Text('Apariencia')),
-          body: ListView(
+          body: ResponsiveBody(
+            maxWidth: Breakpoints.reading,
+            child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
             children: [
               Text(
@@ -312,6 +315,7 @@ class AppearanceScreen extends StatelessWidget {
                 ),
               ),
             ],
+          ),
           ),
         );
       },

@@ -4,6 +4,7 @@ import '../data/evangelizate_data.dart';
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
 import '../widgets/fade_in.dart';
+import '../widgets/responsive_body.dart';
 import '../widgets/tool_card.dart';
 import 'evangelizate_detalle_screen.dart';
 
@@ -22,7 +23,8 @@ class EvangelizateScreen extends StatelessWidget {
     VidaSignals.trackEvent('evangelizate');
     return Scaffold(
       appBar: AppBar(title: const Text('Evangelízate')),
-      body: SingleChildScrollView(
+      body: ResponsiveBody(
+        child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -182,6 +184,7 @@ class EvangelizateScreen extends StatelessWidget {
           ],
         ),
       ),
+      ),
     );
   }
 
@@ -218,31 +221,36 @@ class EvangelizateScreen extends StatelessWidget {
       out.add(
         Padding(
           padding: const EdgeInsets.only(bottom: 18),
-          child: GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 0.85,
-            children: [
-              for (final cat in cats)
-                FadeIn(
-                  index: fade++,
-                  child: ToolCard(
-                    icon: cat.icon,
-                    title: cat.shortTitle,
-                    subtitle: cat.description,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            EvangelizateDetalleScreen(category: cat),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final w = constraints.maxWidth;
+              return GridView.count(
+                crossAxisCount: Breakpoints.toolColumns(w),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: Breakpoints.toolAspect(w),
+                children: [
+                  for (final cat in cats)
+                    FadeIn(
+                      index: fade++,
+                      child: ToolCard(
+                        icon: cat.icon,
+                        title: cat.shortTitle,
+                        subtitle: cat.description,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                EvangelizateDetalleScreen(category: cat),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-            ],
+                ],
+              );
+            },
           ),
         ),
       );

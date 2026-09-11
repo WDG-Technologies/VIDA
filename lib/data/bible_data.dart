@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class BibleBook {
@@ -140,9 +141,13 @@ class BibleService {
 
   Future<BibleVersion> _load() async {
     final raw = await rootBundle.loadString('assets/bible/rvr1909.json');
-    final json = jsonDecode(raw) as Map<String, dynamic>;
-    _version = BibleVersion.fromJson(json);
+    // jsonDecode en worker; el modelo se arma en el isolate UI.
+    final decoded = await compute(_decodeBibleMap, raw);
+    _version = BibleVersion.fromJson(decoded);
     _loading = null;
     return _version!;
   }
 }
+
+Map<String, dynamic> _decodeBibleMap(String raw) =>
+    jsonDecode(raw) as Map<String, dynamic>;

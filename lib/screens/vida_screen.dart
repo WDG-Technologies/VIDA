@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../data/vida_algorithm.dart';
 import '../theme/app_theme.dart';
+import '../widgets/responsive_body.dart';
 
 bool get _useLiquidGlass =>
     !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
@@ -150,7 +151,9 @@ class _VidaScreenState extends State<VidaScreen>
           SafeArea(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
-                : Padding(
+                : ResponsiveBody(
+                    maxWidth: Breakpoints.reading,
+                    child: Padding(
                     padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
                     child: Column(
                       children: [
@@ -218,6 +221,7 @@ class _VidaScreenState extends State<VidaScreen>
                           ),
                       ],
                     ),
+                  ),
                   ),
           ),
         ],

@@ -1,17 +1,16 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../data/bible_data.dart';
 import '../data/gallery_images.dart';
 import '../theme/app_theme.dart';
-import '../utils/local_file.dart';
+import '../utils/download_image.dart';
+import '../widgets/responsive_body.dart';
 
 /// Shareable image from a verse already chosen in Biblia.
 class VerseImageScreen extends StatefulWidget {
@@ -46,7 +45,7 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
   Uint8List? _bgBytes;
   String? _bgAsset;
   bool _darkBg = true;
-  bool _sharing = false;
+  bool _downloading = false;
 
   bool get _hasBg => _bgBytes != null || _bgAsset != null;
 
@@ -193,9 +192,9 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
     });
   }
 
-  Future<void> _share() async {
-    if (_sharing || !_hasBg || _verseText.isEmpty) return;
-    setState(() => _sharing = true);
+  Future<void> _download() async {
+    if (_downloading || !_hasBg || _verseText.isEmpty) return;
+    setState(() => _downloading = true);
     await Future<void>.delayed(const Duration(milliseconds: 120));
     if (!mounted) return;
     try {
@@ -206,144 +205,303 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
       if (bytes == null) throw Exception('No se pudo generar');
       final png = bytes.buffer.asUint8List();
-      if (kIsWeb) {
-        await Share.shareXFiles([
-          XFile.fromData(png, name: 'vida_verso.png', mimeType: 'image/png'),
-        ], text: _reference);
-      } else {
-        final path = await writeTempBytes(
-          'vida_verso_${DateTime.now().millisecondsSinceEpoch}.png',
-          png,
-        );
-        await Share.shareXFiles([XFile(path)], text: _reference);
-      }
+      await downloadPngBytes(
+        png,
+        'vida_verso_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Imagen descargada')),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se pudo compartir: $e')),
+        SnackBar(content: Text('No se pudo descargar: $e')),
       );
     } finally {
-      if (mounted) setState(() => _sharing = false);
+      if (mounted) setState(() => _downloading = false);
     }
+  }
+
+  Widget _fondosPanel() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          _reference,
+          style: TextStyle(
+            fontFamily: 'DM Sans',
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
+            color: AppColors.emerald800,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          'Versículo elegido en Biblia',
+          style: TextStyle(
+            fontFamily: 'DM Sans',
+            fontSize: 12,
+            color: AppColors.emerald600,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Fondo',
+          style: TextStyle(
+            fontFamily: 'DM Sans',
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+            color: AppColors.emerald800,
+          ),
+        ),
+        const SizedBox(height: 8),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+          ),
+          itemCount: galleryAssets.length,
+          itemBuilder: (_, i) {
+            final asset = galleryAssets[i];
+            final sel = _bgAsset == asset;
+            return GestureDetector(
+              onTap: () => _pickTemplate(asset),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 160),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color:
+                        sel ? AppColors.emerald600 : AppColors.emerald200,
+                    width: sel ? 2.5 : 1,
+                  ),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Image.asset(
+                  asset,
+                  fit: BoxFit.cover,
+                  cacheWidth: 200,
+                  filterQuality: FilterQuality.low,
+                ),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 12),
+        FilledButton.tonalIcon(
+          onPressed: _pickPhoto,
+          icon: const Icon(Icons.photo_library_outlined),
+          label: Text(
+            _bgBytes == null
+                ? 'Usar foto de galería'
+                : 'Cambiar foto de galería',
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'El color del texto se ajusta al fondo automáticamente.',
+          style: TextStyle(
+            fontFamily: 'DM Sans',
+            fontSize: 12,
+            color: AppColors.emerald600,
+          ),
+        ),
+        const SizedBox(height: 20),
+        FilledButton.icon(
+          onPressed: (!_hasBg || _verseText.isEmpty || _downloading)
+              ? null
+              : _download,
+          icon: _downloading
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2, color: Colors.white),
+                )
+              : const Icon(Icons.download_rounded),
+          label: Text(_downloading ? 'Descargando…' : 'Descargar imagen'),
+        ),
+      ],
+    );
+  }
+
+  Widget _fondosPanelMobile() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Fondo',
+          style: TextStyle(
+            fontFamily: 'DM Sans',
+            fontWeight: FontWeight.w600,
+            fontSize: 13,
+            color: AppColors.emerald800,
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 72,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: galleryAssets.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (_, i) {
+              final asset = galleryAssets[i];
+              final sel = _bgAsset == asset;
+              return GestureDetector(
+                onTap: () => _pickTemplate(asset),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 160),
+                  width: 72,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color:
+                          sel ? AppColors.emerald600 : AppColors.emerald200,
+                      width: sel ? 2.5 : 1,
+                    ),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Image.asset(asset, fit: BoxFit.cover),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+        FilledButton.tonalIcon(
+          onPressed: _pickPhoto,
+          icon: const Icon(Icons.photo_library_outlined),
+          label: Text(
+            _bgBytes == null
+                ? 'Usar foto de galería'
+                : 'Cambiar foto de galería',
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'El color del texto se ajusta al fondo automáticamente.',
+          style: TextStyle(
+            fontFamily: 'DM Sans',
+            fontSize: 12,
+            color: AppColors.emerald600,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final desktop = Breakpoints.isDesktop(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Crear imagen'),
         actions: [
-          IconButton(
-            tooltip: 'Compartir',
-            onPressed: (!_hasBg || _verseText.isEmpty || _sharing) ? null : _share,
-            icon: _sharing
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Icon(Icons.share_rounded),
-          ),
+          if (!desktop)
+            IconButton(
+              tooltip: 'Descargar',
+              onPressed: (!_hasBg || _verseText.isEmpty || _downloading)
+                  ? null
+                  : _download,
+              icon: _downloading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.download_rounded),
+            ),
         ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
               ? Center(child: Text(_error!))
-              : ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-                  children: [
-                    Text(
-                      _reference,
-                      style: TextStyle(
-                        fontFamily: 'DM Sans',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                        color: AppColors.emerald800,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Versículo elegido en Biblia',
-                      style: TextStyle(
-                        fontFamily: 'DM Sans',
-                        fontSize: 12,
-                        color: AppColors.emerald600,
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    AspectRatio(
-                      aspectRatio: 1,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(18),
-                        child: RepaintBoundary(
-                          key: _repaintKey,
-                          child: _preview(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Fondo',
-                      style: TextStyle(
-                        fontFamily: 'DM Sans',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                        color: AppColors.emerald800,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      height: 72,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: galleryAssets.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 8),
-                        itemBuilder: (_, i) {
-                          final asset = galleryAssets[i];
-                          final sel = _bgAsset == asset;
-                          return GestureDetector(
-                            onTap: () => _pickTemplate(asset),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 160),
-                              width: 72,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: sel
-                                      ? AppColors.emerald600
-                                      : AppColors.emerald200,
-                                  width: sel ? 2.5 : 1,
+              : desktop
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 640,
+                                  maxHeight: 640,
+                                ),
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(18),
+                                    child: RepaintBoundary(
+                                      key: _repaintKey,
+                                      child: _preview(),
+                                    ),
+                                  ),
                                 ),
                               ),
-                              clipBehavior: Clip.antiAlias,
-                              child: Image.asset(asset, fit: BoxFit.cover),
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        ),
+                        VerticalDivider(
+                            width: 1, color: AppColors.emerald100),
+                        SizedBox(
+                          width: 400,
+                          child: ColoredBox(
+                            color: Theme.of(context).colorScheme.surface,
+                            child: SingleChildScrollView(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 16, 20, 28),
+                              child: _fondosPanel(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : ListView(
+                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+                      children: [
+                        Text(
+                          _reference,
+                          style: TextStyle(
+                            fontFamily: 'DM Sans',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            color: AppColors.emerald800,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Versículo elegido en Biblia',
+                          style: TextStyle(
+                            fontFamily: 'DM Sans',
+                            fontSize: 12,
+                            color: AppColors.emerald600,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        AspectRatio(
+                          aspectRatio: 1,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(18),
+                            child: RepaintBoundary(
+                              key: _repaintKey,
+                              child: _preview(),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        _fondosPanelMobile(),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    FilledButton.tonalIcon(
-                      onPressed: _pickPhoto,
-                      icon: Icon(Icons.photo_library_outlined),
-                      label: Text(
-                        _bgBytes == null
-                            ? 'Usar foto de galería'
-                            : 'Cambiar foto de galería',
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      'El color del texto se ajusta al fondo automáticamente.',
-                      style: TextStyle(
-                        fontFamily: 'DM Sans',
-                        fontSize: 12,
-                        color: AppColors.emerald600,
-                      ),
-                    ),
-                  ],
-                ),
     );
   }
 

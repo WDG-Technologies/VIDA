@@ -3,6 +3,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/phrases.dart';
 import '../theme/app_theme.dart';
+import '../widgets/responsive_body.dart';
 
 class ContraPecadoScreen extends StatefulWidget {
   const ContraPecadoScreen({super.key});
@@ -180,7 +181,9 @@ class _ContraPecadoScreenState extends State<ContraPecadoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Contra pecado')),
-      body: SingleChildScrollView(
+      body: ResponsiveBody(
+        maxWidth: Breakpoints.reading,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -349,6 +352,7 @@ class _ContraPecadoScreenState extends State<ContraPecadoScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

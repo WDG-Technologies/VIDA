@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/streak.dart';
 import '../theme/app_theme.dart';
+import '../widgets/responsive_body.dart';
 
 class StreakScreen extends StatefulWidget {
   const StreakScreen({super.key});
@@ -53,7 +54,9 @@ class _StreakScreenState extends State<StreakScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Racha')),
-      body: Padding(
+      body: ResponsiveBody(
+        maxWidth: 720,
+        child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
@@ -168,6 +171,7 @@ class _StreakScreenState extends State<StreakScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

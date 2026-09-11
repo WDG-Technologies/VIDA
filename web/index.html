@@ -7,24 +7,74 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="VIDA — app espiritual cristiana: Biblia, versículos, comunidad y más.">
   <meta name="theme-color" content="#059669">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="VIDA">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png?v=3">
 
-  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png?v=3">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png?v=3">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/Icon-192.png?v=3">
 
   <title>VIDA</title>
   <link rel="manifest" href="manifest.json">
   <style>
-    body {
+    html, body {
       margin: 0;
+      height: 100%;
       background: #ecfdf5;
+    }
+    #vida-boot {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      font-family: Georgia, "Times New Roman", serif;
+      color: #047857;
+      z-index: 9999;
+      transition: opacity 0.25s ease;
+    }
+    #vida-boot .mark {
+      font-size: 42px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    #vida-boot .bar {
+      width: 96px;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #a7f3d0, #059669, #a7f3d0);
+      background-size: 200% 100%;
+      animation: vida-shimmer 1.1s linear infinite;
+    }
+    @keyframes vida-shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+    #vida-boot.hide {
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
+  <div id="vida-boot" aria-hidden="true">
+    <div class="mark">VIDA</div>
+    <div class="bar"></div>
+  </div>
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var el = document.getElementById('vida-boot');
+      if (!el) return;
+      el.classList.add('hide');
+      setTimeout(function () { el.remove(); }, 280);
+    });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

@@ -7,6 +7,9 @@ import '../services/community_push.dart';
 import '../services/feature_tips.dart';
 import '../services/report_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/firebase_ready.dart';
+import '../utils/platform_caps.dart';
+import '../widgets/responsive_body.dart';
 import '../widgets/user_avatar.dart';
 
 class CommunityScreen extends StatefulWidget {
@@ -19,20 +22,56 @@ class CommunityScreen extends StatefulWidget {
 }
 
 class _CommunityScreenState extends State<CommunityScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseAuth? _auth;
   StreamSubscription<User?>? _authSub;
+  bool _firebaseOk = false;
+  bool _checkingFirebase = true;
 
   @override
   void initState() {
     super.initState();
-    // userChanges also fires on link/profile reload (authStateChanges often does not).
-    _authSub = _auth.userChanges().listen((_) {
-      if (mounted) setState(() {});
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) FeatureTips.community(context);
-      CommunityPushService.markAllRead();
-    });
+    _ensureFirebase();
+  }
+
+  Future<void> _ensureFirebase() async {
+    try {
+      if (!firebaseReady) {
+        // Espera breve al init en background de main().
+        for (var i = 0; i < 20 && !firebaseReady; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+        }
+      }
+      if (!firebaseReady) {
+        if (mounted) {
+          setState(() {
+            _checkingFirebase = false;
+            _firebaseOk = false;
+          });
+        }
+        return;
+      }
+      _auth = FirebaseAuth.instance;
+      _authSub = _auth!.userChanges().listen((_) {
+        if (mounted) setState(() {});
+      });
+      if (mounted) {
+        setState(() {
+          _checkingFirebase = false;
+          _firebaseOk = true;
+        });
+      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) FeatureTips.community(context);
+        CommunityPushService.markAllRead();
+      });
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _checkingFirebase = false;
+          _firebaseOk = false;
+        });
+      }
+    }
   }
 
   @override
@@ -47,7 +86,71 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = _auth.currentUser;
+    if (_checkingFirebase) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Comunidad',
+              style: TextStyle(fontWeight: FontWeight.w600)),
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (!_firebaseOk || _auth == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Comunidad',
+              style: TextStyle(fontWeight: FontWeight.w600)),
+        ),
+        body: ResponsiveBody(
+          maxWidth: 520,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(28),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.cloud_off_rounded,
+                      size: 56, color: AppColors.emerald400),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Comunidad no disponible',
+                    style: TextStyle(
+                      fontFamily: 'DM Sans',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.emerald800,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'No se pudo conectar con Firebase. '
+                    'Revisa tu conexión e inténtalo de nuevo.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'DM Sans',
+                      fontSize: 13,
+                      height: 1.45,
+                      color: AppColors.emerald600,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  FilledButton(
+                    onPressed: () {
+                      setState(() => _checkingFirebase = true);
+                      _ensureFirebase();
+                    },
+                    child: const Text('Reintentar'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final user = _auth!.currentUser;
     final isAnonymous = user == null || user.isAnonymous;
 
     return Scaffold(
@@ -64,9 +167,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
             ),
         ],
       ),
-      body: isAnonymous
-          ? _AuthView(onAuthed: _refreshAuth)
-          : _FeedView(focusPostId: widget.focusPostId),
+      body: ResponsiveBody(
+        maxWidth: isAnonymous ? 480 : Breakpoints.feed,
+        child: isAnonymous
+            ? _AuthView(onAuthed: _refreshAuth)
+            : _FeedView(focusPostId: widget.focusPostId),
+      ),
     );
   }
 
@@ -112,8 +218,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       secondary: Icon(Icons.notifications_active_outlined,
                           color: AppColors.emerald600),
                       title: const Text('Avisos de Comunidad'),
-                      subtitle: const Text(
-                        'Likes y respuestas (con la app abierta o al volver)',
+                      subtitle: Text(
+                        PlatformCaps.isWeb
+                            ? 'Likes y respuestas (con la pestaña abierta)'
+                            : 'Likes y respuestas (con la app abierta o al volver)',
                       ),
                       value: pushOn,
                       onChanged: (v) async {
@@ -161,8 +269,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       onTap: () async {
                         Navigator.pop(ctx);
                         try {
-                          await _auth.signOut();
-                          await _auth.signInAnonymously();
+                          await _auth!.signOut();
+                          await _auth!.signInAnonymously();
                         } catch (_) {}
                         if (mounted) setState(() {});
                       },
@@ -337,8 +445,10 @@ class _AuthViewState extends State<_AuthView>
     final isRegister = _tabCtrl.index == 1;
 
     return Center(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 480),
+        child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -492,6 +602,7 @@ class _AuthViewState extends State<_AuthView>
             ),
           ],
         ),
+      ),
       ),
     );
   }

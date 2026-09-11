@@ -9,6 +9,7 @@ import '../data/fav.dart';
 import '../theme/app_theme.dart';
 import '../utils/local_file.dart';
 import '../utils/platform_caps.dart';
+import '../widgets/responsive_body.dart';
 
 class FavoritoScreen extends StatefulWidget {
   const FavoritoScreen({super.key});
@@ -320,7 +321,9 @@ class _FavoritoScreenState extends State<FavoritoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Widget favorito')),
-      body: Column(
+      body: ResponsiveBody(
+        maxWidth: Breakpoints.reading,
+        child: Column(
         children: [
           Expanded(
             child: ListView(
@@ -477,6 +480,7 @@ class _FavoritoScreenState extends State<FavoritoScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

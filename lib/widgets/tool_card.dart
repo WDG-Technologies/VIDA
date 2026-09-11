@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 class ToolCard extends StatefulWidget {
@@ -48,13 +49,15 @@ class _ToolCardState extends State<ToolCard> {
               color: widget.isActive ? AppColors.emerald300 : AppColors.emerald200,
               width: 1,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: cs.shadow.withValues(alpha: 0.08),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            boxShadow: kIsWeb
+                ? const []
+                : [
+                    BoxShadow(
+                      color: cs.shadow.withValues(alpha: 0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),

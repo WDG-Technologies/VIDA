@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 class FadeIn extends StatefulWidget {
@@ -11,8 +12,7 @@ class FadeIn extends StatefulWidget {
   State<FadeIn> createState() => _FadeInState();
 }
 
-class _FadeInState extends State<FadeIn>
-    with SingleTickerProviderStateMixin {
+class _FadeInState extends State<FadeIn> with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
   late Animation<double> _opacity;
   late Animation<Offset> _slide;
@@ -25,7 +25,6 @@ class _FadeInState extends State<FadeIn>
       vsync: this,
       duration: const Duration(milliseconds: 350),
     );
-    final stagger = widget.index * 50;
     _opacity = CurvedAnimation(
       parent: _ctrl,
       curve: const Interval(0, 0.7, curve: Curves.easeOut),
@@ -37,7 +36,17 @@ class _FadeInState extends State<FadeIn>
       parent: _ctrl,
       curve: const Interval(0, 0.7, curve: Curves.easeOutCubic),
     ));
-    _timer = Timer(Duration(milliseconds: stagger), _ctrl.forward);
+
+    // En web el stagger a veces queda en opacity 0; mostrar de inmediato.
+    if (kIsWeb) {
+      _ctrl.value = 1;
+      return;
+    }
+
+    final stagger = widget.index * 50;
+    _timer = Timer(Duration(milliseconds: stagger), () {
+      if (mounted) _ctrl.forward();
+    });
   }
 
   @override

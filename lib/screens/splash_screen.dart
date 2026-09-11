@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_controller.dart';
 import '../main.dart';
+import '../widgets/responsive_body.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -113,7 +114,9 @@ class _SplashScreenState extends State<SplashScreen> {
     final cs = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Column(
+    return ResponsiveBody(
+      maxWidth: Breakpoints.form,
+      child: Column(
       children: [
         Expanded(
           child: ListView(
@@ -301,11 +304,14 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ),
       ],
+      ),
     );
   }
 
   Widget _buildName() {
-    return Center(
+    return ResponsiveBody(
+      maxWidth: Breakpoints.form,
+      child: Center(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 32),
         child: Column(
@@ -394,6 +400,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

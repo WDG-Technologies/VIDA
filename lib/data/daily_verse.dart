@@ -35,11 +35,11 @@ class DailyVerseService {
     return _cache!;
   }
 
-  /// Índice estable por día civil (misma lógica que el mazo del inicio).
+  /// Índice estable por día civil **UTC** (mismo versículo para todos).
   static int dayIndex([DateTime? now]) {
-    final n = now ?? DateTime.now();
-    return DateTime(n.year, n.month, n.day)
-        .difference(DateTime(2024, 1, 1))
+    final n = (now ?? DateTime.now()).toUtc();
+    return DateTime.utc(n.year, n.month, n.day)
+        .difference(DateTime.utc(2024, 1, 1))
         .inDays
         .abs();
   }

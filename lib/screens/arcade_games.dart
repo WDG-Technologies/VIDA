@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/vida_verse_bank.dart';
 import '../theme/app_theme.dart';
+import '../widgets/responsive_body.dart';
 
 // ─────────────── Memorama ───────────────
 
@@ -125,48 +126,58 @@ class _MemoramaScreenState extends State<MemoramaScreen> {
           IconButton(onPressed: _deal, icon: Icon(Icons.refresh_rounded)),
         ],
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(12),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 0.85,
-        ),
-        itemCount: _cards.length,
-        itemBuilder: (_, i) {
-          final c = _cards[i];
-          final show = c.flipped || c.matched;
-          return GestureDetector(
-            onTap: () => _tap(i),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 180),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: c.matched
-                    ? AppColors.emerald200
-                    : show
-                        ? AppColors.emerald50
-                        : AppColors.emerald600,
-                borderRadius: BorderRadius.circular(12),
+      body: ResponsiveBody(
+        maxWidth: 900,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final w = constraints.maxWidth;
+            final cols = w >= 860 ? 6 : w >= 560 ? 4 : 3;
+            final aspect = w >= 560 ? 1.05 : 1.1;
+            return GridView.builder(
+              padding: const EdgeInsets.all(12),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: cols,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: aspect,
               ),
-              child: Center(
-                child: Text(
-                  show ? c.label : '?',
-                  textAlign: TextAlign.center,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: 'DM Sans',
-                    fontSize: show ? 11 : 22,
-                    fontWeight: FontWeight.w600,
-                    color: show ? AppColors.emerald900 : Colors.white,
+              itemCount: _cards.length,
+              itemBuilder: (_, i) {
+                final c = _cards[i];
+                final show = c.flipped || c.matched;
+                return GestureDetector(
+                  onTap: () => _tap(i),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: c.matched
+                          ? AppColors.emerald200
+                          : show
+                              ? AppColors.emerald50
+                              : AppColors.emerald600,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Text(
+                        show ? c.label : '?',
+                        textAlign: TextAlign.center,
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: 'DM Sans',
+                          fontSize: show ? 11 : 22,
+                          fontWeight: FontWeight.w600,
+                          color: show ? AppColors.emerald900 : Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
@@ -262,70 +273,73 @@ class _OrdenaVersiculoScreenState extends State<OrdenaVersiculoScreen> {
           IconButton(onPressed: _newRound, icon: Icon(Icons.refresh_rounded)),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              _verse.reference,
-              style: TextStyle(
-                fontFamily: 'DM Sans',
-                fontWeight: FontWeight.w700,
-                color: AppColors.emerald700,
-              ),
-            ),
-            const SizedBox(height: 12),
-            ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 88),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: AppColors.emerald50,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.emerald200),
-                ),
-                child: Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    for (var i = 0; i < _built.length; i++)
-                      ActionChip(
-                        label: Text(_built[i]),
-                        onPressed: () => setState(() {
-                          _pool.add(_built.removeAt(i));
-                        }),
-                      ),
-                    if (_built.isEmpty)
-                      Text(
-                        'Toca las palabras en orden',
-                        style: TextStyle(color: AppColors.emerald500),
-                      ),
-                  ],
+      body: ResponsiveBody(
+        maxWidth: 640,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                _verse.reference,
+                style: TextStyle(
+                  fontFamily: 'DM Sans',
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.emerald700,
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (var i = 0; i < _pool.length; i++)
-                  ActionChip(
-                    label: Text(_pool[i]),
-                    onPressed: () => setState(() {
-                      _built.add(_pool.removeAt(i));
-                    }),
+              const SizedBox(height: 12),
+              ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 88),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.emerald50,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.emerald200),
                   ),
-              ],
-            ),
-            const Spacer(),
-            FilledButton(
-              onPressed: _built.length == _correct.length ? _check : null,
-              child: const Text('Comprobar'),
-            ),
-          ],
+                  child: Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      for (var i = 0; i < _built.length; i++)
+                        ActionChip(
+                          label: Text(_built[i]),
+                          onPressed: () => setState(() {
+                            _pool.add(_built.removeAt(i));
+                          }),
+                        ),
+                      if (_built.isEmpty)
+                        Text(
+                          'Toca las palabras en orden',
+                          style: TextStyle(color: AppColors.emerald500),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (var i = 0; i < _pool.length; i++)
+                    ActionChip(
+                      label: Text(_pool[i]),
+                      onPressed: () => setState(() {
+                        _built.add(_pool.removeAt(i));
+                      }),
+                    ),
+                ],
+              ),
+              const Spacer(),
+              FilledButton(
+                onPressed: _built.length == _correct.length ? _check : null,
+                child: const Text('Comprobar'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -707,99 +721,110 @@ class _VerdaderoFalsoScreenState extends State<VerdaderoFalsoScreen> {
       appBar: AppBar(
         title: Text('Verdadero / Falso  (${_i + 1}/${_queue.length})'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        child: Column(
-          children: [
-            LinearProgressIndicator(
-              value: (_i + (revealed ? 1 : 0)) / _queue.length,
-              color: AppColors.emerald600,
-              backgroundColor: AppColors.emerald100,
-            ),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                'Aciertos: $_score',
-                style: TextStyle(
-                  fontFamily: 'DM Sans',
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.emerald700,
-                ),
+      body: ResponsiveBody(
+        maxWidth: 640,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+          child: Column(
+            children: [
+              LinearProgressIndicator(
+                value: (_i + (revealed ? 1 : 0)) / _queue.length,
+                color: AppColors.emerald600,
+                backgroundColor: AppColors.emerald100,
               ),
-            ),
-            const Spacer(),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(22),
-              decoration: BoxDecoration(
-                color: AppColors.emerald50,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.emerald200),
-              ),
-              child: Text(
-                q.q,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Cormorant Garamond',
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.emerald900,
-                  height: 1.3,
-                ),
-              ),
-            ),
-            if (revealed) ...[
-              const SizedBox(height: 14),
-              Text(
-                ok ? '¡Correcto!' : 'Incorrecto',
-                style: TextStyle(
-                  fontFamily: 'DM Sans',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                  color: ok ? AppColors.emerald700 : Colors.red.shade700,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                q.tip,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'DM Sans',
-                  fontSize: 13,
-                  color: AppColors.emerald600,
-                ),
-              ),
-            ],
-            const Spacer(),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton.tonal(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: _btnColor(false),
-                      foregroundColor: AppColors.emerald900,
-                      minimumSize: const Size.fromHeight(54),
-                    ),
-                    onPressed: revealed ? null : () => _answer(false),
-                    child: const Text('Falso'),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'Aciertos: $_score',
+                  style: TextStyle(
+                    fontFamily: 'DM Sans',
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.emerald700,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: FilledButton.tonal(
-                    style: FilledButton.styleFrom(
-                      backgroundColor: _btnColor(true),
-                      foregroundColor: AppColors.emerald900,
-                      minimumSize: const Size.fromHeight(54),
+              ),
+              const Spacer(),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 560),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(22),
+                  decoration: BoxDecoration(
+                    color: AppColors.emerald50,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: AppColors.emerald200),
+                  ),
+                  child: Text(
+                    q.q,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Cormorant Garamond',
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.emerald900,
+                      height: 1.3,
                     ),
-                    onPressed: revealed ? null : () => _answer(true),
-                    child: const Text('Verdadero'),
+                  ),
+                ),
+              ),
+              if (revealed) ...[
+                const SizedBox(height: 14),
+                Text(
+                  ok ? '¡Correcto!' : 'Incorrecto',
+                  style: TextStyle(
+                    fontFamily: 'DM Sans',
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                    color: ok ? AppColors.emerald700 : Colors.red.shade700,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  q.tip,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'DM Sans',
+                    fontSize: 13,
+                    color: AppColors.emerald600,
                   ),
                 ),
               ],
-            ),
-          ],
+              const Spacer(),
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: FilledButton.tonal(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: _btnColor(false),
+                            foregroundColor: AppColors.emerald900,
+                            minimumSize: const Size.fromHeight(54),
+                          ),
+                          onPressed: revealed ? null : () => _answer(false),
+                          child: const Text('Falso'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton.tonal(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: _btnColor(true),
+                            foregroundColor: AppColors.emerald900,
+                            minimumSize: const Size.fromHeight(54),
+                          ),
+                          onPressed: revealed ? null : () => _answer(true),
+                          child: const Text('Verdadero'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1136,29 +1161,33 @@ class _TriviaCategoriasScreenState extends State<TriviaCategoriasScreen> {
       final cats = _all.map((e) => e.category).toSet().toList()..shuffle();
       return Scaffold(
         appBar: AppBar(title: const Text('Trivia por categorías')),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Card(
-              color: AppColors.emerald50,
-              child: ListTile(
-                leading: Icon(Icons.shuffle_rounded, color: AppColors.emerald700),
-                title: const Text(_mixLabel),
-                subtitle: const Text('10 preguntas de todas las categorías'),
-                trailing: Icon(Icons.chevron_right_rounded),
-                onTap: () => _pick(_mixLabel),
-              ),
-            ),
-            const SizedBox(height: 8),
-            for (final c in cats)
+        body: ResponsiveBody(
+          maxWidth: 560,
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
               Card(
+                color: AppColors.emerald50,
                 child: ListTile(
-                  title: Text(c),
+                  leading:
+                      Icon(Icons.shuffle_rounded, color: AppColors.emerald700),
+                  title: const Text(_mixLabel),
+                  subtitle: const Text('10 preguntas de todas las categorías'),
                   trailing: Icon(Icons.chevron_right_rounded),
-                  onTap: () => _pick(c),
+                  onTap: () => _pick(_mixLabel),
                 ),
               ),
-          ],
+              const SizedBox(height: 8),
+              for (final c in cats)
+                Card(
+                  child: ListTile(
+                    title: Text(c),
+                    trailing: Icon(Icons.chevron_right_rounded),
+                    onTap: () => _pick(c),
+                  ),
+                ),
+            ],
+          ),
         ),
       );
     }
@@ -1166,32 +1195,45 @@ class _TriviaCategoriasScreenState extends State<TriviaCategoriasScreen> {
     final q = _qs[_i];
     return Scaffold(
       appBar: AppBar(title: Text('$_category · ${_i + 1}/${_qs.length}')),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              q.question,
-              style: TextStyle(
-                fontFamily: 'Cormorant Garamond',
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: AppColors.emerald900,
-              ),
-            ),
-            const SizedBox(height: 24),
-            for (var i = 0; i < q.options.length; i++) ...[
-              FilledButton.tonal(
-                onPressed: () => _answer(i),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(q.options[i]),
+      body: ResponsiveBody(
+        maxWidth: 640,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                q.question,
+                style: TextStyle(
+                  fontFamily: 'Cormorant Garamond',
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.emerald900,
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 24),
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (var i = 0; i < q.options.length; i++) ...[
+                        FilledButton.tonal(
+                          onPressed: () => _answer(i),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(q.options[i]),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -1554,62 +1596,76 @@ class _CaminoDiscipuloScreenState extends State<CaminoDiscipuloScreen> {
       appBar: AppBar(
         title: const Text('Camino del discípulo'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Text(
-                  '❤️ × $_heart',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.emerald800,
+      body: ResponsiveBody(
+        maxWidth: 640,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '❤️ × $_heart',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.emerald800,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    'Fe: $_faith',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.emerald800,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              LinearProgressIndicator(
+                value: (_step + 1) / _path.length,
+                color: AppColors.emerald600,
+                backgroundColor: AppColors.emerald100,
+              ),
+              const Spacer(),
+              Text(
+                s.text,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Cormorant Garamond',
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.emerald900,
+                ),
+              ),
+              const Spacer(),
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final c in _shuffled) ...[
+                        FilledButton.tonal(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.emerald100,
+                            foregroundColor: AppColors.emerald900,
+                            minimumSize: const Size.fromHeight(52),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                          onPressed: () => _choose(c),
+                          child: Text(c.label, textAlign: TextAlign.center),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ],
                   ),
                 ),
-                const Spacer(),
-                Text(
-                  'Fe: $_faith',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.emerald800,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: (_step + 1) / _path.length,
-              color: AppColors.emerald600,
-              backgroundColor: AppColors.emerald100,
-            ),
-            const Spacer(),
-            Text(
-              s.text,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Cormorant Garamond',
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: AppColors.emerald900,
               ),
-            ),
-            const Spacer(),
-            for (final c in _shuffled) ...[
-              FilledButton.tonal(
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.emerald100,
-                  foregroundColor: AppColors.emerald900,
-                  minimumSize: const Size.fromHeight(52),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                ),
-                onPressed: () => _choose(c),
-                child: Text(c.label, textAlign: TextAlign.center),
-              ),
-              const SizedBox(height: 10),
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -1808,68 +1864,82 @@ class _QuienLoDijoScreenState extends State<QuienLoDijoScreen> {
       appBar: AppBar(
         title: Text('¿Quién lo dijo?  (${_i + 1}/${_qs.length})'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            LinearProgressIndicator(
-              value: (_i + 1) / _qs.length,
-              color: AppColors.emerald600,
-              backgroundColor: AppColors.emerald100,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Puntos: $_score',
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                fontFamily: 'DM Sans',
-                fontWeight: FontWeight.w600,
-                color: AppColors.emerald700,
-              ),
-            ),
-            const Spacer(),
-            Text(
-              q.quote,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Cormorant Garamond',
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                height: 1.35,
-                color: AppColors.emerald900,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              q.reference,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'DM Sans',
-                fontSize: 13,
+      body: ResponsiveBody(
+        maxWidth: 640,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              LinearProgressIndicator(
+                value: (_i + 1) / _qs.length,
                 color: AppColors.emerald600,
+                backgroundColor: AppColors.emerald100,
               ),
-            ),
-            const Spacer(),
-            for (var i = 0; i < q.options.length; i++) ...[
-              FilledButton.tonal(
-                style: FilledButton.styleFrom(
-                  backgroundColor: _picked == null
-                      ? AppColors.emerald100
-                      : (i == q.correct
-                          ? AppColors.emerald200
-                          : (_picked == i
-                              ? const Color(0xFFFFE4E6)
-                              : AppColors.emerald50)),
-                  foregroundColor: AppColors.emerald900,
-                  minimumSize: const Size.fromHeight(52),
+              const SizedBox(height: 8),
+              Text(
+                'Puntos: $_score',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontFamily: 'DM Sans',
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.emerald700,
                 ),
-                onPressed: _busy ? null : () => _answer(i),
-                child: Text(q.options[i], textAlign: TextAlign.center),
+              ),
+              const Spacer(),
+              Text(
+                q.quote,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Cormorant Garamond',
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  height: 1.35,
+                  color: AppColors.emerald900,
+                ),
               ),
               const SizedBox(height: 10),
+              Text(
+                q.reference,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'DM Sans',
+                  fontSize: 13,
+                  color: AppColors.emerald600,
+                ),
+              ),
+              const Spacer(),
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (var i = 0; i < q.options.length; i++) ...[
+                        FilledButton.tonal(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: _picked == null
+                                ? AppColors.emerald100
+                                : (i == q.correct
+                                    ? AppColors.emerald200
+                                    : (_picked == i
+                                        ? const Color(0xFFFFE4E6)
+                                        : AppColors.emerald50)),
+                            foregroundColor: AppColors.emerald900,
+                            minimumSize: const Size.fromHeight(52),
+                          ),
+                          onPressed: _busy ? null : () => _answer(i),
+                          child:
+                              Text(q.options[i], textAlign: TextAlign.center),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
             ],
-          ],
+          ),
         ),
       ),
     );
