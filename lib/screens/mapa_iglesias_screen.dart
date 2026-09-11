@@ -879,7 +879,7 @@ class _AddChurchSheetState extends State<_AddChurchSheet> {
             Uri.parse(urlStr),
             headers: {
               'User-Agent':
-                  'VIDA/0.9.29 (com.vida.project; https://github.com/WDG-Technologies/VIDA)',
+                  'VIDA/0.9.30 (com.vida.project; https://github.com/WDG-Technologies/VIDA)',
             },
           )
           .timeout(const Duration(seconds: 12));

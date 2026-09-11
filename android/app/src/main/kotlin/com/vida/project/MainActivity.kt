@@ -8,4 +8,15 @@ class MainActivity : FlutterActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
     }
+
+    companion object {
+        /**
+         * Referencia estática para que el resource shrinker de release
+         * no elimine el icono de notificaciones (solo se usa desde Dart).
+         */
+        @Suppress("unused")
+        private val keepNotificationDrawables = intArrayOf(
+            R.drawable.ic_stat_vida,
+        )
+    }
 }

@@ -127,27 +127,45 @@ class NotificationService {
 
     await _configureLocalTimeZone();
 
-    const androidSettings =
-        AndroidInitializationSettings('@drawable/ic_stat_vida');
-    const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    const settings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
-    await _plugin.initialize(
-      settings: settings,
-      onDidReceiveNotificationResponse: (resp) {
-        _d('tap payload=${resp.payload}');
-        final p = resp.payload;
-        if (p == null || p.isEmpty) return;
-        final uri = Uri.tryParse(p);
-        if (uri != null) openDeepLink?.call(uri);
-      },
-    );
+    // Iconos candidatos: el shrinker de release a veces elimina drawables
+    // solo referenciados desde Dart → fallback a launcher.
+    const iconCandidates = <String>[
+      '@drawable/ic_stat_vida',
+      '@mipmap/ic_launcher',
+    ];
+
+    Object? lastErr;
+    for (final icon in iconCandidates) {
+      try {
+        final settings = InitializationSettings(
+          android: AndroidInitializationSettings(icon),
+          iOS: const DarwinInitializationSettings(
+            requestAlertPermission: true,
+            requestBadgePermission: true,
+            requestSoundPermission: true,
+          ),
+        );
+        await _plugin.initialize(
+          settings: settings,
+          onDidReceiveNotificationResponse: (resp) {
+            _d('tap payload=${resp.payload}');
+            final p = resp.payload;
+            if (p == null || p.isEmpty) return;
+            final uri = Uri.tryParse(p);
+            if (uri != null) openDeepLink?.call(uri);
+          },
+        );
+        _d('initialize ok icon=$icon');
+        lastErr = null;
+        break;
+      } catch (e) {
+        lastErr = e;
+        _d('initialize FAIL icon=$icon: $e');
+      }
+    }
+    if (lastErr != null) {
+      throw lastErr!;
+    }
 
     await _ensureAndroidChannels();
     _initialized = true;
