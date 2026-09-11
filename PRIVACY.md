@@ -35,6 +35,10 @@ La ubicación se usa para centrar el mapa y buscar direcciones (Nominatim / Open
 
 Si activas **Formita** en Apariencia, se pide un avatar a [blobatar.dev](https://blobatar.dev) usando tu nombre como semilla. Con la opción apagada solo se muestra tu inicial, sin esa petición.
 
+## Notificaciones de Comunidad
+
+Si activas avisos de Comunidad, guardamos un token FCM en tu perfil (`users/{uid}/fcmTokens`) para enviarte notificaciones de likes y respuestas. Puedes desactivarlas en Comunidad → cuenta. No usamos eso para publicidad.
+
 ## Controles
 
 - Cerrar sesión de Comunidad desde esa pantalla

@@ -10,9 +10,9 @@ class UpdateService {
       'https://api.github.com/repos/WDG-Technologies/VIDA/releases/latest';
 
   /// Versión embebida (mantener alineada con pubspec.yaml).
-  static const currentVersion = '0.9.1';
-  static const currentBuild = 12;
-  static const currentLabel = '0.9.1 (Beta)';
+  static const currentVersion = '0.9.11';
+  static const currentBuild = 13;
+  static const currentLabel = '0.9.11 (Beta)';
   static String get currentFull => '$currentVersion+$currentBuild';
 
   static Future<AppUpdateInfo?> checkLatest() async {

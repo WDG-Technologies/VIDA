@@ -64,6 +64,12 @@ class PrivacyScreen extends StatelessWidget {
             'usando tu nombre (u otro texto) como semilla. Es opcional; con la opción '
             'apagada solo se muestra tu inicial en el dispositivo.',
           ),
+          _heading('Avisos de Comunidad'),
+          _p(
+            'Si activas avisos en Comunidad → cuenta, usamos Firebase Cloud Messaging '
+            'para avisarte de likes y respuestas. El token se guarda en tu perfil; '
+            'puedes desactivarlo cuando quieras. No es publicidad.',
+          ),
           _heading('Términos de uso'),
           _p(
             'VIDA se ofrece «tal cual», bajo licencia MIT del código abierto del proyecto. '

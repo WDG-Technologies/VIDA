@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/streak.dart';
+import 'services/community_push.dart';
 import 'services/notification_service.dart';
 import 'services/telemetry.dart';
 import 'theme/app_theme.dart';
@@ -42,6 +43,7 @@ void main() async {
     await NotificationService.init();
     await NotificationService.requestPermission();
     await NotificationService.scheduleAwayReminder();
+    await CommunityPushService.init();
   } catch (_) {}
   try {
     HomeWidget.setAppGroupId('group.com.vida.project');
@@ -73,6 +75,7 @@ class _VidaAppState extends State<VidaApp> {
   void initState() {
     super.initState();
     ThemeController.instance.addListener(_onThemeChanged);
+    NotificationService.openDeepLink = _handleDeepLink;
     _loadUser();
     HomeWidget.initiallyLaunchedFromHomeWidget().then(_handleWidgetUri);
     _widgetClickSub = HomeWidget.widgetClicked.listen(_handleWidgetUri);

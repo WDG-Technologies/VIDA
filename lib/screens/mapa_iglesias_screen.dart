@@ -21,9 +21,27 @@ TileLayer vidaMapTileLayer() => TileLayer(
       maxZoom: 19,
     );
 
-Widget vidaMapAttribution() => const SimpleAttributionWidget(
-      source: Text('© OpenStreetMap'),
+/// Atribución OSM sin el prefijo «flutter_map |».
+Widget vidaMapAttribution() => Align(
       alignment: Alignment.bottomLeft,
+      child: Padding(
+        padding: const EdgeInsets.all(6),
+        child: Material(
+          color: Colors.black.withValues(alpha: 0.55),
+          borderRadius: BorderRadius.circular(4),
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            child: Text(
+              '© OpenStreetMap',
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
 
 class MapaIglesiasScreen extends StatefulWidget {

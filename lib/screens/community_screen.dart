@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
+import '../services/community_push.dart';
 import '../services/feature_tips.dart';
 import '../services/report_service.dart';
 import '../theme/app_theme.dart';
@@ -48,27 +49,128 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Comunidad',
+        title: const Text('Comunidad',
             style: TextStyle(fontWeight: FontWeight.w600)),
         actions: [
           if (!isAnonymous)
             IconButton(
-              tooltip: 'Cerrar sesión',
-              onPressed: () async {
-                try {
-                  await _auth.signOut();
-                  await _auth.signInAnonymously();
-                } catch (_) {}
-                if (mounted) setState(() {});
-              },
-              icon: Icon(Icons.logout_rounded,
-                  color: AppColors.emerald700, size: 22),
+              tooltip: 'Cuenta',
+              onPressed: () => _openAccountSheet(context, user),
+              icon: Icon(Icons.manage_accounts_rounded,
+                  color: AppColors.emerald700, size: 24),
             ),
         ],
       ),
       body: isAnonymous
           ? _AuthView(onAuthed: _refreshAuth)
-          : _FeedView(),
+          : const _FeedView(),
+    );
+  }
+
+  Future<void> _openAccountSheet(BuildContext context, User user) async {
+    final name = user.displayName?.trim();
+    final email = user.email?.trim() ?? '';
+    var pushOn = await CommunityPushService.isEnabled();
+    if (!context.mounted) return;
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        final cs = Theme.of(ctx).colorScheme;
+        return SafeArea(
+          child: StatefulBuilder(
+            builder: (ctx, setLocal) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: UserAvatar(
+                        name: (name != null && name.isNotEmpty)
+                            ? name
+                            : 'Usuario',
+                        radius: 22,
+                      ),
+                      title: Text(
+                        (name != null && name.isNotEmpty) ? name : 'Cuenta',
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: email.isNotEmpty
+                          ? Text(email,
+                              style: TextStyle(color: cs.onSurfaceVariant))
+                          : null,
+                    ),
+                    const Divider(height: 8),
+                    SwitchListTile.adaptive(
+                      secondary: Icon(Icons.notifications_active_outlined,
+                          color: AppColors.emerald600),
+                      title: const Text('Avisos de Comunidad'),
+                      subtitle: const Text(
+                        'Likes y respuestas a tus publicaciones',
+                      ),
+                      value: pushOn,
+                      onChanged: (v) async {
+                        await CommunityPushService.setEnabled(v);
+                        setLocal(() => pushOn = v);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.info_outline_rounded,
+                          color: AppColors.emerald600),
+                      title: const Text('Sobre Comunidad'),
+                      subtitle: const Text(
+                        'Comparte con respeto. Puedes reportar o eliminar tus posts.',
+                      ),
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        showDialog<void>(
+                          context: context,
+                          builder: (dCtx) => AlertDialog(
+                            title: const Text('Comunidad VIDA'),
+                            content: const Text(
+                              'Publica con respeto. Puedes eliminar tus propias '
+                              'publicaciones y reportar contenido inapropiado.',
+                              style: TextStyle(height: 1.45),
+                            ),
+                            actions: [
+                              FilledButton(
+                                onPressed: () => Navigator.pop(dCtx),
+                                child: const Text('Entendido'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.logout_rounded,
+                          color: Colors.red.shade400),
+                      title: Text('Cerrar sesión',
+                          style: TextStyle(
+                              color: Colors.red.shade400,
+                              fontWeight: FontWeight.w600)),
+                      subtitle: const Text(
+                          'Vuelves a la pantalla de inicio de sesión'),
+                      onTap: () async {
+                        Navigator.pop(ctx);
+                        try {
+                          await _auth.signOut();
+                          await _auth.signInAnonymously();
+                        } catch (_) {}
+                        if (mounted) setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -424,22 +526,48 @@ String _resolveAuthorEmail(User user) => user.email?.trim() ?? '';
 String _handleLocal(String value) {
   final v = value.trim();
   if (v.isEmpty) return '';
-  final local = v.contains('@') ? v.split('@').first : v;
-  // Avoid "@@user" if stored value already starts with @.
-  return local.startsWith('@') ? local : '@$local';
+  var local = v.contains('@') ? v.split('@').first : v;
+  local = local.replaceFirst(RegExp(r'^@+'), '');
+  if (local.isEmpty) return '';
+  return '@$local';
 }
 
+/// Handle legible; vacío si no aporta nada distinto del nombre visible.
 String _displayHandle(String? email, String? fallbackName) {
   final e = email?.trim() ?? '';
-  if (e.isNotEmpty) return _handleLocal(e);
-  final n = fallbackName?.trim() ?? '';
-  if (n.isNotEmpty && n.contains('@')) return _handleLocal(n);
-  return '';
+  String handle = '';
+  if (e.isNotEmpty) {
+    handle = _handleLocal(e);
+  } else {
+    final n = fallbackName?.trim() ?? '';
+    if (n.contains('@')) handle = _handleLocal(n);
+  }
+  if (handle.isEmpty) return '';
+  final bare = handle.substring(1).toLowerCase();
+  final name = (fallbackName ?? '').trim().toLowerCase();
+  if (name.isNotEmpty && (name == bare || name == handle.toLowerCase())) {
+    return '';
+  }
+  return handle;
+}
+
+String _formatCommunityDate(Timestamp? ts) {
+  if (ts == null) return '';
+  final d = ts.toDate();
+  final now = DateTime.now();
+  final diff = now.difference(d);
+  if (diff.inMinutes < 1) return 'Ahora';
+  if (diff.inMinutes < 60) return '${diff.inMinutes} min';
+  if (diff.inHours < 24) return '${diff.inHours} h';
+  if (diff.inDays < 7) return '${diff.inDays} d';
+  return '${d.day}/${d.month}/${d.year}';
 }
 
 // ─────────────── Feed View ───────────────
 
 class _FeedView extends StatefulWidget {
+  const _FeedView();
+
   @override
   State<_FeedView> createState() => _FeedViewState();
 }
@@ -493,42 +621,48 @@ class _FeedViewState extends State<_FeedView> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-          child: TextField(
-            controller: _postCtrl,
-            maxLines: 3,
-            maxLength: 2000,
-            textCapitalization: TextCapitalization.sentences,
-            textInputAction: TextInputAction.send,
-            onSubmitted: (_) => _createPost(),
-            decoration: InputDecoration(
-              hintText: 'Comparte algo con la comunidad…',
-              hintStyle: TextStyle(
-                  fontSize: 13, color: AppColors.emerald300),
-              filled: true,
-              fillColor: AppColors.emerald50,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding:
-                  EdgeInsets.fromLTRB(16, 12, 48, 12),
-              counterStyle: TextStyle(
-                  fontSize: 10, color: AppColors.emerald300),
-              suffixIcon: Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: IconButton(
+          padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+          child: Material(
+            color: cs.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(16),
+            child: TextField(
+              controller: _postCtrl,
+              maxLines: 3,
+              maxLength: 2000,
+              textCapitalization: TextCapitalization.sentences,
+              textInputAction: TextInputAction.send,
+              onSubmitted: (_) => _createPost(),
+              decoration: InputDecoration(
+                hintText: 'Comparte algo con la comunidad…',
+                hintStyle: TextStyle(
+                  fontSize: 14,
+                  color: cs.onSurface.withValues(alpha: 0.45),
+                ),
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.fromLTRB(16, 14, 48, 12),
+                counterStyle: TextStyle(
+                  fontSize: 10,
+                  color: cs.onSurface.withValues(alpha: 0.4),
+                ),
+                suffixIcon: IconButton(
                   onPressed: _posting ? null : _createPost,
-                  icon: Icon(Icons.send_rounded, size: 20, color: AppColors.emerald600),
+                  icon: Icon(
+                    Icons.send_rounded,
+                    size: 22,
+                    color: _posting
+                        ? cs.onSurface.withValues(alpha: 0.3)
+                        : AppColors.emerald600,
+                  ),
                 ),
               ),
+            ),
           ),
         ),
-        ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
             stream: _db
@@ -559,7 +693,7 @@ class _FeedViewState extends State<_FeedView> {
                     children: [
                       Icon(Icons.forum_rounded,
                           size: 56, color: AppColors.emerald300),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       Text('Sé el primero en publicar',
                           style: TextStyle(
                               fontSize: 14, color: AppColors.emerald500)),
@@ -619,22 +753,64 @@ class _PostCardState extends State<_PostCard> {
     return uid != null && likedBy.contains(uid);
   }
 
-  String _formatDate(Timestamp? ts) {
-    if (ts == null) return '';
-    final d = ts.toDate();
-    final now = DateTime.now();
-    final diff = now.difference(d);
-    if (diff.inMinutes < 1) return 'Justo ahora';
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m';
-    if (diff.inHours < 24) return '${diff.inHours}h';
-    return '${d.day}/${d.month}/${d.year}';
+  bool get _isAuthor {
+    final uid = _auth.currentUser?.uid;
+    final authorId = _data['userId'] as String?;
+    return uid != null && authorId != null && uid == authorId;
+  }
+
+  Future<void> _deletePost() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Eliminar publicación'),
+        content: const Text(
+          'Se borrará esta publicación y sus comentarios. ¿Continuar?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    try {
+      final ref = _db.collection('community_posts').doc(widget.postDoc.id);
+      final comments = await ref.collection('comments').limit(200).get();
+      final batch = _db.batch();
+      for (final d in comments.docs) {
+        batch.delete(d.reference);
+      }
+      batch.delete(ref);
+      await batch.commit();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Publicación eliminada')),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No se pudo eliminar. Revisa tu conexión o permisos.'),
+        ),
+      );
+    }
   }
 
   Future<void> _toggleLike() async {
-    final uid = _auth.currentUser?.uid;
+    final user = _auth.currentUser;
+    final uid = user?.uid;
     if (uid == null || _liking) return;
+    final fromName = _resolveAuthorName(user!, context);
     setState(() => _liking = true);
     final ref = _db.collection('community_posts').doc(widget.postDoc.id);
+    var addedLike = false;
     try {
       await _db.runTransaction((tx) async {
         final snap = await tx.get(ref);
@@ -645,14 +821,25 @@ class _PostCardState extends State<_PostCard> {
         final liked = likedBy.contains(uid);
         if (liked) {
           likedBy.remove(uid);
+          addedLike = false;
         } else {
           likedBy.add(uid);
+          addedLike = true;
         }
         tx.update(ref, {
           'likedBy': likedBy,
           'likeCount': likedBy.length,
         });
       });
+      if (addedLike) {
+        final authorId = (_data['userId'] as String?) ?? '';
+        await CommunityPushService.notifyAuthor(
+          toUid: authorId,
+          type: 'like',
+          postId: widget.postDoc.id,
+          fromName: fromName,
+        );
+      }
     } catch (_) {
       // Stream refresca el estado real; ignoramos fallos de red.
     } finally {
@@ -665,6 +852,7 @@ class _PostCardState extends State<_PostCard> {
     if (content.isEmpty || _commenting) return;
     final user = _auth.currentUser;
     if (user == null || user.isAnonymous) return;
+    final fromName = _resolveAuthorName(user, context);
 
     setState(() => _commenting = true);
     try {
@@ -674,12 +862,19 @@ class _PostCardState extends State<_PostCard> {
           .collection('comments')
           .add({
         'userId': user.uid,
-        'authorName': _resolveAuthorName(user, context),
+        'authorName': fromName,
         'authorEmail': _resolveAuthorEmail(user),
         'content': content,
         'createdAt': FieldValue.serverTimestamp(),
       });
       if (mounted) _commentCtrl.clear();
+      final authorId = (_data['userId'] as String?) ?? '';
+      await CommunityPushService.notifyAuthor(
+        toUid: authorId,
+        type: 'comment',
+        postId: widget.postDoc.id,
+        fromName: fromName,
+      );
     } finally {
       if (mounted) setState(() => _commenting = false);
     }
@@ -701,97 +896,112 @@ class _PostCardState extends State<_PostCard> {
       _data['authorEmail'] as String?,
       authorName,
     );
+    final cs = Theme.of(context).colorScheme;
+    final dateLabel =
+        _formatCommunityDate(_data['createdAt'] as Timestamp?);
 
     return Card(
       elevation: 0,
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 12),
+      color: cs.surfaceContainerLow,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(color: AppColors.emerald100),
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: cs.outlineVariant.withValues(alpha: 0.35)),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.fromLTRB(14, 12, 8, 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 UserAvatar(
                   name: authorName.isNotEmpty ? authorName : 'Usuario',
-                  radius: 14,
+                  radius: 18,
                   backgroundColor: AppColors.emerald200,
                   foregroundColor: AppColors.emerald700,
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              authorName.isNotEmpty
-                                  ? authorName
-                                  : 'Usuario',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.emerald800),
-                            ),
-                          ),
-                          Text(
-                            _formatDate(
-                                _data['createdAt'] as Timestamp?),
-                            style: TextStyle(
-                                fontSize: 11,
-                                color: AppColors.emerald400),
-                          ),
-                          PopupMenuButton<String>(
-                            icon: Icon(Icons.more_vert_rounded,
-                                size: 18, color: AppColors.emerald400),
-                            onSelected: (v) async {
-                              if (v != 'report') return;
-                              await ReportService.submit(
-                                targetType: 'post',
-                                targetId: widget.postDoc.id,
-                              );
-                              if (!mounted) return;
-                              widget.onHidden?.call();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      'Gracias. Ocultamos esta publicación aquí.'),
-                                ),
-                              );
-                            },
-                            itemBuilder: (_) => const [
-                              PopupMenuItem(
-                                value: 'report',
-                                child: Text('Reportar'),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      if (handle.isNotEmpty)
-                        Text(
-                          handle,
-                          style: TextStyle(
-                              fontSize: 11, color: AppColors.emerald400),
+                      Text(
+                        authorName.isNotEmpty ? authorName : 'Usuario',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: cs.onSurface,
                         ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        [
+                          if (handle.isNotEmpty) handle,
+                          if (dateLabel.isNotEmpty) dateLabel,
+                        ].join(' · '),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: cs.onSurface.withValues(alpha: 0.55),
+                        ),
+                      ),
                     ],
                   ),
                 ),
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_horiz_rounded,
+                      size: 22, color: cs.onSurface.withValues(alpha: 0.45)),
+                  onSelected: (v) async {
+                    if (v == 'delete') {
+                      await _deletePost();
+                      return;
+                    }
+                    if (v != 'report') return;
+                    await ReportService.submit(
+                      targetType: 'post',
+                      targetId: widget.postDoc.id,
+                    );
+                    if (!mounted) return;
+                    widget.onHidden?.call();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            'Gracias. Ocultamos esta publicación aquí.'),
+                      ),
+                    );
+                  },
+                  itemBuilder: (_) => [
+                    if (_isAuthor)
+                      const PopupMenuItem(
+                        value: 'delete',
+                        child: Text('Eliminar'),
+                      ),
+                    const PopupMenuItem(
+                      value: 'report',
+                      child: Text('Reportar'),
+                    ),
+                  ],
+                ),
               ],
             ),
-            const SizedBox(height: 8),
-            Text(_data['content'] ?? '',
-                style: TextStyle(
-                    fontSize: 14,
-                    height: 1.45,
-                    color: AppColors.emerald900)),
             const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Text(
+                _data['content'] ?? '',
+                style: TextStyle(
+                  fontSize: 15,
+                  height: 1.45,
+                  color: cs.onSurface,
+                ),
+              ),
+            ),
+            const SizedBox(height: 4),
             Row(
               children: [
                 IconButton(
@@ -807,59 +1017,76 @@ class _PostCardState extends State<_PostCard> {
                   ),
                   visualDensity: VisualDensity.compact,
                 ),
-                Text('$likeCount',
-                    style: TextStyle(
-                        fontSize: 13, color: AppColors.emerald600)),
-                const SizedBox(width: 16),
-                IconButton(
+                Text(
+                  '$likeCount',
+                  style: TextStyle(
+                      fontSize: 13, color: AppColors.emerald600),
+                ),
+                const SizedBox(width: 8),
+                TextButton.icon(
                   onPressed: () =>
                       setState(() => _showComments = !_showComments),
                   icon: Icon(
-                    Icons.chat_bubble_outline_rounded,
-                    size: 20,
+                    _showComments
+                        ? Icons.chat_bubble_rounded
+                        : Icons.chat_bubble_outline_rounded,
+                    size: 18,
                     color: AppColors.emerald500,
                   ),
-                  visualDensity: VisualDensity.compact,
+                  label: Text(
+                    _showComments ? 'Ocultar' : 'Responder',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.emerald600,
+                    ),
+                  ),
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
                 ),
               ],
             ),
             if (_showComments) ...[
-              const Divider(height: 1),
+              Divider(height: 16, color: cs.outlineVariant.withValues(alpha: 0.4)),
               _CommentsList(postId: widget.postDoc.id),
               const SizedBox(height: 8),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
                     child: TextField(
                       controller: _commentCtrl,
                       maxLines: 2,
                       maxLength: 500,
-                      textCapitalization:
-                          TextCapitalization.sentences,
+                      textCapitalization: TextCapitalization.sentences,
                       decoration: InputDecoration(
-                        hintText: 'Escribe un comentario…',
-                        hintStyle: TextStyle(
-                            fontSize: 12, color: AppColors.emerald300),
+                        hintText: 'Escribe una respuesta…',
                         filled: true,
-                        fillColor: AppColors.emerald50,
+                        fillColor: cs.surface,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 10),
                         counterStyle: TextStyle(
-                            fontSize: 9, color: AppColors.emerald300),
+                          fontSize: 9,
+                          color: cs.onSurface.withValues(alpha: 0.4),
+                        ),
                         isDense: true,
                       ),
                     ),
                   ),
                   const SizedBox(width: 6),
-                  IconButton(
+                  IconButton.filled(
                     onPressed: _commenting ? null : _addComment,
-                    icon: Icon(Icons.send_rounded,
-                        size: 18, color: AppColors.emerald600),
-                    visualDensity: VisualDensity.compact,
+                    icon: Icon(Icons.send_rounded, size: 18, color: cs.onPrimary),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.emerald600,
+                      disabledBackgroundColor:
+                          AppColors.emerald600.withValues(alpha: 0.4),
+                    ),
                   ),
                 ],
               ),
@@ -879,6 +1106,7 @@ class _CommentsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('community_posts')
@@ -892,17 +1120,21 @@ class _CommentsList extends StatelessWidget {
         if (comments.isEmpty) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text('Sin comentarios',
-                style:
-                    TextStyle(fontSize: 12, color: AppColors.emerald400)),
+            child: Text(
+              'Sin respuestas aún',
+              style: TextStyle(
+                fontSize: 12,
+                color: cs.onSurface.withValues(alpha: 0.5),
+              ),
+            ),
           );
         }
         return ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.only(top: 4),
           itemCount: comments.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 6),
+          separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: (context, i) {
             final doc = comments[i];
             final c = doc.data() as Map<String, dynamic>;
@@ -911,49 +1143,82 @@ class _CommentsList extends StatelessWidget {
               c['authorEmail'] as String?,
               name,
             );
-            return Column(
+            final dateLabel =
+                _formatCommunityDate(c['createdAt'] as Timestamp?);
+            final meta = [
+              if (handle.isNotEmpty) handle,
+              if (dateLabel.isNotEmpty) dateLabel,
+            ].join(' · ');
+            return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        name.isNotEmpty ? name : 'Usuario',
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.emerald700),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        await ReportService.submit(
-                          targetType: 'comment',
-                          targetId: doc.id,
-                          parentId: postId,
-                        );
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Comentario reportado'),
-                          ),
-                        );
-                      },
-                      child: Icon(Icons.flag_outlined,
-                          size: 14, color: AppColors.emerald300),
-                    ),
-                  ],
+                UserAvatar(
+                  name: name.isNotEmpty ? name : 'Usuario',
+                  radius: 12,
+                  backgroundColor: AppColors.emerald100,
+                  foregroundColor: AppColors.emerald700,
                 ),
-                if (handle.isNotEmpty)
-                  Text(
-                    handle,
-                    style: TextStyle(
-                        fontSize: 10, color: AppColors.emerald400),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              name.isNotEmpty ? name : 'Usuario',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: cs.onSurface,
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              await ReportService.submit(
+                                targetType: 'comment',
+                                targetId: doc.id,
+                                parentId: postId,
+                              );
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Comentario reportado'),
+                                ),
+                              );
+                            },
+                            child: Icon(
+                              Icons.flag_outlined,
+                              size: 14,
+                              color: cs.onSurface.withValues(alpha: 0.35),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (meta.isNotEmpty)
+                        Text(
+                          meta,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: cs.onSurface.withValues(alpha: 0.5),
+                          ),
+                        ),
+                      const SizedBox(height: 3),
+                      Text(
+                        c['content'] ?? '',
+                        style: TextStyle(
+                          fontSize: 13,
+                          height: 1.35,
+                          color: cs.onSurface.withValues(alpha: 0.9),
+                        ),
+                      ),
+                    ],
                   ),
-                const SizedBox(height: 2),
-                Text(c['content'] ?? '',
-                    style: TextStyle(
-                        fontSize: 12, color: AppColors.emerald800)),
+                ),
               ],
             );
           },

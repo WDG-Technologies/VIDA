@@ -15,6 +15,9 @@ class NotificationService {
   static const _minute = 0;
   static const _kAwayEnabled = 'notif_away_enabled';
 
+  /// Callback para abrir deep links desde notificaciones (p. ej. Comunidad).
+  static void Function(Uri uri)? openDeepLink;
+
   static const _motivationalMessages = [
     'Dios no se ha olvidado de ti. Vuelve a casa, Él te espera.',
     'Aunque el tiempo pase, Su amor no cambia. Vuelve a Él.',
@@ -33,6 +36,21 @@ class NotificationService {
       icon: 'ic_stat_vida',
       largeIcon: DrawableResourceAndroidBitmap('ic_notif_large'),
       color: Color(0xFF059669),
+    ),
+    iOS: DarwinNotificationDetails(),
+  );
+
+  static const _communityDetails = NotificationDetails(
+    android: AndroidNotificationDetails(
+      'vida_community',
+      'Comunidad',
+      channelDescription: 'Likes y respuestas en Comunidad',
+      importance: Importance.high,
+      priority: Priority.high,
+      icon: 'ic_stat_vida',
+      largeIcon: DrawableResourceAndroidBitmap('ic_notif_large'),
+      color: Color(0xFF059669),
+      category: AndroidNotificationCategory.social,
     ),
     iOS: DarwinNotificationDetails(),
   );
@@ -59,8 +77,34 @@ class NotificationService {
       android: androidSettings,
       iOS: iosSettings,
     );
-    await _plugin.initialize(settings: settings);
+    await _plugin.initialize(
+      settings: settings,
+      onDidReceiveNotificationResponse: (resp) {
+        final p = resp.payload;
+        if (p == null || p.isEmpty) return;
+        final uri = Uri.tryParse(p);
+        if (uri != null) openDeepLink?.call(uri);
+      },
+    );
     _initialized = true;
+  }
+
+  static Future<void> showCommunity({
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    if (!_initialized) await init();
+    if (body.trim().isEmpty) return;
+    try {
+      await _plugin.show(
+        id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
+        title: title,
+        body: body,
+        notificationDetails: _communityDetails,
+        payload: payload,
+      );
+    } catch (_) {}
   }
 
   static Future<bool> requestPermission() async {
