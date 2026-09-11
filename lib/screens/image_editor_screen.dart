@@ -1,10 +1,10 @@
-﻿import 'dart:io';
-import 'dart:ui' as ui;
+﻿import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../theme/app_theme.dart';
+import '../utils/local_file.dart';
 import '../widgets/verse_picker_sheet.dart';
 
 enum _TextAlign { top, center, bottom }
@@ -72,10 +72,19 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
           await image.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) throw Exception('Failed to encode image');
 
-      final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/vida_share.png');
-      await file.writeAsBytes(byteData.buffer.asUint8List());
-      await Share.shareXFiles([XFile(file.path)]);
+      final bytes = byteData.buffer.asUint8List();
+      if (kIsWeb) {
+        await Share.shareXFiles([
+          XFile.fromData(
+            bytes,
+            name: 'vida_share.png',
+            mimeType: 'image/png',
+          ),
+        ]);
+      } else {
+        final path = await writeTempBytes('vida_share.png', bytes);
+        await Share.shareXFiles([XFile(path)]);
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

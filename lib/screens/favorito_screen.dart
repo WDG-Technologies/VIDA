@@ -1,13 +1,14 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/fav.dart';
 import '../theme/app_theme.dart';
+import '../utils/local_file.dart';
+import '../utils/platform_caps.dart';
 
 class FavoritoScreen extends StatefulWidget {
   const FavoritoScreen({super.key});
@@ -37,12 +38,14 @@ class _FavoritoScreenState extends State<FavoritoScreen> {
     final enabled = prefs.getBool('favorito') ?? false;
     final selected = prefs.getInt('fav_index');
     final bg = prefs.getString(_bgPrefsKey);
-    final bgExists = bg != null && File(bg).existsSync();
+    final bgExists = bg != null && await localPathExists(bg);
     var dark = prefs.getBool(_darkPrefsKey) ?? false;
     if (bgExists && !prefs.containsKey(_darkPrefsKey)) {
-      dark = await _isDarkBackground(File(bg));
+      dark = await _isDarkBackgroundBytes(await readLocalBytes(bg!));
       await prefs.setBool(_darkPrefsKey, dark);
-      await HomeWidget.saveWidgetData('fav_dark_bg', dark);
+      if (PlatformCaps.homeWidgets) {
+        await HomeWidget.saveWidgetData('fav_dark_bg', dark);
+      }
     }
     if (mounted) {
       setState(() {
@@ -66,29 +69,12 @@ class _FavoritoScreenState extends State<FavoritoScreen> {
     }
   }
 
-  Future<Directory> _bgDir() => getApplicationSupportDirectory();
-
-  Future<void> _deleteOldBgs({String? keepPath}) async {
-    try {
-      final dir = await _bgDir();
-      await for (final entity in dir.list()) {
-        if (entity is! File) continue;
-        final name = entity.uri.pathSegments.isNotEmpty
-            ? entity.uri.pathSegments.last
-            : entity.path;
-        if (!name.startsWith('favorito_bg')) continue;
-        if (keepPath != null && entity.path == keepPath) continue;
-        try {
-          await entity.delete();
-        } catch (_) {}
-      }
-    } catch (_) {}
-  }
+  Future<void> _deleteOldBgs({String? keepPath}) =>
+      deleteOldFavoritoBgs(keepPath: keepPath);
 
   /// Samples the center; dark if average is low or most pixels are dim.
-  Future<bool> _isDarkBackground(File file) async {
+  Future<bool> _isDarkBackgroundBytes(Uint8List bytes) async {
     try {
-      final bytes = await file.readAsBytes();
       final codec = await ui.instantiateImageCodec(
         bytes,
         targetWidth: 64,
@@ -143,6 +129,15 @@ class _FavoritoScreenState extends State<FavoritoScreen> {
   }
 
   Future<void> _pickBackground() async {
+    if (!PlatformCaps.homeWidgets) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Fondos personalizados del widget solo en la app móvil'),
+        ),
+      );
+      return;
+    }
     final picker = ImagePicker();
     final picked = await picker.pickImage(
       source: ImageSource.gallery,
@@ -153,19 +148,18 @@ class _FavoritoScreenState extends State<FavoritoScreen> {
     if (picked == null) return;
 
     try {
-      final dir = await _bgDir();
-      final dest = File(
-        '${dir.path}/favorito_bg_${DateTime.now().millisecondsSinceEpoch}.jpg',
+      final destPath = await copyPickedToSupport(
+        picked.path,
+        'favorito_bg_${DateTime.now().millisecondsSinceEpoch}.jpg',
       );
-      await File(picked.path).copy(dest.path);
-      await _deleteOldBgs(keepPath: dest.path);
-      final dark = await _isDarkBackground(dest);
+      await _deleteOldBgs(keepPath: destPath);
+      final dark = await _isDarkBackgroundBytes(await readLocalBytes(destPath));
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_bgPrefsKey, dest.path);
+      await prefs.setString(_bgPrefsKey, destPath);
       await prefs.setBool(_darkPrefsKey, dark);
       if (!mounted) return;
       setState(() {
-        _customBgPath = dest.path;
+        _customBgPath = destPath;
         _darkBg = dark;
       });
       await _refreshWidget();
@@ -598,8 +592,8 @@ class _FavoritoScreenState extends State<FavoritoScreen> {
           children: [
             Positioned.fill(
               child: bg != null
-                  ? Image.file(
-                      File(bg),
+                  ? Image(
+                      image: localFileImageProvider(bg),
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Image.asset(
                         'widget-fav.png',

@@ -13,6 +13,7 @@ import '../services/donate_config.dart';
 import '../services/notification_service.dart';
 import '../services/update_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/platform_caps.dart';
 import '../widgets/user_avatar.dart';
 import 'appearance_screen.dart';
 import 'privacy_screen.dart';
@@ -546,29 +547,30 @@ class _PerfilScreenState extends State<PerfilScreen> {
                   ),
                 ),
                 const Divider(height: 1, indent: 56),
-                SwitchListTile(
-                  secondary: Icon(Icons.notifications_active_rounded,
-                      color: AppColors.emerald600),
-                  title: Text(
-                    'Recordatorios',
-                    style: TextStyle(
-                      fontFamily: 'DM Sans',
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.emerald900,
+                if (PlatformCaps.localNotifications)
+                  SwitchListTile(
+                    secondary: Icon(Icons.notifications_active_rounded,
+                        color: AppColors.emerald600),
+                    title: Text(
+                      'Recordatorios',
+                      style: TextStyle(
+                        fontFamily: 'DM Sans',
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.emerald900,
+                      ),
                     ),
-                  ),
-                  subtitle: Text(
-                    'Aviso si pasas 2 días sin abrir la app',
-                    style: TextStyle(
-                      fontFamily: 'DM Sans',
-                      fontSize: 12,
-                      color: AppColors.emerald600,
+                    subtitle: Text(
+                      'Aviso si pasas 2 días sin abrir la app',
+                      style: TextStyle(
+                        fontFamily: 'DM Sans',
+                        fontSize: 12,
+                        color: AppColors.emerald600,
+                      ),
                     ),
+                    value: _notifEnabled,
+                    activeThumbColor: AppColors.emerald600,
+                    onChanged: _toggleNotifs,
                   ),
-                  value: _notifEnabled,
-                  activeThumbColor: AppColors.emerald600,
-                  onChanged: _toggleNotifs,
-                ),
               ],
             ),
 
@@ -587,11 +589,23 @@ class _PerfilScreenState extends State<PerfilScreen> {
                           ),
                         )
                       : null,
-                  title: 'Buscar actualizaciones',
-                  subtitle: _update?.isNewer == true
-                      ? 'Nueva versión: ${_update!.remoteVersion}'
-                      : 'v${UpdateService.currentVersion} · GitHub Releases',
-                  onTap: _checkingUpdate ? null : _checkUpdates,
+                  title: PlatformCaps.apkUpdates
+                      ? 'Buscar actualizaciones'
+                      : 'Versiones y descargas',
+                  subtitle: PlatformCaps.apkUpdates
+                      ? (_update?.isNewer == true
+                          ? 'Nueva versión: ${_update!.remoteVersion}'
+                          : 'v${UpdateService.currentVersion} · GitHub Releases')
+                      : 'Abrir releases en GitHub',
+                  onTap: _checkingUpdate
+                      ? null
+                      : () {
+                          if (PlatformCaps.apkUpdates) {
+                            _checkUpdates();
+                          } else {
+                            _openUrl(UpdateService.releasesUrl);
+                          }
+                        },
                 ),
                 const Divider(height: 1, indent: 56),
                 _SettingsTile(

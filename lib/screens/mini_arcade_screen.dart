@@ -2,6 +2,7 @@
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
 import '../theme/transitions.dart';
+import '../utils/platform_caps.dart';
 import 'arcade_games.dart';
 import 'quiz_screen.dart';
 import 'riega_screen.dart';
@@ -9,16 +10,18 @@ import 'riega_screen.dart';
 class MiniArcadeScreen extends StatelessWidget {
   const MiniArcadeScreen({super.key});
 
-  static const _games = [
+  static const _allGames = [
     _GameData(
       icon: Icons.quiz_rounded,
       title: 'Quiz',
       subtitle: 'Preguntas bíblicas',
+      webView: true,
     ),
     _GameData(
       icon: Icons.grass_rounded,
       title: 'Riega y crece',
       subtitle: 'Cultiva tu fe',
+      webView: true,
     ),
     _GameData(
       icon: Icons.grid_view_rounded,
@@ -52,16 +55,20 @@ class MiniArcadeScreen extends StatelessWidget {
     ),
   ];
 
-  void _open(BuildContext context, int i) {
+  List<_GameData> get _games => PlatformCaps.webViewGames
+      ? _allGames
+      : _allGames.where((g) => !g.webView).toList();
+
+  void _open(BuildContext context, _GameData game) {
     VidaSignals.trackEvent('arcade');
-    final Widget page = switch (i) {
-      0 => const QuizScreen(),
-      1 => const RiegaScreen(),
-      2 => const MemoramaScreen(),
-      3 => const OrdenaVersiculoScreen(),
-      4 => const VerdaderoFalsoScreen(),
-      5 => const TriviaCategoriasScreen(),
-      6 => const CaminoDiscipuloScreen(),
+    final Widget page = switch (game.title) {
+      'Quiz' => const QuizScreen(),
+      'Riega y crece' => const RiegaScreen(),
+      'Memorama' => const MemoramaScreen(),
+      'Ordena el versículo' => const OrdenaVersiculoScreen(),
+      'Verdadero / Falso' => const VerdaderoFalsoScreen(),
+      'Trivia' => const TriviaCategoriasScreen(),
+      'Camino del discípulo' => const CaminoDiscipuloScreen(),
       _ => const QuienLoDijoScreen(),
     };
     Navigator.push(context, slideUpRoute(page));
@@ -69,6 +76,7 @@ class MiniArcadeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final games = _games;
     return Scaffold(
       appBar: AppBar(title: const Text('Mini Arcade')),
       body: Padding(
@@ -80,10 +88,10 @@ class MiniArcadeScreen extends StatelessWidget {
             mainAxisSpacing: 12,
             childAspectRatio: 0.85,
           ),
-          itemCount: _games.length,
+          itemCount: games.length,
           itemBuilder: (_, i) => _GameCard(
-            data: _games[i],
-            onTap: () => _open(context, i),
+            data: games[i],
+            onTap: () => _open(context, games[i]),
           ),
         ),
       ),
@@ -95,10 +103,12 @@ class _GameData {
   final IconData icon;
   final String title;
   final String subtitle;
+  final bool webView;
   const _GameData({
     required this.icon,
     required this.title,
     required this.subtitle,
+    this.webView = false,
   });
 }
 

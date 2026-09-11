@@ -8,14 +8,16 @@ class Telemetry {
 
   static Future<void> init() async {
     try {
-      FlutterError.onError =
-          FirebaseCrashlytics.instance.recordFlutterFatalError;
-      PlatformDispatcher.instance.onError = (error, stack) {
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-        return true;
-      };
-      await FirebaseCrashlytics.instance
-          .setCrashlyticsCollectionEnabled(!kDebugMode);
+      if (!kIsWeb) {
+        FlutterError.onError =
+            FirebaseCrashlytics.instance.recordFlutterFatalError;
+        PlatformDispatcher.instance.onError = (error, stack) {
+          FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+          return true;
+        };
+        await FirebaseCrashlytics.instance
+            .setCrashlyticsCollectionEnabled(!kDebugMode);
+      }
       _analytics = FirebaseAnalytics.instance;
       await _analytics!.setAnalyticsCollectionEnabled(!kDebugMode);
     } catch (_) {}

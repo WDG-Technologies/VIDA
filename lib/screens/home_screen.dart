@@ -26,6 +26,7 @@ import 'guardados_screen.dart';
 import 'oracion_guiada_screen.dart';
 import '../data/oracion_guiada.dart';
 import '../services/community_push.dart';
+import '../utils/platform_caps.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -354,22 +355,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSpacing: 10,
                 childAspectRatio: 0.85,
                 children: [
-                  FadeIn(
-                    index: 3,
-                    child: ToolCard(
-                      icon: Icons.shield_rounded,
-                      title: 'Contra pecado',
-                      subtitle: 'Recuerdos y alertas',
-                      isActive: _contraPecadoEnabled,
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const ContraPecadoScreen()),
-                        );
-                        _loadContraPecado();
-                      },
+                  if (PlatformCaps.homeWidgets)
+                    FadeIn(
+                      index: 3,
+                      child: ToolCard(
+                        icon: Icons.shield_rounded,
+                        title: 'Contra pecado',
+                        subtitle: 'Recuerdos y alertas',
+                        isActive: _contraPecadoEnabled,
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const ContraPecadoScreen()),
+                          );
+                          _loadContraPecado();
+                        },
+                      ),
                     ),
-                  ),
                   FadeIn(
                     index: 4,
                     child: ToolCard(
@@ -378,7 +381,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: 'Versículos resaltados',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const GuardadosScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const GuardadosScreen()),
                       ),
                     ),
                   ),
@@ -390,7 +394,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: 'Explorar la Palabra',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const EstudioBiblicoScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const EstudioBiblicoScreen()),
                       ),
                     ),
                   ),
@@ -402,7 +407,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: 'Versículos de ayuda',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const SituacionDificilScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const SituacionDificilScreen()),
                       ),
                     ),
                   ),
@@ -420,22 +426,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  FadeIn(
-                    index: 8,
-                    child: ToolCard(
-                      icon: Icons.star_border_rounded,
-                      title: 'Versículo en inicio',
-                      subtitle: 'Widget en la pantalla',
-                      isActive: _favoritoEnabled,
-                      onTap: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const FavoritoScreen()),
-                        );
-                        _loadFavorito();
-                      },
+                  if (PlatformCaps.homeWidgets)
+                    FadeIn(
+                      index: 8,
+                      child: ToolCard(
+                        icon: Icons.star_border_rounded,
+                        title: 'Versículo en inicio',
+                        subtitle: 'Widget en la pantalla',
+                        isActive: _favoritoEnabled,
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const FavoritoScreen()),
+                          );
+                          _loadFavorito();
+                        },
+                      ),
                     ),
-                  ),
                   FadeIn(
                     index: 9,
                     child: ToolCard(
@@ -444,7 +452,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: 'Guía de evangelización',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const EvangelizateScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const EvangelizateScreen()),
                       ),
                     ),
                   ),
@@ -456,7 +465,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: 'Encuentra congregaciones',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const MapaIglesiasScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const MapaIglesiasScreen()),
                       ),
                     ),
                   ),
@@ -468,7 +478,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: 'Comparte tu fe',
                       onTap: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const TestimoniosScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const TestimoniosScreen()),
                       ),
                     ),
                   ),

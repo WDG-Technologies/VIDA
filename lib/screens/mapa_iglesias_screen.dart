@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../data/iglesia_seed.dart';
@@ -127,13 +128,54 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
         data['_id'] = d.id;
         return data;
       }).toList();
+      if (_churches.isEmpty) {
+        _churches = await _churchesFromAsset();
+      }
       _filtered = List.from(_churches);
     } catch (_) {
       if (!mounted) return;
-      _churches = [];
-      _filtered = [];
+      _churches = await _churchesFromAsset();
+      _filtered = List.from(_churches);
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  /// Fallback local (web sin Firebase o sin red).
+  Future<List<Map<String, dynamic>>> _churchesFromAsset() async {
+    try {
+      final raw = await rootBundle.loadString(IglesiaSeedService.assetPath);
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) return [];
+      final out = <Map<String, dynamic>>[];
+      for (final e in decoded) {
+        if (e is! Map) continue;
+        final osmId = '${e['osm_id'] ?? ''}'.trim();
+        final nombre = '${e['nombre'] ?? ''}'.trim();
+        final lat = e['latitud'];
+        final lng = e['longitud'];
+        if (nombre.isEmpty || lat is! num || lng is! num) continue;
+        if (IglesiaSeedService.removeOsmIds.contains(osmId)) continue;
+        final id = osmId.isNotEmpty
+            ? osmId.replaceAll('/', '_')
+            : 'local_${nombre.hashCode}';
+        out.add({
+          '_id': id,
+          'nombre': nombre,
+          'ciudad': '${e['ciudad'] ?? 'México'}'.trim(),
+          'descripcion':
+              '${e['descripcion'] ?? 'Iglesia cristiana protestante / evangélica'}',
+          'latitud': lat.toDouble(),
+          'longitud': lng.toDouble(),
+          'miembros': 0,
+          'asistentes': <String>[],
+          'seed': true,
+          'localOnly': true,
+        });
+      }
+      return out;
+    } catch (_) {
+      return [];
     }
   }
 
@@ -817,9 +859,6 @@ class _AddChurchSheetState extends State<_AddChurchSheet> {
     }
 
     setState(() => _searchingLocation = true);
-    final client = HttpClient()
-      ..connectionTimeout = const Duration(seconds: 10)
-      ..idleTimeout = const Duration(seconds: 10);
     try {
       var urlStr = 'https://nominatim.openstreetmap.org/search'
           '?q=${Uri.encodeComponent(query)}&format=json&limit=5&countrycodes=mx';
@@ -835,17 +874,16 @@ class _AddChurchSheetState extends State<_AddChurchSheet> {
         final maxLng = (lng + dlng).toStringAsFixed(4);
         urlStr += '&viewbox=$minLng,$minLat,$maxLng,$maxLat&bounded=1';
       }
-      final url = Uri.parse(urlStr);
-      final request = await client.getUrl(url);
-      request.headers.set(
-        'User-Agent',
-        'VIDA/0.9.0 (com.vida.project; https://github.com/WDG-Technologies/VIDA)',
-      );
-      final response = await request.close().timeout(const Duration(seconds: 12));
-      final body = await response
-          .transform(utf8.decoder)
-          .join()
+      final response = await http
+          .get(
+            Uri.parse(urlStr),
+            headers: {
+              'User-Agent':
+                  'VIDA/0.9.22 (com.vida.project; https://github.com/WDG-Technologies/VIDA)',
+            },
+          )
           .timeout(const Duration(seconds: 12));
+      final body = response.body;
       final decoded = jsonDecode(body);
       if (!mounted) return;
       if (decoded is List && decoded.isNotEmpty) {
@@ -867,7 +905,6 @@ class _AddChurchSheetState extends State<_AddChurchSheet> {
       }
     } catch (_) {
     } finally {
-      client.close(force: true);
       if (mounted) setState(() => _searchingLocation = false);
     }
   }

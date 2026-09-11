@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
+
+import 'package:http/http.dart' as http;
 
 /// Consulta releases de GitHub para detectar versiones nuevas.
 class UpdateService {
@@ -10,57 +11,53 @@ class UpdateService {
       'https://api.github.com/repos/WDG-Technologies/VIDA/releases/latest';
 
   /// Versión embebida (mantener alineada con pubspec.yaml).
-  static const currentVersion = '0.9.21';
-  static const currentBuild = 15;
-  static const currentLabel = '0.9.21 (Beta)';
+  static const currentVersion = '0.9.22';
+  static const currentBuild = 16;
+  static const currentLabel = '0.9.22 (Beta)';
   static String get currentFull => '$currentVersion+$currentBuild';
 
   static Future<AppUpdateInfo?> checkLatest() async {
-    final client = HttpClient()
-      ..connectionTimeout = const Duration(seconds: 12)
-      ..idleTimeout = const Duration(seconds: 12);
     try {
-      return await () async {
-        final req = await client.getUrl(Uri.parse(apiLatest));
-        req.headers.set(HttpHeaders.userAgentHeader, 'VIDA-App/$currentVersion');
-        req.headers.set(HttpHeaders.acceptHeader, 'application/vnd.github+json');
-        final res = await req.close();
-        if (res.statusCode != 200) return null;
-        final body = await res.transform(utf8.decoder).join();
-        final json = jsonDecode(body) as Map<String, dynamic>;
-        final tag = (json['tag_name'] as String? ?? '').trim();
-        final name = (json['name'] as String? ?? tag).trim();
-        final htmlUrl = json['html_url'] as String? ?? releasesUrl;
-        final remote = _parseVersion(tag.isNotEmpty ? tag : name);
-        if (remote == null) return null;
-
-        String? apkUrl;
-        final assets = json['assets'] as List? ?? const [];
-        for (final a in assets) {
-          if (a is! Map) continue;
-          final n = (a['name'] as String? ?? '').toLowerCase();
-          final u = a['browser_download_url'] as String?;
-          if (u != null && n.endsWith('.apk')) {
-            apkUrl = u;
-            if (n.contains('vida')) break;
-          }
-        }
-
-        final newer = _isNewer(remote, currentVersion);
-        return AppUpdateInfo(
-          tag: tag,
-          title: name,
-          htmlUrl: htmlUrl,
-          apkUrl: apkUrl,
-          remoteVersion: remote,
-          isNewer: newer,
-        );
-      }()
+      final res = await http
+          .get(
+            Uri.parse(apiLatest),
+            headers: {
+              'User-Agent': 'VIDA-App/$currentVersion',
+              'Accept': 'application/vnd.github+json',
+            },
+          )
           .timeout(const Duration(seconds: 15));
+      if (res.statusCode != 200) return null;
+      final json = jsonDecode(res.body) as Map<String, dynamic>;
+      final tag = (json['tag_name'] as String? ?? '').trim();
+      final name = (json['name'] as String? ?? tag).trim();
+      final htmlUrl = json['html_url'] as String? ?? releasesUrl;
+      final remote = _parseVersion(tag.isNotEmpty ? tag : name);
+      if (remote == null) return null;
+
+      String? apkUrl;
+      final assets = json['assets'] as List? ?? const [];
+      for (final a in assets) {
+        if (a is! Map) continue;
+        final n = (a['name'] as String? ?? '').toLowerCase();
+        final u = a['browser_download_url'] as String?;
+        if (u != null && n.endsWith('.apk')) {
+          apkUrl = u;
+          if (n.contains('vida')) break;
+        }
+      }
+
+      final newer = _isNewer(remote, currentVersion);
+      return AppUpdateInfo(
+        tag: tag,
+        title: name,
+        htmlUrl: htmlUrl,
+        apkUrl: apkUrl,
+        remoteVersion: remote,
+        isNewer: newer,
+      );
     } catch (_) {
       return null;
-    } finally {
-      client.close(force: true);
     }
   }
 

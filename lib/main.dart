@@ -21,6 +21,7 @@ import 'screens/mapa_iglesias_screen.dart';
 import 'screens/perfil_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/vida_screen.dart';
+import 'utils/platform_caps.dart';
 
 final GlobalKey<NavigatorState> vidaNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -39,15 +40,19 @@ void main() async {
   } catch (_) {
     // Offline / Play Services / config — app still launches without cloud.
   }
-  try {
-    await NotificationService.init();
-    await NotificationService.requestPermission();
-    await NotificationService.scheduleAwayReminder();
-    await CommunityPushService.init();
-  } catch (_) {}
-  try {
-    HomeWidget.setAppGroupId('group.com.vida.project');
-  } catch (_) {}
+  if (PlatformCaps.localNotifications) {
+    try {
+      await NotificationService.init();
+      await NotificationService.requestPermission();
+      await NotificationService.scheduleAwayReminder();
+      await CommunityPushService.init();
+    } catch (_) {}
+  }
+  if (PlatformCaps.homeWidgets) {
+    try {
+      HomeWidget.setAppGroupId('group.com.vida.project');
+    } catch (_) {}
+  }
   runApp(const VidaApp());
 }
 
@@ -77,8 +82,10 @@ class _VidaAppState extends State<VidaApp> {
     ThemeController.instance.addListener(_onThemeChanged);
     NotificationService.openDeepLink = _handleDeepLink;
     _loadUser();
-    HomeWidget.initiallyLaunchedFromHomeWidget().then(_handleWidgetUri);
-    _widgetClickSub = HomeWidget.widgetClicked.listen(_handleWidgetUri);
+    if (PlatformCaps.homeWidgets) {
+      HomeWidget.initiallyLaunchedFromHomeWidget().then(_handleWidgetUri);
+      _widgetClickSub = HomeWidget.widgetClicked.listen(_handleWidgetUri);
+    }
     _initAppLinks();
   }
 
@@ -204,13 +211,17 @@ class _VidaAppState extends State<VidaApp> {
       final prefs = await SharedPreferences.getInstance();
 
       try {
-        final daysAway = await NotificationService.daysSinceLastOpen();
-        if (daysAway >= 2 && await NotificationService.shouldShowToday()) {
-          await NotificationService.showMotivational();
+        if (PlatformCaps.localNotifications) {
+          final daysAway = await NotificationService.daysSinceLastOpen();
+          if (daysAway >= 2 && await NotificationService.shouldShowToday()) {
+            await NotificationService.showMotivational();
+          }
+          await NotificationService.scheduleAwayReminder();
         }
         await StreakService.checkAndUpdate();
-        await NotificationService.scheduleAwayReminder();
       } catch (_) {}
+
+      if (!PlatformCaps.homeWidgets) return;
 
       if (prefs.containsKey('contra_pecado')) {
         try {

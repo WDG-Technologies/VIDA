@@ -1,16 +1,17 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../data/bible_data.dart';
 import '../data/gallery_images.dart';
 import '../theme/app_theme.dart';
+import '../utils/local_file.dart';
 
 /// Shareable image from a verse already chosen in Biblia.
 class VerseImageScreen extends StatefulWidget {
@@ -42,12 +43,12 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
   late int _verse;
   late int _verseEnd;
 
-  File? _bgFile;
+  Uint8List? _bgBytes;
   String? _bgAsset;
   bool _darkBg = true;
   bool _sharing = false;
 
-  bool get _hasBg => _bgFile != null || _bgAsset != null;
+  bool get _hasBg => _bgBytes != null || _bgAsset != null;
 
   @override
   void initState() {
@@ -171,11 +172,11 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
       imageQuality: 85,
     );
     if (picked == null) return;
-    final file = File(picked.path);
-    final dark = await _isDarkFromBytes(await file.readAsBytes());
+    final bytes = await picked.readAsBytes();
+    final dark = await _isDarkFromBytes(bytes);
     if (!mounted) return;
     setState(() {
-      _bgFile = file;
+      _bgBytes = bytes;
       _bgAsset = null;
       _darkBg = dark;
     });
@@ -187,7 +188,7 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
     if (!mounted) return;
     setState(() {
       _bgAsset = asset;
-      _bgFile = null;
+      _bgBytes = null;
       _darkBg = dark;
     });
   }
@@ -204,11 +205,18 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
       final image = await boundary.toImage(pixelRatio: 3);
       final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
       if (bytes == null) throw Exception('No se pudo generar');
-      final dir = await getTemporaryDirectory();
-      final out = File(
-          '${dir.path}/vida_verso_${DateTime.now().millisecondsSinceEpoch}.png');
-      await out.writeAsBytes(bytes.buffer.asUint8List());
-      await Share.shareXFiles([XFile(out.path)], text: _reference);
+      final png = bytes.buffer.asUint8List();
+      if (kIsWeb) {
+        await Share.shareXFiles([
+          XFile.fromData(png, name: 'vida_verso.png', mimeType: 'image/png'),
+        ], text: _reference);
+      } else {
+        final path = await writeTempBytes(
+          'vida_verso_${DateTime.now().millisecondsSinceEpoch}.png',
+          png,
+        );
+        await Share.shareXFiles([XFile(path)], text: _reference);
+      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -320,7 +328,7 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
                       onPressed: _pickPhoto,
                       icon: Icon(Icons.photo_library_outlined),
                       label: Text(
-                        _bgFile == null
+                        _bgBytes == null
                             ? 'Usar foto de galería'
                             : 'Cambiar foto de galería',
                       ),
@@ -356,8 +364,8 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
     return Stack(
       fit: StackFit.expand,
       children: [
-        if (_bgFile != null)
-          Image.file(_bgFile!, fit: BoxFit.cover)
+        if (_bgBytes != null)
+          Image.memory(_bgBytes!, fit: BoxFit.cover)
         else if (_bgAsset != null)
           Image.asset(_bgAsset!, fit: BoxFit.cover)
         else
