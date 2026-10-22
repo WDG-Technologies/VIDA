@@ -1,5 +1,8 @@
 ﻿import 'package:flutter/material.dart';
 
+import '../utils/platform_caps.dart';
+import 'glass_card_actions.dart';
+
 class VidaVerseCard extends StatelessWidget {
   final String verseText;
   final String reference;
@@ -97,6 +100,22 @@ class VidaVerseCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
+                if (PlatformCaps.nativeIosControls)
+                  GlassCardActions(
+                    actions: [
+                      GlassCardAction(
+                        symbol: 'square.and.arrow.up',
+                        label: 'Compartir',
+                        onTap: onShare,
+                      ),
+                      GlassCardAction(
+                        symbol: saved ? 'bookmark.fill' : 'bookmark',
+                        label: saved ? 'Guardado' : 'Guardar',
+                        onTap: onSave,
+                      ),
+                    ],
+                  )
+                else
                 Row(
                   children: [
                     _ActionChip(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/html_game_frame.dart';
 
 class RiegaScreen extends StatefulWidget {
@@ -88,10 +89,14 @@ class _RiegaScreenState extends State<RiegaScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riega y Crece'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: GlassBackButton.leading(
+              context,
+              onPressed: () => Navigator.pop(context),
+            ) ??
+            IconButton(
+              icon: const Icon(Icons.arrow_back_rounded),
+              onPressed: () => Navigator.pop(context),
+            ),
       ),
       body: SafeArea(
         child: Stack(

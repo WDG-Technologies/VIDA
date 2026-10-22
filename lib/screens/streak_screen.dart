@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/streak.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 
 class StreakScreen extends StatefulWidget {
@@ -53,7 +54,10 @@ class _StreakScreenState extends State<StreakScreen> {
             _viewMonth.month < DateTime.now().month);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Racha')),
+      appBar: AppBar(
+        leading: GlassBackButton.leading(context),
+        title: const Text('Racha'),
+      ),
       body: ResponsiveBody(
         maxWidth: 720,
         child: Padding(

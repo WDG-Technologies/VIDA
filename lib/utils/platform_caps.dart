@@ -30,6 +30,9 @@ class PlatformCaps {
   static bool get nativeIosControls =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
 
+  /// Hueco bajo el contenido para que no quede debajo de la tab bar flotante.
+  static const double nativeTabClearance = 84;
+
   /// Galería libre / “Crear imagen” desde Inicio.
   /// Nativo: siempre. Web: solo pantallas anchas (no móvil).
   /// En web móvil se crea solo desde un versículo (Biblia / del día).

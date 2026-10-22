@@ -1,3 +1,4 @@
+import 'package:cupertino_native_ui/cupertino_native_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,8 @@ import '../data/bible_highlights.dart';
 import '../data/bible_search.dart';
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
+import '../utils/platform_caps.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import '../widgets/verse_picker_sheet.dart';
 import 'verse_image_screen.dart';
@@ -755,6 +758,150 @@ class _BibliaScreenState extends State<BibliaScreen> {
     );
   }
 
+  void _changeFontSize(double delta) {
+    final next = (_fontSize + delta).clamp(14.0, 28.0);
+    if (next == _fontSize) return;
+    setState(() => _fontSize = next);
+    _persist();
+  }
+
+  List<Widget> _nativeReaderActions() {
+    final size = _fontSize.round();
+    return [
+      CupertinoNativeGlassGroup(
+        mergeDistance: 0,
+        alignment: Alignment.centerRight,
+        items: [
+          CupertinoNativeGlassGroupItem(
+            actionId: 'search',
+            icon: CupertinoNativeIcon.symbol(CupertinoSymbols.magnifyingglass),
+          ),
+          CupertinoNativeGlassGroupItem(
+            actionId: 'version',
+            title: _bible!.shortName,
+            shape: CupertinoGlassGroupShape.capsule,
+            menuItems: [
+              CupertinoNativeMenuSection(
+                title: 'Incluida en la app',
+                items: [
+                  CupertinoNativeMenuToggle(
+                    title: _bible!.name,
+                    value: true,
+                    actionId: 'local',
+                  ),
+                ],
+              ),
+              CupertinoNativeMenuSection(
+                title: 'Abrir en YouVersion',
+                items: [
+                  for (final v in externalBibleVersions)
+                    CupertinoNativeMenuAction(
+                      title: v.name,
+                      actionId: 'yv:${v.youVersionId}',
+                    ),
+                ],
+              ),
+            ],
+          ),
+          CupertinoNativeGlassGroupItem(
+            actionId: 'more',
+            icon: CupertinoNativeIcon.symbol(CupertinoSymbols.ellipsis),
+            menuItems: [
+              CupertinoNativeMenuControlGroup(
+                items: [
+                  CupertinoNativeMenuAction(
+                    title: 'Más pequeño',
+                    systemImage: 'textformat.size.smaller',
+                    actionId: 'smaller',
+                    isDisabled: size <= 14,
+                  ),
+                  CupertinoNativeMenuAction(
+                    title: 'Tamaño $size',
+                    systemImage: 'textformat',
+                    actionId: 'size',
+                    isDisabled: true,
+                  ),
+                  CupertinoNativeMenuAction(
+                    title: 'Más grande',
+                    systemImage: 'textformat.size.larger',
+                    actionId: 'larger',
+                    isDisabled: size >= 28,
+                  ),
+                ],
+              ),
+              const CupertinoNativeMenuAction(
+                title: 'Abrir en YouVersion',
+                systemImage: 'arrow.up.right.square',
+                actionId: 'youversion',
+              ),
+            ],
+          ),
+        ],
+        onAction: (id) {
+          switch (id) {
+            case 'search':
+              _openSearch();
+            case 'smaller':
+              _changeFontSize(-1);
+            case 'larger':
+              _changeFontSize(1);
+            case 'youversion':
+              _openYouVersion(versionId: '1718');
+            default:
+              if (id.startsWith('yv:')) {
+                _openYouVersion(versionId: id.substring(3));
+              }
+          }
+        },
+      ),
+      const SizedBox(width: 12),
+    ];
+  }
+
+  Widget _nativeChapterNav({required bool canPrev, required bool canNext}) {
+    Widget glass(CupertinoNativeGlassGroupItem item, VoidCallback onTap) {
+      return CupertinoNativeGlassGroup(
+        items: [item],
+        onAction: (_) {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
+      );
+    }
+
+    return Row(
+      children: [
+        glass(
+          CupertinoNativeGlassGroupItem(
+            actionId: 'prev',
+            icon: CupertinoNativeIcon.symbol(CupertinoSymbols.chevronLeft),
+            enabled: canPrev,
+          ),
+          _prevChapter,
+        ),
+        const Spacer(),
+        glass(
+          CupertinoNativeGlassGroupItem(
+            actionId: 'chapters',
+            title: '$_chapter / ${_book.chapterCount}',
+            shape: CupertinoGlassGroupShape.capsule,
+            width: 84,
+          ),
+          () => _showChapterPicker(_bookIndex),
+        ),
+        const Spacer(),
+        glass(
+          CupertinoNativeGlassGroupItem(
+            actionId: 'next',
+            icon: CupertinoNativeIcon.symbol(CupertinoSymbols.chevronRight),
+            enabled: canNext,
+          ),
+          _nextChapter,
+        ),
+      ],
+    );
+  }
+
   void _showVersionPicker() {
     showModalBottomSheet(
       context: context,
@@ -1084,6 +1231,7 @@ class _BibliaScreenState extends State<BibliaScreen> {
 
     return Scaffold(
             appBar: AppBar(
+                leading: GlassBackButton.leading(context),
                 surfaceTintColor: Colors.transparent,
         elevation: 0,
         titleSpacing: 12,
@@ -1121,7 +1269,9 @@ class _BibliaScreenState extends State<BibliaScreen> {
             ),
           ],
         ),
-        actions: [
+        actions: PlatformCaps.nativeIosControls
+            ? _nativeReaderActions()
+            : [
           IconButton(
             tooltip: 'Buscar en la Biblia',
             icon: Icon(Icons.search_rounded, color: AppColors.emerald700),
@@ -1160,14 +1310,23 @@ class _BibliaScreenState extends State<BibliaScreen> {
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
+        children: [
+          Column(
         children: [
           Expanded(
             child: ResponsiveBody(
               maxWidth: Breakpoints.reading,
               child: ListView.builder(
               controller: _scrollCtrl,
-              padding: const EdgeInsets.fromLTRB(20, 4, 20, 28),
+              padding: EdgeInsets.fromLTRB(
+                20,
+                4,
+                20,
+                PlatformCaps.nativeIosControls
+                    ? 28 + PlatformCaps.nativeTabClearance + 52
+                    : 28,
+              ),
               itemCount: verses.length + 1,
               itemBuilder: (context, i) {
                 if (i == 0) {
@@ -1268,6 +1427,7 @@ class _BibliaScreenState extends State<BibliaScreen> {
             ),
             ),
           ),
+          if (!PlatformCaps.nativeIosControls)
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
@@ -1308,6 +1468,39 @@ class _BibliaScreenState extends State<BibliaScreen> {
               ),
             ),
           ),
+        ],
+      ),
+          if (PlatformCaps.nativeIosControls) ...[
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: PlatformCaps.nativeTabClearance + 96,
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        for (final a in const [0.0, 0.8, 0.92])
+                          Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withValues(alpha: a),
+                      ],
+                      stops: const [0, 0.35, 1],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 20,
+              right: 20,
+              bottom: PlatformCaps.nativeTabClearance + 8,
+              child: _nativeChapterNav(canPrev: canPrev, canNext: canNext),
+            ),
+          ],
         ],
       ),
     );
@@ -1548,7 +1741,9 @@ class _BibleSearchDelegate extends SearchDelegate<BibleSearchHit?> {
       ];
 
   @override
-  Widget? buildLeading(BuildContext context) => IconButton(
+  Widget? buildLeading(BuildContext context) =>
+      GlassBackButton.leading(context, onPressed: () => close(context, null)) ??
+      IconButton(
         icon: const Icon(Icons.arrow_back_rounded),
         onPressed: () => close(context, null),
       );

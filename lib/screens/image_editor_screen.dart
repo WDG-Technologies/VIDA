@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../utils/download_image.dart';
 import '../utils/platform_caps.dart';
 import '../widgets/verse_picker_sheet.dart';
@@ -342,6 +343,7 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: Text(
           'Editar imagen',
           style: TextStyle(

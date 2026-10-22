@@ -47,10 +47,10 @@ void main() async {
 
 Future<void> _initBackgroundServices() async {
   try {
-    await FirebaseBootstrap.ensure(
+    final firebaseOk = await FirebaseBootstrap.ensure(
       appTimeout: const Duration(seconds: 12),
     );
-    await Telemetry.init();
+    if (firebaseOk) await Telemetry.init();
   } catch (_) {
     // Offline / Play Services / config — app still launches without cloud.
   }
@@ -321,6 +321,8 @@ class _VidaAppState extends State<VidaApp> with WidgetsBindingObserver {
       theme: AppTheme.light(styleSeed: styleSeed, accent: accent),
       darkTheme: AppTheme.dark(styleSeed: styleSeed, accent: accent),
       themeMode: themeCtrl.themeMode,
+      themeAnimationDuration: const Duration(milliseconds: 480),
+      themeAnimationCurve: Curves.easeInOutCubic,
       builder: (context, child) {
         AppColors.bind(
           Theme.of(context).colorScheme,
@@ -552,16 +554,21 @@ class _AppShellState extends State<AppShell> {
     }
 
     if (PlatformCaps.nativeIosControls) {
+      // Encima del contenido (no bottomNavigationBar) para que se vea detrás.
+      // La barra nativa deja ~21 pt vacíos bajo la pastilla: con el marco
+      // pegado al borde, la pastilla queda a la altura de la del sistema.
+      final homeIndicator = MediaQuery.viewPaddingOf(context).bottom;
       return Scaffold(
-        extendBody: true,
-        body: stack,
-        bottomNavigationBar: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-            child: Center(
-              heightFactor: 1,
-              child: CupertinoNativeTabBar(
+        body: Stack(
+          children: [
+            stack,
+            Positioned(
+              left: 20,
+              right: 20,
+              bottom: homeIndicator > 0 ? 0 : 8,
+              child: Center(
+                heightFactor: 1,
+                child: CupertinoNativeTabBar(
                 currentIndex: _selectedIndex,
                 onTap: _onTabSelected,
                 activeColor: AppColors.emerald600,
@@ -587,9 +594,10 @@ class _AppShellState extends State<AppShell> {
                     icon: CupertinoNativeIcon.named('person.fill'),
                   ),
                 ],
+                ),
               ),
             ),
-          ),
+          ],
         ),
       );
     }

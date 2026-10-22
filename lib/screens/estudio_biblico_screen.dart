@@ -1,7 +1,10 @@
+import 'package:cupertino_native_ui/cupertino_native_ui.dart';
 import 'package:flutter/material.dart';
 import '../data/bible_study.dart';
 import '../theme/app_theme.dart';
+import '../utils/platform_caps.dart';
 import '../widgets/fade_in.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import 'add_estudio_screen.dart';
 import 'estudio_detalle_screen.dart';
@@ -28,22 +31,40 @@ class _EstudioBiblicoScreenState extends State<EstudioBiblicoScreen> {
     setState(() => _studies = studies);
   }
 
+  Future<void> _addStudy() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AddEstudioScreen()),
+    );
+    _load();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Estudio bíblico')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AddEstudioScreen()),
-          );
-          _load();
-        },
-        backgroundColor: AppColors.emerald600,
-        foregroundColor: Colors.white,
-        child: Icon(Icons.add_rounded),
+      appBar: AppBar(
+        leading: GlassBackButton.leading(context),
+        title: const Text('Estudio bíblico'),
       ),
+      floatingActionButton: PlatformCaps.nativeIosControls
+          ? CupertinoNativeButton.glassProminent(
+              borderShape: CupertinoNativeButtonBorderShape.circle,
+              width: 56,
+              height: 56,
+              color: AppColors.emerald600,
+              onPressed: _addStudy,
+              child: const CupertinoSymbolImage(
+                'plus',
+                size: 22,
+                weight: FontWeight.w600,
+              ),
+            )
+          : FloatingActionButton(
+              onPressed: _addStudy,
+              backgroundColor: AppColors.emerald600,
+              foregroundColor: Colors.white,
+              child: Icon(Icons.add_rounded),
+            ),
       body: ResponsiveBody(
         maxWidth: 800,
         child: _studies.isEmpty

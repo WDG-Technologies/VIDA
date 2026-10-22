@@ -1,4 +1,5 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:cupertino_native_ui/cupertino_native_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../data/streak.dart';
@@ -6,6 +7,7 @@ import '../data/vida_algorithm.dart';
 import '../data/vida_signals.dart';
 import '../main.dart';
 import '../theme/app_theme.dart';
+import '../utils/platform_caps.dart';
 import '../widgets/fade_in.dart';
 import '../widgets/home_smart_stack.dart';
 import '../widgets/responsive_body.dart';
@@ -27,7 +29,6 @@ import 'guardados_screen.dart';
 import 'oracion_guiada_screen.dart';
 import '../data/oracion_guiada.dart';
 import '../services/community_push.dart';
-import '../utils/platform_caps.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -61,16 +62,43 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!mounted) return;
     if (!await OracionGuiadaService.shouldShowInvite()) return;
     if (!mounted) return;
-    final goPray = await showDialog<bool>(
+    const title = '¿Quieres orar un momento?';
+    const message = 'Notamos que llevas un tiempo en VIDA. '
+        'La oración guiada te ayuda a empezar sin presión: '
+        'paso a paso, a tu ritmo.';
+    var goPray = false;
+    if (PlatformCaps.nativeIosControls) {
+      await CupertinoNativeAlertDialog.show(
+        context: context,
+        title: title,
+        content: message,
+        actions: [
+          const CupertinoNativeDialogAction(
+            child: Text('Ahora no'),
+            isDefaultAction: true,
+          ),
+          CupertinoNativeDialogAction(
+            child: const Text('Orar'),
+            onPressed: () => goPray = true,
+          ),
+        ],
+      );
+    } else {
+      goPray = await _askPrayMaterial(title, message) ?? false;
+    }
+    // Solo marcar después de que el usuario vio el diálogo.
+    await OracionGuiadaService.markInviteShown();
+    if (!mounted) return;
+    if (goPray) await openOracionGuiada(context);
+  }
+
+  Future<bool?> _askPrayMaterial(String title, String message) {
+    return showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('¿Quieres orar un momento?'),
-        content: const Text(
-          'Notamos que llevas un tiempo en VIDA. '
-          'La oración guiada te ayuda a empezar sin presión: '
-          'paso a paso, a tu ritmo.',
-        ),
+        title: Text(title),
+        content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -83,10 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
-    // Solo marcar después de que el usuario vio el diálogo.
-    await OracionGuiadaService.markInviteShown();
-    if (!mounted) return;
-    if (goPray == true) await openOracionGuiada(context);
   }
 
   @override
@@ -346,9 +370,14 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return SafeArea(
+      bottom: !PlatformCaps.nativeIosControls,
       child: ResponsiveBody(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.only(bottom: 24),
+          padding: EdgeInsets.only(
+            bottom: PlatformCaps.nativeIosControls
+                ? 24 + PlatformCaps.nativeTabClearance
+                : 24,
+          ),
           child: Column(
             children: [
               Padding(

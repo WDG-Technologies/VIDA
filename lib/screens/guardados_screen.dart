@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import '../data/bible_highlights.dart';
 import '../data/vida_algorithm.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import 'biblia_screen.dart';
 
@@ -58,6 +59,7 @@ class _GuardadosScreenState extends State<GuardadosScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: const Text('Guardados'),
         surfaceTintColor: Colors.transparent,
         bottom: TabBar(

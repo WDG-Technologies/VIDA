@@ -1,4 +1,5 @@
 ﻿import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cupertino_native_ui/cupertino_native_ui.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import '../services/notification_service.dart';
 import '../services/update_service.dart';
 import '../theme/app_theme.dart';
 import '../utils/platform_caps.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import '../widgets/user_avatar.dart';
 import 'appearance_screen.dart';
@@ -89,10 +91,61 @@ class _PerfilScreenState extends State<PerfilScreen> {
     );
   }
 
+  /// Alerta del sistema; [dismiss] solo la cierra.
+  Future<void> _nativeAlert({
+    required String title,
+    required String message,
+    required String dismiss,
+    String? action,
+    VoidCallback? onAction,
+  }) {
+    return CupertinoNativeAlertDialog.show(
+      context: context,
+      title: title,
+      content: message,
+      actions: [
+        CupertinoNativeDialogAction(
+          child: Text(dismiss),
+          isDefaultAction: true,
+        ),
+        if (action != null)
+          CupertinoNativeDialogAction(child: Text(action), onPressed: onAction),
+      ],
+    );
+  }
+
+  Future<String?> _askNameNative(TextEditingController ctrl) async {
+    String? name;
+    await CupertinoNativeAlertDialog.show(
+      context: context,
+      title: 'Tu nombre',
+      textFields: [
+        CupertinoNativeTextField(
+          controller: ctrl,
+          placeholder: 'Cómo quieres que te llamemos',
+          textCapitalization: TextCapitalization.words,
+        ),
+      ],
+      actions: [
+        const CupertinoNativeDialogAction(
+          child: Text('Cancelar'),
+          isDefaultAction: true,
+        ),
+        CupertinoNativeDialogAction(
+          child: const Text('Guardar'),
+          onPressed: () => name = ctrl.text.trim(),
+        ),
+      ],
+    );
+    return name;
+  }
+
   Future<void> _editName() async {
     final current = VidaApp.of(context).userName;
     final ctrl = TextEditingController(text: current);
-    final name = await showDialog<String>(
+    final name = PlatformCaps.nativeIosControls
+        ? await _askNameNative(ctrl)
+        : await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -298,18 +351,27 @@ class _PerfilScreenState extends State<PerfilScreen> {
       }
 
       if (!mounted) return;
+      final message = '${info.title}\n\n'
+          'Tu versión: ${UpdateService.currentLabel}\n'
+          'Nueva: ${info.remoteVersion}\n\n'
+          'Puedes descargar el APK desde GitHub Releases.';
+      if (PlatformCaps.nativeIosControls) {
+        await _nativeAlert(
+          title: 'Nueva versión disponible',
+          message: message,
+          dismiss: 'Después',
+          action: info.apkUrl != null ? 'Descargar APK' : 'Ver release',
+          onAction: () => _openUrl(info.apkUrl ?? info.htmlUrl),
+        );
+        return;
+      }
       await showDialog<void>(
         context: context,
         builder: (ctx) => AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Nueva versión disponible'),
-          content: Text(
-            '${info.title}\n\n'
-            'Tu versión: ${UpdateService.currentLabel}\n'
-            'Nueva: ${info.remoteVersion}\n\n'
-            'Puedes descargar el APK desde GitHub Releases.',
-          ),
+          content: Text(message),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx),
@@ -347,17 +409,28 @@ class _PerfilScreenState extends State<PerfilScreen> {
   }
 
   void _showAbout() {
+    const message = 'VIDA ${UpdateService.currentLabel}\n'
+        'Versión ${UpdateService.currentVersion}\n\n'
+        'Compañero espiritual diario: Biblia, oración, racha, '
+        'evangelismo y comunidad.\n\n'
+        'Gratis · Sin publicidad · WDG Technologies';
+    if (PlatformCaps.nativeIosControls) {
+      _nativeAlert(
+        title: 'Acerca de VIDA',
+        message: message,
+        dismiss: 'Cerrar',
+        action: 'Releases',
+        onAction: () => _openUrl(UpdateService.releasesUrl),
+      );
+      return;
+    }
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Acerca de VIDA'),
         content: Text(
-          'VIDA ${UpdateService.currentLabel}\n'
-          'Versión ${UpdateService.currentVersion}\n\n'
-          'Compañero espiritual diario: Biblia, oración, racha, '
-          'evangelismo y comunidad.\n\n'
-          'Gratis · Sin publicidad · WDG Technologies',
+          message,
           style: const TextStyle(height: 1.45),
         ),
         actions: [
@@ -379,6 +452,17 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
   void _showDonate() {
     if (!DonateConfig.enabled) {
+      const message = 'Gracias por querer apoyar el proyecto.\n\n'
+          'Aún no hay un método de donación activo. Cuando lo habilitemos, '
+          'aparecerá aquí. Mientras tanto, compartir la app ya ayuda mucho.';
+      if (PlatformCaps.nativeIosControls) {
+        _nativeAlert(
+          title: 'Apoyar VIDA',
+          message: message,
+          dismiss: 'Entendido',
+        );
+        return;
+      }
       showDialog<void>(
         context: context,
         builder: (ctx) => AlertDialog(
@@ -386,9 +470,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: const Text('Apoyar VIDA'),
           content: const Text(
-            'Gracias por querer apoyar el proyecto.\n\n'
-            'Aún no hay un método de donación activo. Cuando lo habilitemos, '
-            'aparecerá aquí. Mientras tanto, compartir la app ya ayuda mucho.',
+            message,
             style: TextStyle(height: 1.45),
           ),
           actions: [
@@ -402,19 +484,30 @@ class _PerfilScreenState extends State<PerfilScreen> {
       return;
     }
 
+    final message = DonateConfig.isTestLink
+        ? 'Gracias por querer apoyar el proyecto.\n\n'
+            'Te llevamos a Stripe (modo prueba). '
+            'Usa la tarjeta 4242 4242 4242 4242 para simular un pago.'
+        : 'Gracias por querer apoyar el proyecto.\n\n'
+            'Te llevamos a una página segura de Stripe para completar '
+            'tu donación.';
+    if (PlatformCaps.nativeIosControls) {
+      _nativeAlert(
+        title: 'Apoyar VIDA',
+        message: message,
+        dismiss: 'Cancelar',
+        action: 'Continuar',
+        onAction: _openDonateInApp,
+      );
+      return;
+    }
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Apoyar VIDA'),
         content: Text(
-          DonateConfig.isTestLink
-              ? 'Gracias por querer apoyar el proyecto.\n\n'
-                  'Te llevamos a Stripe (modo prueba). '
-                  'Usa la tarjeta 4242 4242 4242 4242 para simular un pago.'
-              : 'Gracias por querer apoyar el proyecto.\n\n'
-                  'Te llevamos a una página segura de Stripe para completar '
-                  'tu donación.',
+          message,
           style: const TextStyle(height: 1.45),
         ),
         actions: [
@@ -452,11 +545,21 @@ class _PerfilScreenState extends State<PerfilScreen> {
     final userName = VidaApp.of(context).userName;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Perfil')),
+      appBar: AppBar(
+        leading: GlassBackButton.leading(context),
+        title: const Text('Perfil'),
+      ),
       body: ResponsiveBody(
         maxWidth: Breakpoints.reading,
         child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+        padding: EdgeInsets.fromLTRB(
+          20,
+          16,
+          20,
+          PlatformCaps.nativeIosControls
+              ? 24 + PlatformCaps.nativeTabClearance
+              : 32,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -636,51 +739,19 @@ class _PerfilScreenState extends State<PerfilScreen> {
                 ),
                 const Divider(height: 1, indent: 56),
                 if (PlatformCaps.localNotifications) ...[
-                  SwitchListTile(
-                    secondary: Icon(Icons.notifications_active_rounded,
-                        color: AppColors.emerald600),
-                    title: Text(
-                      'Recordatorios',
-                      style: TextStyle(
-                        fontFamily: 'DM Sans',
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.emerald900,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Aviso si pasas 2 días sin abrir la app',
-                      style: TextStyle(
-                        fontFamily: 'DM Sans',
-                        fontSize: 12,
-                        color: AppColors.emerald600,
-                      ),
-                    ),
+                  _SwitchTile(
+                    icon: Icons.notifications_active_rounded,
+                    title: 'Recordatorios',
+                    subtitle: 'Aviso si pasas 2 días sin abrir la app',
                     value: _notifEnabled,
-                    activeThumbColor: AppColors.emerald600,
                     onChanged: _toggleNotifs,
                   ),
                   const Divider(height: 1, indent: 56),
-                  SwitchListTile(
-                    secondary: Icon(Icons.menu_book_rounded,
-                        color: AppColors.emerald600),
-                    title: Text(
-                      'Versículo del día',
-                      style: TextStyle(
-                        fontFamily: 'DM Sans',
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.emerald900,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'Aviso diario a las 8:00',
-                      style: TextStyle(
-                        fontFamily: 'DM Sans',
-                        fontSize: 12,
-                        color: AppColors.emerald600,
-                      ),
-                    ),
+                  _SwitchTile(
+                    icon: Icons.menu_book_rounded,
+                    title: 'Versículo del día',
+                    subtitle: 'Aviso diario a las 8:00',
                     value: _dailyVerseEnabled,
-                    activeThumbColor: AppColors.emerald600,
                     onChanged: _toggleDailyVerse,
                   ),
                   const Divider(height: 1, indent: 56),
@@ -1040,6 +1111,64 @@ class _SettingsTile extends StatelessWidget {
       ),
       trailing: Icon(Icons.chevron_right_rounded, color: AppColors.emerald400),
       onTap: onTap,
+    );
+  }
+}
+
+class _SwitchTile extends StatelessWidget {
+  const _SwitchTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final leading = Icon(icon, color: AppColors.emerald600);
+    final titleText = Text(
+      title,
+      style: TextStyle(
+        fontFamily: 'DM Sans',
+        fontWeight: FontWeight.w600,
+        color: AppColors.emerald900,
+      ),
+    );
+    final subtitleText = Text(
+      subtitle,
+      style: TextStyle(
+        fontFamily: 'DM Sans',
+        fontSize: 12,
+        color: AppColors.emerald600,
+      ),
+    );
+    if (PlatformCaps.nativeIosControls) {
+      return ListTile(
+        leading: leading,
+        title: titleText,
+        subtitle: subtitleText,
+        trailing: CupertinoNativeSwitch(
+          value: value,
+          activeTrackColor: AppColors.emerald600,
+          onChanged: onChanged,
+        ),
+        onTap: () => onChanged(!value),
+      );
+    }
+    return SwitchListTile(
+      secondary: leading,
+      title: titleText,
+      subtitle: subtitleText,
+      value: value,
+      activeThumbColor: AppColors.emerald600,
+      onChanged: onChanged,
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/evangelizate_data.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 
 class EvangelizateDetalleScreen extends StatelessWidget {
@@ -11,7 +12,10 @@ class EvangelizateDetalleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(category.shortTitle)),
+      appBar: AppBar(
+        leading: GlassBackButton.leading(context),
+        title: Text(category.shortTitle),
+      ),
       body: ResponsiveBody(
         maxWidth: Breakpoints.reading,
         child: SingleChildScrollView(

@@ -101,9 +101,23 @@ class FirebaseBootstrap {
     }
   }
 
+  /// En iPhone el `appId` del repo sigue siendo el de Android. Llamar a
+  /// `Firebase.initializeApp` hace que el SDK nativo lance NSException y
+  /// aborte el proceso; el `try/catch` de Dart no lo alcanza.
+  static bool get _nativeConfigIsSafe {
+    if (kIsWeb || defaultTargetPlatform != TargetPlatform.iOS) return true;
+    return DefaultFirebaseOptions.ios.appId.contains(':ios:');
+  }
+
   static Future<void> _initializeAppOnly() async {
     if (_hasAppsSafe()) {
       _appReady = true;
+      return;
+    }
+    if (!_nativeConfigIsSafe) {
+      lastError =
+          'Firebase iOS no está configurado (falta un appId :ios:).';
+      debugPrint('[VIDA:Firebase] $lastError');
       return;
     }
     debugPrint('[VIDA:Firebase] initializeApp…');

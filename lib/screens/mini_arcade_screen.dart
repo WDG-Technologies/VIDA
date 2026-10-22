@@ -2,6 +2,7 @@
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
 import '../theme/transitions.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import 'arcade_games.dart';
 import 'quiz_screen.dart';
@@ -76,7 +77,10 @@ class MiniArcadeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final games = _games;
     return Scaffold(
-      appBar: AppBar(title: const Text('Mini Arcade')),
+      appBar: AppBar(
+        leading: GlassBackButton.leading(context),
+        title: const Text('Mini Arcade'),
+      ),
       body: ResponsiveBody(
         child: Padding(
           padding: const EdgeInsets.all(16),

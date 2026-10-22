@@ -7,6 +7,7 @@ import '../theme/app_theme.dart';
 import '../utils/firebase_bootstrap.dart';
 import '../utils/firebase_ready.dart';
 import '../widgets/fade_in.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 
 class TestimoniosScreen extends StatefulWidget {
@@ -127,6 +128,7 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: Text('Testimonios',
             style: TextStyle(fontWeight: FontWeight.w600)),
       ),
@@ -547,6 +549,7 @@ class _TestimonioFormScreenState extends State<_TestimonioFormScreen> {
     final isEditing = widget.existing != null;
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: Text(isEditing ? 'Editar testimonio' : 'Nuevo testimonio',
             style: TextStyle(fontWeight: FontWeight.w600)),
                         actions: [

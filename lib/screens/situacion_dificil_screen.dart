@@ -3,6 +3,7 @@ import '../data/consejo.dart';
 import '../data/consejos_data.dart';
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import 'consejo_detalle_screen.dart';
 
@@ -59,6 +60,7 @@ class _SituacionDificilScreenState extends State<SituacionDificilScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: const Text('Situación difícil'),
       ),
       body: ResponsiveBody(

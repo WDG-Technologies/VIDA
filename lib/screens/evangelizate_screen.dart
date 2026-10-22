@@ -4,6 +4,7 @@ import '../data/evangelizate_data.dart';
 import '../data/vida_signals.dart';
 import '../theme/app_theme.dart';
 import '../widgets/fade_in.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import '../widgets/tool_card.dart';
 import 'evangelizate_detalle_screen.dart';
@@ -22,7 +23,10 @@ class EvangelizateScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     VidaSignals.trackEvent('evangelizate');
     return Scaffold(
-      appBar: AppBar(title: const Text('Evangelízate')),
+      appBar: AppBar(
+        leading: GlassBackButton.leading(context),
+        title: const Text('Evangelízate'),
+      ),
       body: ResponsiveBody(
         child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),

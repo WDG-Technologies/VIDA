@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../data/oracion_guiada.dart';
 import '../theme/transitions.dart';
+import '../utils/platform_caps.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 
 /// Oración guiada estilo “story”: a pantalla completa, paso a paso.
@@ -165,11 +167,18 @@ class _OracionGuiadaScreenState extends State<OracionGuiadaScreen>
                       )
                     else
                       const Spacer(),
-                    IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close_rounded,
-                          color: Colors.white),
-                    ),
+                    if (PlatformCaps.nativeIosControls)
+                      GlassBackButton(
+                        close: true,
+                        dark: true,
+                        onPressed: () => Navigator.pop(context),
+                      )
+                    else
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: const Icon(Icons.close_rounded,
+                            color: Colors.white),
+                      ),
                   ],
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../data/vida_verse_bank.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 
 // ─────────────── Memorama ───────────────
@@ -121,6 +122,7 @@ class _MemoramaScreenState extends State<MemoramaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: const Text('Memorama'),
         actions: [
           IconButton(onPressed: _deal, icon: Icon(Icons.refresh_rounded)),
@@ -268,6 +270,7 @@ class _OrdenaVersiculoScreenState extends State<OrdenaVersiculoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: const Text('Ordena el versículo'),
         actions: [
           IconButton(onPressed: _newRound, icon: Icon(Icons.refresh_rounded)),
@@ -719,6 +722,7 @@ class _VerdaderoFalsoScreenState extends State<VerdaderoFalsoScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: Text('Verdadero / Falso  (${_i + 1}/${_queue.length})'),
       ),
       body: ResponsiveBody(
@@ -1160,7 +1164,10 @@ class _TriviaCategoriasScreenState extends State<TriviaCategoriasScreen> {
     if (_category == null) {
       final cats = _all.map((e) => e.category).toSet().toList()..shuffle();
       return Scaffold(
-        appBar: AppBar(title: const Text('Trivia por categorías')),
+        appBar: AppBar(
+          leading: GlassBackButton.leading(context),
+          title: const Text('Trivia por categorías'),
+        ),
         body: ResponsiveBody(
           maxWidth: 560,
           child: ListView(
@@ -1194,7 +1201,10 @@ class _TriviaCategoriasScreenState extends State<TriviaCategoriasScreen> {
 
     final q = _qs[_i];
     return Scaffold(
-      appBar: AppBar(title: Text('$_category · ${_i + 1}/${_qs.length}')),
+      appBar: AppBar(
+        leading: GlassBackButton.leading(context),
+        title: Text('$_category · ${_i + 1}/${_qs.length}'),
+      ),
       body: ResponsiveBody(
         maxWidth: 640,
         child: Padding(
@@ -1594,6 +1604,7 @@ class _CaminoDiscipuloScreenState extends State<CaminoDiscipuloScreen> {
     final s = _path[_step];
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: const Text('Camino del discípulo'),
       ),
       body: ResponsiveBody(
@@ -1862,6 +1873,7 @@ class _QuienLoDijoScreenState extends State<QuienLoDijoScreen> {
     final q = _qs[_i];
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: Text('¿Quién lo dijo?  (${_i + 1}/${_qs.length})'),
       ),
       body: ResponsiveBody(

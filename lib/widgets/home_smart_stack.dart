@@ -9,6 +9,8 @@ import '../data/gallery_images.dart';
 import '../screens/image_editor_screen.dart';
 import '../screens/oracion_guiada_screen.dart';
 import '../theme/app_theme.dart';
+import '../utils/platform_caps.dart';
+import 'glass_card_actions.dart';
 import 'vida_verse_card.dart';
 
 /// Pila del inicio: VIDA · Versículo del día · Oración guiada.
@@ -141,10 +143,10 @@ class _HomeSmartStackState extends State<HomeSmartStack>
     final begin = _progress;
     _ctrl.duration = Duration(
       milliseconds:
-          (300 + (target - begin).abs() * 140).round().clamp(300, 460),
+          (420 + (target - begin).abs() * 180).round().clamp(420, 580),
     );
     final anim = Tween<double>(begin: begin, end: target).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic),
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOutCubic),
     );
     void tick() {
       if (mounted) setState(() => _progress = anim.value);
@@ -200,34 +202,41 @@ class _HomeSmartStackState extends State<HomeSmartStack>
     final p = _progress.clamp(0.0, 1.0);
     const stackH = _h + (_visible - 1) * _stepY;
     final widgets = <Widget>[];
+    // Durante el desliz, una copia de la carta que se va entra atrás.
+    final lastDepth = p > 0.001 ? _visible : _visible - 1;
 
-    for (var depth = _visible - 1; depth >= 0; depth--) {
+    for (var depth = lastDepth; depth >= 0; depth--) {
       final cardI = _cardAt(depth);
       late final double visualDepth;
       var exitY = 0.0;
       var fade = 1.0;
+      var extraScale = 1.0;
 
       if (depth == 0) {
         visualDepth = 0;
-        final ease = Curves.easeIn.transform(p);
-        exitY = -_h * 0.42 * ease;
-        // Fundido fuerte además del deslizamiento.
-        fade = (1.0 - Curves.easeIn.transform(p)).clamp(0.0, 1.0);
+        final leave = Curves.easeIn.transform(p);
+        exitY = -_h * 0.55 * leave;
+        fade = (1.0 - leave).clamp(0.0, 1.0);
+        extraScale = 1.0 - 0.05 * leave;
+      } else if (depth >= _visible) {
+        visualDepth = (_visible - 1) + (1.0 - p) * 0.28;
+        fade = Curves.easeOut.transform(p);
+        extraScale = 0.96 + 0.04 * p;
       } else {
         visualDepth = depth - p;
-        // Cartas traseras bien visibles (no fantasmas).
-        fade = (0.88 + 0.12 * (1.0 - (visualDepth / _visible)))
-            .clamp(0.82, 1.0);
+        fade = 1.0;
       }
 
       widgets.add(
         _placed(
+          key: ValueKey('stack-$_index-$depth-$cardI'),
           depth: visualDepth,
           exitY: exitY,
           fade: fade,
+          extraScale: extraScale,
           child: cards[cardI],
           interactive: depth == 0 && p == 0,
-          elevated: depth == 0,
+          elevated: depth == 0 && p < 0.15,
         ),
       );
     }
@@ -269,19 +278,22 @@ class _HomeSmartStackState extends State<HomeSmartStack>
   }
 
   Widget _placed({
+    Key? key,
     required double depth,
     required Widget child,
     double exitY = 0,
     double fade = 1,
+    double extraScale = 1,
     required bool interactive,
     required bool elevated,
   }) {
-    final scale = math.max(0.86, 1.0 - depth * _stepScale);
+    final scale = math.max(0.84, 1.0 - depth * _stepScale) * extraScale;
     final dy = math.max(0.0, depth) * _stepY + exitY;
     final inset = math.max(0.0, depth) * _stepX;
     final opacity = (fade).clamp(0.0, 1.0);
 
     return Positioned(
+      key: key,
       top: dy,
       left: inset,
       right: inset,
@@ -415,6 +427,22 @@ class _DailyVerseCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
+                if (PlatformCaps.nativeIosControls)
+                  GlassCardActions(
+                    actions: [
+                      GlassCardAction(
+                        symbol: 'square.and.arrow.up',
+                        label: 'Compartir',
+                        onTap: onShare,
+                      ),
+                      GlassCardAction(
+                        symbol: 'photo',
+                        label: 'Crear imagen',
+                        onTap: onCreateImage,
+                      ),
+                    ],
+                  )
+                else
                 Row(
                   children: [
                     _Chip(

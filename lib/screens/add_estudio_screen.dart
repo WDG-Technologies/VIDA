@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/bible_study.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 
 class AddEstudioScreen extends StatefulWidget {
@@ -111,6 +112,7 @@ class _AddEstudioScreenState extends State<AddEstudioScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: Text(widget.existing != null ? 'Editar estudio' : 'Estudio'),
         actions: [
           TextButton(

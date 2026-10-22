@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../data/iglesia_seed.dart';
 import '../services/feature_tips.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../utils/firebase_ready.dart';
 import 'community_screen.dart';
 
@@ -604,6 +605,7 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: Text('Iglesias cerca',
             style: TextStyle(fontWeight: FontWeight.w600)),
                       ),

@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../services/update_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 
 /// Política de privacidad y términos (in-app + enlace público en GitHub).
 class PrivacyScreen extends StatelessWidget {
@@ -15,6 +16,7 @@ class PrivacyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: const Text('Privacidad y términos'),
         actions: [
           IconButton(

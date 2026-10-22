@@ -1,7 +1,10 @@
+import 'package:cupertino_native_ui/cupertino_native_ui.dart';
 import 'package:flutter/material.dart';
 import '../main.dart';
 import '../theme/app_theme.dart';
 import '../theme/theme_controller.dart';
+import '../utils/platform_caps.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import '../widgets/user_avatar.dart';
 
@@ -77,7 +80,10 @@ class AppearanceScreen extends StatelessWidget {
       animation: ctrl,
       builder: (context, _) {
         return Scaffold(
-          appBar: AppBar(title: const Text('Apariencia')),
+          appBar: AppBar(
+            leading: GlassBackButton.leading(context),
+            title: const Text('Apariencia'),
+          ),
           body: ResponsiveBody(
             maxWidth: Breakpoints.reading,
             child: ListView(
@@ -94,18 +100,32 @@ class AppearanceScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              SegmentedButton<AppBrightnessMode>(
-                segments: [
-                  for (final m in AppBrightnessMode.values)
-                    ButtonSegment(
-                      value: m,
-                      icon: Icon(m.icon, size: 18),
-                      label: Text(m.label),
-                    ),
-                ],
-                selected: {ctrl.brightnessMode},
-                onSelectionChanged: (s) => ctrl.setBrightnessMode(s.first),
-              ),
+              if (PlatformCaps.nativeIosControls)
+                CupertinoNativePicker(
+                  style: CupertinoNativePickerStyle.segmented,
+                  sizeStyle: CupertinoNativeControlSize.extraLarge,
+                  items: [
+                    for (final m in AppBrightnessMode.values)
+                      CupertinoNativePickerItem(title: m.label),
+                  ],
+                  selectedIndex:
+                      AppBrightnessMode.values.indexOf(ctrl.brightnessMode),
+                  onChanged: (i) =>
+                      ctrl.setBrightnessMode(AppBrightnessMode.values[i]),
+                )
+              else
+                SegmentedButton<AppBrightnessMode>(
+                  segments: [
+                    for (final m in AppBrightnessMode.values)
+                      ButtonSegment(
+                        value: m,
+                        icon: Icon(m.icon, size: 18),
+                        label: Text(m.label),
+                      ),
+                  ],
+                  selected: {ctrl.brightnessMode},
+                  onSelectionChanged: (s) => ctrl.setBrightnessMode(s.first),
+                ),
               const SizedBox(height: 28),
               Text(
                 'TEMA VISUAL',
@@ -306,10 +326,17 @@ class AppearanceScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Switch.adaptive(
-                        value: ctrl.useFormita,
-                        onChanged: ctrl.setUseFormita,
-                      ),
+                      if (PlatformCaps.nativeIosControls)
+                        CupertinoNativeSwitch(
+                          value: ctrl.useFormita,
+                          activeTrackColor: AppColors.emerald600,
+                          onChanged: ctrl.setUseFormita,
+                        )
+                      else
+                        Switch.adaptive(
+                          value: ctrl.useFormita,
+                          onChanged: ctrl.setUseFormita,
+                        ),
                     ],
                   ),
                 ),

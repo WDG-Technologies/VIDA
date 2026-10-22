@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/bible_study.dart';
 import '../theme/app_theme.dart';
 import '../widgets/fade_in.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import 'add_estudio_screen.dart';
 
@@ -73,6 +74,7 @@ class _EstudioDetalleScreenState extends State<EstudioDetalleScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: Text(s.name),
         actions: [
           IconButton(

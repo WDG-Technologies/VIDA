@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import '../data/consejo.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 
 class ConsejoDetalleScreen extends StatelessWidget {
@@ -12,6 +13,7 @@ class ConsejoDetalleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: const Text('Consejo'),
       ),
       body: ResponsiveBody(

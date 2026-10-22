@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import '../data/bible_data.dart';
 import '../data/gallery_images.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../utils/download_image.dart';
 import '../utils/platform_caps.dart';
 
@@ -417,6 +418,7 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: const Text('Crear imagen'),
         actions: [
           if (!desktop)

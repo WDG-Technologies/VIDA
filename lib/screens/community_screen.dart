@@ -10,6 +10,7 @@ import '../theme/app_theme.dart';
 import '../utils/firebase_bootstrap.dart';
 import '../utils/firebase_ready.dart';
 import '../utils/platform_caps.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import '../widgets/user_avatar.dart';
 
@@ -97,6 +98,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     if (_checkingFirebase) {
       return Scaffold(
         appBar: AppBar(
+          leading: GlassBackButton.leading(context),
           title: const Text('Comunidad',
               style: TextStyle(fontWeight: FontWeight.w600)),
         ),
@@ -107,6 +109,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
     if (!_firebaseOk || _auth == null) {
       return Scaffold(
         appBar: AppBar(
+          leading: GlassBackButton.leading(context),
           title: const Text('Comunidad',
               style: TextStyle(fontWeight: FontWeight.w600)),
         ),
@@ -175,6 +178,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: const Text('Comunidad',
             style: TextStyle(fontWeight: FontWeight.w600)),
         actions: [

@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import '../data/gallery_images.dart';
 import '../theme/app_theme.dart';
+import '../widgets/glass_back_button.dart';
 import '../widgets/responsive_body.dart';
 import 'image_editor_screen.dart';
 
@@ -11,6 +12,7 @@ class GalleryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GlassBackButton.leading(context),
         title: Text(
           'Plantillas',
           style: TextStyle(

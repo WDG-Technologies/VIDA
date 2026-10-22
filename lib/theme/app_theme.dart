@@ -46,7 +46,17 @@ class AppColors {
     _accent = accent;
   }
 
-  static bool get isDark => _cs.brightness == Brightness.dark;
+  /// 0 = fondo claro, 1 = fondo oscuro. Sigue la superficie interpolada
+  /// de MaterialApp para que el cambio de modo no salte en el primer frame.
+  static double get _darkT {
+    final l = _cs.surface.computeLuminance();
+    return (1.0 - ((l - 0.06) / 0.90)).clamp(0.0, 1.0);
+  }
+
+  static Color _tone(Color light, Color dark) =>
+      Color.lerp(light, dark, _darkT) ?? light;
+
+  static bool get isDark => _darkT >= 0.5;
 
   static bool get _isClassicEmerald =>
       // ignore: deprecated_member_use
@@ -62,36 +72,41 @@ class AppColors {
   static Color get brandSoft =>
       _isClassicEmerald ? _ClassicEmerald.c100 : emerald100;
 
-  static Color get emerald50 => _isClassicEmerald && !isDark
-      ? _ClassicEmerald.c50
-      : isDark
-          ? Color.lerp(_cs.surface, _styleSeed, 0.14) ??
-              _cs.surfaceContainerHighest
-          : Color.lerp(_styleSeed, Colors.white, 0.92) ?? Colors.white;
+  static Color get emerald50 => _tone(
+        _isClassicEmerald
+            ? _ClassicEmerald.c50
+            : Color.lerp(_styleSeed, Colors.white, 0.92) ?? Colors.white,
+        Color.lerp(_cs.surface, _styleSeed, 0.14) ??
+            _cs.surfaceContainerHighest,
+      );
 
-  static Color get emerald100 => _isClassicEmerald && !isDark
-      ? _ClassicEmerald.c100
-      : isDark
-          ? Color.lerp(_cs.surface, _styleSeed, 0.22) ?? _cs.surfaceContainerHigh
-          : Color.lerp(_styleSeed, Colors.white, 0.82) ?? Colors.white;
+  static Color get emerald100 => _tone(
+        _isClassicEmerald
+            ? _ClassicEmerald.c100
+            : Color.lerp(_styleSeed, Colors.white, 0.82) ?? Colors.white,
+        Color.lerp(_cs.surface, _styleSeed, 0.22) ?? _cs.surfaceContainerHigh,
+      );
 
-  static Color get emerald200 => _isClassicEmerald && !isDark
-      ? _ClassicEmerald.c200
-      : isDark
-          ? Colors.white.withValues(alpha: 0.08)
-          : Color.lerp(_styleSeed, Colors.white, 0.65) ?? _styleSeed;
+  static Color get emerald200 => _tone(
+        _isClassicEmerald
+            ? _ClassicEmerald.c200
+            : Color.lerp(_styleSeed, Colors.white, 0.65) ?? _styleSeed,
+        Colors.white.withValues(alpha: 0.08),
+      );
 
-  static Color get emerald300 => _isClassicEmerald && !isDark
-      ? _ClassicEmerald.c300
-      : isDark
-          ? Color.lerp(_styleSeed, _cs.onSurface, 0.25) ?? _styleSeed
-          : Color.lerp(_styleSeed, Colors.white, 0.45) ?? _styleSeed;
+  static Color get emerald300 => _tone(
+        _isClassicEmerald
+            ? _ClassicEmerald.c300
+            : Color.lerp(_styleSeed, Colors.white, 0.45) ?? _styleSeed,
+        Color.lerp(_styleSeed, _cs.onSurface, 0.25) ?? _styleSeed,
+      );
 
-  static Color get emerald400 => _isClassicEmerald && !isDark
-      ? _ClassicEmerald.c400
-      : isDark
-          ? Color.lerp(_styleSeed, _cs.onSurface, 0.1) ?? _styleSeed
-          : Color.lerp(_styleSeed, Colors.white, 0.2) ?? _styleSeed;
+  static Color get emerald400 => _tone(
+        _isClassicEmerald
+            ? _ClassicEmerald.c400
+            : Color.lerp(_styleSeed, Colors.white, 0.2) ?? _styleSeed,
+        Color.lerp(_styleSeed, _cs.onSurface, 0.1) ?? _styleSeed,
+      );
 
   /// Accent (buttons, selected nav). Custom accent or exact theme seed.
   static Color get emerald500 =>
@@ -106,22 +121,26 @@ class AppColors {
           ? _ClassicEmerald.c600
           : _accent;
 
-  static Color get emerald700 => _isClassicEmerald && !isDark
-      ? _ClassicEmerald.c700
-      : isDark
-          ? Color.lerp(_cs.onSurface, _styleSeed, 0.35) ?? _cs.onSurface
-          : Color.lerp(_styleSeed, const Color(0xFF111827), 0.35) ??
-              _styleSeed;
+  static Color get emerald700 => _tone(
+        _isClassicEmerald
+            ? _ClassicEmerald.c700
+            : Color.lerp(_styleSeed, const Color(0xFF111827), 0.35) ??
+                _styleSeed,
+        Color.lerp(_cs.onSurface, _styleSeed, 0.35) ?? _cs.onSurface,
+      );
 
-  static Color get emerald800 => _isClassicEmerald && !isDark
-      ? _ClassicEmerald.c800
-      : isDark
-          ? Color.lerp(_cs.onSurface, _styleSeed, 0.2) ?? _cs.onSurface
-          : Color.lerp(_styleSeed, const Color(0xFF111827), 0.5) ?? _styleSeed;
+  static Color get emerald800 => _tone(
+        _isClassicEmerald
+            ? _ClassicEmerald.c800
+            : Color.lerp(_styleSeed, const Color(0xFF111827), 0.5) ??
+                _styleSeed,
+        Color.lerp(_cs.onSurface, _styleSeed, 0.2) ?? _cs.onSurface,
+      );
 
-  static Color get emerald900 => _isClassicEmerald && !isDark
-      ? _ClassicEmerald.c900
-      : _cs.onSurface;
+  static Color get emerald900 => _tone(
+        _isClassicEmerald ? _ClassicEmerald.c900 : const Color(0xFF1C1917),
+        _cs.onSurface,
+      );
 
   static const amber400 = Color(0xFFFBBF24);
 }

@@ -151,7 +151,14 @@ class _VidaScreenState extends State<VidaScreen>
                 : ResponsiveBody(
                     maxWidth: Breakpoints.reading,
                     child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+                    padding: EdgeInsets.fromLTRB(
+                      20,
+                      12,
+                      20,
+                      PlatformCaps.nativeIosControls
+                          ? 12 + PlatformCaps.nativeTabClearance
+                          : 20,
+                    ),
                     child: Column(
                       children: [
                         Text(
@@ -289,6 +296,43 @@ class _VersePanel extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 12),
+          if (PlatformCaps.nativeIosControls)
+            Row(
+              children: [
+                Expanded(
+                  child: CupertinoNativeButton.glass(
+                    expand: true,
+                    height: 40,
+                    color: AppColors.emerald700,
+                    onPressed: onShare,
+                    child: const Row(
+                      children: [
+                        CupertinoSymbolImage('square.and.arrow.up'),
+                        Text('Compartir'),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: CupertinoNativeButton.glass(
+                    expand: true,
+                    height: 40,
+                    color: AppColors.emerald700,
+                    onPressed: onSave,
+                    child: Row(
+                      children: [
+                        CupertinoSymbolImage(
+                          saved ? 'bookmark.fill' : 'bookmark',
+                        ),
+                        Text(saved ? 'Guardado' : 'Guardar'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
+          else
           Row(
             children: [
               TextButton.icon(
