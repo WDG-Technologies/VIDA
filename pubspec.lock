@@ -282,12 +282,11 @@ packages:
     source: hosted
     version: "7.7.3"
   firebase_auth_web:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: firebase_auth_web
-      sha256: d9ada769c43261fd1b18decf113186e915c921a811bd5014f5ea08f4cf4bc57e
-      url: "https://pub.dev"
-    source: hosted
+      path: "third_party/firebase_auth_web"
+      relative: true
+    source: path
     version: "5.15.3"
   firebase_core:
     dependency: "direct main"
@@ -306,12 +305,11 @@ packages:
     source: hosted
     version: "6.0.3"
   firebase_core_web:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: firebase_core_web
-      sha256: "0ed0dc292e8f9ac50992e2394e9d336a0275b6ae400d64163fdf0a8a8b556c37"
-      url: "https://pub.dev"
-    source: hosted
+      path: "third_party/firebase_core_web"
+      relative: true
+    source: path
     version: "2.24.1"
   firebase_crashlytics:
     dependency: "direct main"

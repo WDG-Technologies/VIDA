@@ -1,14 +1,11 @@
 ﻿import 'dart:async';
 
 import 'package:app_links/app_links.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data/streak.dart';
-import 'firebase_options.dart';
 import 'services/community_push.dart';
 import 'services/notification_service.dart';
 import 'services/telemetry.dart';
@@ -22,6 +19,7 @@ import 'screens/mapa_iglesias_screen.dart';
 import 'screens/perfil_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/vida_screen.dart';
+import 'utils/firebase_bootstrap.dart';
 import 'utils/platform_caps.dart';
 import 'widgets/responsive_body.dart';
 
@@ -34,22 +32,23 @@ void main() async {
       DeviceOrientation.portraitUp,
     ]);
   }
-  await ThemeController.instance.load();
-  // Pintar UI cuanto antes; Firebase/auth no deben bloquear el primer frame.
+  try {
+    await ThemeController.instance
+        .load()
+        .timeout(const Duration(seconds: 3));
+  } catch (_) {
+    // Safari / prefs lentos: arrancar con tema por defecto.
+  }
+  // Nunca bloquear el primer frame (Safari: Firebase/prefs pueden colgar).
   runApp(const VidaApp());
   unawaited(_initBackgroundServices());
 }
 
 Future<void> _initBackgroundServices() async {
   try {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    }
-    if (FirebaseAuth.instance.currentUser == null) {
-      await FirebaseAuth.instance.signInAnonymously();
-    }
+    await FirebaseBootstrap.ensure(
+      appTimeout: const Duration(seconds: 12),
+    );
     await Telemetry.init();
   } catch (_) {
     // Offline / Play Services / config — app still launches without cloud.
@@ -57,8 +56,9 @@ Future<void> _initBackgroundServices() async {
   if (PlatformCaps.localNotifications) {
     try {
       await NotificationService.init();
-      await NotificationService.requestPermission();
-      await NotificationService.rescheduleAll();
+      // No pedir permisos ni exact-alarms en el arranque (diálogos / crashes OEM).
+      // Se piden al activar avisos en Perfil o al probar.
+      await NotificationService.rescheduleAll(force: true);
     } catch (_) {}
   }
   // Inbox Comunidad (móvil + web) sin Cloud Functions.
@@ -112,6 +112,7 @@ class _VidaAppState extends State<VidaApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed &&
         PlatformCaps.localNotifications) {
+      // Debounced inside service — avoid hammering AlarmManager.
       unawaited(NotificationService.rescheduleAll());
     }
   }
@@ -254,6 +255,7 @@ class _VidaAppState extends State<VidaApp> with WidgetsBindingObserver {
           if (daysAway >= 2 && await NotificationService.shouldShowToday()) {
             await NotificationService.showMotivational();
           }
+          // Ya se reprograma en _initBackgroundServices; aquí solo si hace falta.
           await NotificationService.rescheduleAll();
         }
         await StreakService.checkAndUpdate();

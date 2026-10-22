@@ -1,12 +1,11 @@
-# VIDA 0.9.30 (Beta) — Notas de la versión
+# VIDA 0.9.41 (Beta) — Notas de la versión
 
-**Build:** `0.9.30+25`  
+**Build:** `0.9.41+36`  
 **Web:** https://vida-86307.web.app
 
 ---
 
 ## En esta versión
 
-- **Fix notificaciones**: el icono `@drawable/ic_stat_vida` se eliminaba en release (resource shrinker) → init fallaba y ningún aviso funcionaba
-- Keep del drawable + fallback a `@mipmap/ic_launcher`
-- Incluye **0.9.29** (versículo en la notificación + diagnóstico)
+- **Galería / Crear imagen**: en nativo vuelve Compartir + layout móvil; en web móvil se oculta la galería libre (sigue desde Biblia / versículo del día).
+- Incluye **0.9.40** (fix crash de notificaciones en Android).

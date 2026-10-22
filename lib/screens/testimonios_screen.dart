@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../services/report_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/firebase_bootstrap.dart';
 import '../utils/firebase_ready.dart';
 import '../widgets/fade_in.dart';
 import '../widgets/responsive_body.dart';
@@ -28,30 +30,49 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
   }
 
   Future<void> _boot() async {
-    for (var i = 0; i < 20 && !firebaseReady; i++) {
-      await Future<void>.delayed(const Duration(milliseconds: 100));
+    try {
+      final ok = await ensureFirebase();
+      if (!ok) {
+        if (mounted) {
+          setState(() {
+            _loading = false;
+            _firebaseOk = false;
+          });
+        }
+        return;
+      }
+      if (mounted) setState(() => _firebaseOk = true);
+      await _load();
+    } catch (e) {
+      FirebaseBootstrap.lastError = '$e';
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _firebaseOk = false;
+        });
+      }
     }
+  }
+
+  Future<void> _load() async {
     if (!firebaseReady) {
       if (mounted) setState(() => _loading = false);
       return;
     }
-    if (mounted) setState(() => _firebaseOk = true);
-    await _load();
-  }
-
-  Future<void> _load() async {
-    if (!firebaseReady) return;
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      setState(() => _loading = false);
-      return;
-    }
     try {
-      final hidden = await ReportService.hiddenIds();
+      await ensureFirebase();
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+      Set<String> hidden = {};
+      try {
+        hidden = await ReportService.hiddenIds()
+            .timeout(const Duration(seconds: 2), onTimeout: () => <String>{});
+      } catch (_) {}
+
       final snap = await FirebaseFirestore.instance
           .collection('testimonios')
           .orderBy('createdAt', descending: true)
-          .get();
+          .get()
+          .timeout(const Duration(seconds: 15));
       final list = snap.docs.map((d) {
         final data = d.data();
         data['_id'] = d.id;
@@ -60,20 +81,23 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
       if (!mounted) return;
       setState(() {
         _hidden = hidden;
-        _myTestimonio = list.cast<Map<String, dynamic>?>().firstWhere(
-              (t) => t?['userId'] == uid,
-              orElse: () => null,
-            );
+        _myTestimonio = uid == null
+            ? null
+            : list.cast<Map<String, dynamic>?>().firstWhere(
+                  (t) => t?['userId'] == uid,
+                  orElse: () => null,
+                );
         _testimonios = list
-            .where((t) => t['userId'] != uid)
+            .where((t) => uid == null || t['userId'] != uid)
             .where((t) => !_hidden
                 .contains(ReportService.keyFor('testimonio', '${t['_id']}')))
             .toList();
-        _loading = false;
       });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() => _loading = false);
+    } catch (e) {
+      FirebaseBootstrap.lastError = 'testimonios: $e';
+      debugPrint('[VIDA:Testimonios] load fail: $e');
+    } finally {
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -131,11 +155,25 @@ class _TestimoniosScreenState extends State<TestimoniosScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(color: AppColors.emerald600),
                       ),
+                      if (FirebaseBootstrap.lastError != null) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          FirebaseBootstrap.lastError!,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: AppColors.emerald400,
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 20),
                       FilledButton(
                         onPressed: () {
-                          setState(() => _loading = true);
-                          _boot();
+                          setState(() {
+                            _loading = true;
+                            _firebaseOk = false;
+                          });
+                          ensureFirebase(force: true).then((_) => _boot());
                         },
                         child: const Text('Reintentar'),
                       ),

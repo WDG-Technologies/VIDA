@@ -7,6 +7,7 @@ import '../services/community_push.dart';
 import '../services/feature_tips.dart';
 import '../services/report_service.dart';
 import '../theme/app_theme.dart';
+import '../utils/firebase_bootstrap.dart';
 import '../utils/firebase_ready.dart';
 import '../utils/platform_caps.dart';
 import '../widgets/responsive_body.dart';
@@ -33,15 +34,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
     _ensureFirebase();
   }
 
-  Future<void> _ensureFirebase() async {
+  Future<void> _ensureFirebase({bool force = false}) async {
     try {
-      if (!firebaseReady) {
-        // Espera breve al init en background de main().
-        for (var i = 0; i < 20 && !firebaseReady; i++) {
-          await Future<void>.delayed(const Duration(milliseconds: 100));
-        }
-      }
-      if (!firebaseReady) {
+      final ok = await ensureFirebase(force: force);
+      if (!ok) {
         if (mounted) {
           setState(() {
             _checkingFirebase = false;
@@ -50,10 +46,21 @@ class _CommunityScreenState extends State<CommunityScreen> {
         }
         return;
       }
-      _auth = FirebaseAuth.instance;
-      _authSub = _auth!.userChanges().listen((_) {
-        if (mounted) setState(() {});
-      });
+      // Auth streams can still throw on Safari; don't mark Comunidad as down
+      // if the Firebase app itself is ready.
+      try {
+        _auth = FirebaseAuth.instance;
+        await _authSub?.cancel();
+        _authSub = _auth!.userChanges().listen(
+          (_) {
+            if (mounted) setState(() {});
+          },
+          onError: (_) {},
+        );
+      } catch (e) {
+        FirebaseBootstrap.lastError = 'auth UI: $e';
+        // No reintentar FirebaseAuth.instance aquí (vuelve a tirar en Safari).
+      }
       if (mounted) {
         setState(() {
           _checkingFirebase = false;
@@ -62,13 +69,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
       }
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) FeatureTips.community(context);
-        CommunityPushService.markAllRead();
+        unawaited(CommunityPushService.markAllRead());
       });
-    } catch (_) {
+    } catch (e) {
+      FirebaseBootstrap.lastError = '$e';
       if (mounted) {
         setState(() {
           _checkingFirebase = false;
-          _firebaseOk = false;
+          _firebaseOk = firebaseReady;
         });
       }
     }
@@ -134,11 +142,23 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       color: AppColors.emerald600,
                     ),
                   ),
+                  if (FirebaseBootstrap.lastError != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      FirebaseBootstrap.lastError!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'DM Sans',
+                        fontSize: 11,
+                        color: AppColors.emerald400,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 20),
                   FilledButton(
                     onPressed: () {
                       setState(() => _checkingFirebase = true);
-                      _ensureFirebase();
+                      _ensureFirebase(force: true);
                     },
                     child: const Text('Reintentar'),
                   ),

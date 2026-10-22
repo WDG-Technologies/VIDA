@@ -161,7 +161,6 @@ google-services.json
 GoogleService-Info.plist
 **/android/app/google-services.json
 **/ios/Runner/GoogleService-Info.plist
-firebase_options.dart
 **/firebase_app_id_file.json
 serviceAccount*.json
 credentials.json
@@ -210,3 +209,14 @@ flutter_run.pid
 *.local
 scrcpy-win64-v3.3.4/
 build_release_log.txt
+
+# Local Firebase CLI install for deploy
+.firebase-cli/
+.firebase/
+
+# Build logs / local artifacts
+build_apk_log.txt
+build_web_log.txt
+VIDA-web.zip
+tool/overpass_raw.json
+

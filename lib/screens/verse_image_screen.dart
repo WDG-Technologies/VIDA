@@ -10,7 +10,7 @@ import '../data/bible_data.dart';
 import '../data/gallery_images.dart';
 import '../theme/app_theme.dart';
 import '../utils/download_image.dart';
-import '../widgets/responsive_body.dart';
+import '../utils/platform_caps.dart';
 
 /// Shareable image from a verse already chosen in Biblia.
 class VerseImageScreen extends StatefulWidget {
@@ -211,12 +211,17 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Imagen descargada')),
+        SnackBar(
+          content: Text(
+            PlatformCaps.isWeb ? 'Imagen descargada' : 'Listo para compartir',
+          ),
+        ),
       );
     } catch (e) {
       if (!mounted) return;
+      final verb = PlatformCaps.isWeb ? 'descargar' : 'compartir';
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No se pudo descargar: $e')),
+        SnackBar(content: Text('No se pudo $verb: $e')),
       );
     } finally {
       if (mounted) setState(() => _downloading = false);
@@ -322,8 +327,14 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
                   child: CircularProgressIndicator(
                       strokeWidth: 2, color: Colors.white),
                 )
-              : const Icon(Icons.download_rounded),
-          label: Text(_downloading ? 'Descargando…' : 'Descargar imagen'),
+              : Icon(PlatformCaps.isWeb
+                  ? Icons.download_rounded
+                  : Icons.share_rounded),
+          label: Text(_downloading
+              ? (PlatformCaps.isWeb ? 'Descargando…' : 'Compartiendo…')
+              : (PlatformCaps.isWeb
+                  ? 'Descargar imagen'
+                  : 'Compartir imagen')),
         ),
       ],
     );
@@ -397,7 +408,12 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final desktop = Breakpoints.isDesktop(context);
+    final desktop = PlatformCaps.imageEditorDesktopLayout(
+      MediaQuery.sizeOf(context).width,
+    );
+    final shareIcon =
+        PlatformCaps.isWeb ? Icons.download_rounded : Icons.share_rounded;
+    final shareTip = PlatformCaps.isWeb ? 'Descargar' : 'Compartir';
 
     return Scaffold(
       appBar: AppBar(
@@ -405,7 +421,7 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
         actions: [
           if (!desktop)
             IconButton(
-              tooltip: 'Descargar',
+              tooltip: shareTip,
               onPressed: (!_hasBg || _verseText.isEmpty || _downloading)
                   ? null
                   : _download,
@@ -415,7 +431,7 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.download_rounded),
+                  : Icon(shareIcon),
             ),
         ],
       ),
@@ -500,6 +516,28 @@ class _VerseImageScreenState extends State<VerseImageScreen> {
                         ),
                         const SizedBox(height: 20),
                         _fondosPanelMobile(),
+                        const SizedBox(height: 16),
+                        FilledButton.icon(
+                          onPressed:
+                              (!_hasBg || _verseText.isEmpty || _downloading)
+                                  ? null
+                                  : _download,
+                          icon: _downloading
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2, color: Colors.white),
+                                )
+                              : Icon(shareIcon),
+                          label: Text(_downloading
+                              ? (PlatformCaps.isWeb
+                                  ? 'Descargando…'
+                                  : 'Compartiendo…')
+                              : (PlatformCaps.isWeb
+                                  ? 'Descargar imagen'
+                                  : 'Compartir imagen')),
+                        ),
                       ],
                     ),
     );

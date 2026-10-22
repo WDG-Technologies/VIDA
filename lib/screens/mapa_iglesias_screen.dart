@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -13,16 +14,18 @@ import 'package:url_launcher/url_launcher.dart';
 import '../data/iglesia_seed.dart';
 import '../services/feature_tips.dart';
 import '../theme/app_theme.dart';
+import '../utils/firebase_ready.dart';
 import 'community_screen.dart';
 
-/// Raster tiles sin API key (Carto ahora exige clave y muestra watermark).
+/// Tiles públicos (sin API key). Esri es más fiable en móvil/web que OSM.
 TileLayer vidaMapTileLayer() => TileLayer(
-      urlTemplate: 'https://tile.openstreetmap.de/{z}/{x}/{y}.png',
+      urlTemplate:
+          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
       userAgentPackageName: 'com.vida.project',
       maxZoom: 19,
     );
 
-/// Atribución OSM sin el prefijo «flutter_map |».
+/// Atribución del mapa base.
 Widget vidaMapAttribution() => Align(
       alignment: Alignment.bottomLeft,
       child: Padding(
@@ -33,7 +36,7 @@ Widget vidaMapAttribution() => Align(
           child: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             child: Text(
-              '© OpenStreetMap',
+              '© Esri · OpenStreetMap',
               style: TextStyle(
                 fontSize: 10,
                 color: Colors.white,
@@ -54,7 +57,6 @@ class MapaIglesiasScreen extends StatefulWidget {
 
 class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
   final TextEditingController _searchCtrl = TextEditingController();
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
   final MapController _mapController = MapController();
 
   List<Map<String, dynamic>> _churches = [];
@@ -88,57 +90,143 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
   }
 
   Future<void> _initLocation() async {
-    final permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      final granted = await Geolocator.requestPermission();
-      if (granted == LocationPermission.denied ||
-          granted == LocationPermission.deniedForever) {
-        return;
-      }
-    }
+    // En web móvil el permiso a veces falla; el mapa igual se muestra.
     try {
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        final granted = await Geolocator.requestPermission();
+        if (granted == LocationPermission.denied ||
+            granted == LocationPermission.deniedForever) {
+          return;
+        }
+      }
       final pos = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 8),
         ),
       );
       if (!mounted) return;
       setState(() => _myLocation = LatLng(pos.latitude, pos.longitude));
       _mapController.move(_myLocation!, 13);
-    } catch (_) {}
 
-    _positionSub = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      ),
-    ).listen((pos) {
-      if (!mounted) return;
-      setState(() => _myLocation = LatLng(pos.latitude, pos.longitude));
-    });
+      if (!kIsWeb) {
+        _positionSub = Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+            distanceFilter: 10,
+          ),
+        ).listen((p) {
+          if (!mounted) return;
+          setState(() => _myLocation = LatLng(p.latitude, p.longitude));
+        });
+      }
+    } catch (_) {}
   }
 
   Future<void> _loadIglesias() async {
+    // 1) Asset local al instante (seed OSM).
+    final local = await _churchesFromAsset();
+    if (mounted && local.isNotEmpty && _churches.isEmpty) {
+      setState(() {
+        _churches = local;
+        _filtered = List.from(local);
+        _loading = false;
+      });
+    }
+
+    // 2) Firestore: primero LEER (incluye iglesias de usuarios),
+    //    el seed se hace en segundo plano para no bloquear ni tumbar la carga.
     try {
-      await IglesiaSeedService.ensureSeeded();
-      final snap = await _db.collection('iglesias').get();
-      if (!mounted) return;
-      _churches = snap.docs.map((d) {
-        final data = d.data();
-        data['_id'] = d.id;
-        return data;
-      }).toList();
-      if (_churches.isEmpty) {
-        _churches = await _churchesFromAsset();
+      final ok = await ensureFirebase();
+      if (!ok) {
+        if (_churches.isEmpty && local.isNotEmpty) {
+          _churches = local;
+          _filtered = List.from(local);
+        }
+        return;
       }
-      _filtered = List.from(_churches);
-    } catch (_) {
+
+      List<Map<String, dynamic>> remote = const [];
+      try {
+        final snap =
+            await FirebaseFirestore.instance.collection('iglesias').get();
+        remote = snap.docs.map((d) {
+          final data = Map<String, dynamic>.from(d.data());
+          data['_id'] = d.id;
+          data['localOnly'] = false;
+          return data;
+        }).toList();
+      } catch (e) {
+        debugPrint('[VIDA:Mapa] firestore get fail: $e');
+      }
+
+      // Sembrar OSM en background (no bloquea ni oculta iglesias de usuarios).
+      unawaited(IglesiaSeedService.ensureSeeded());
+
       if (!mounted) return;
-      _churches = await _churchesFromAsset();
+      _churches = _mergeChurches(local: local, remote: remote);
       _filtered = List.from(_churches);
+      _applySearchFilter();
+    } catch (e) {
+      debugPrint('[VIDA:Mapa] load fail: $e');
+      if (!mounted) return;
+      if (_churches.isEmpty) {
+        _churches = local;
+        _filtered = List.from(local);
+      }
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  /// Une seed local + Firestore. Remoto gana en el mismo id; se conservan
+  /// iglesias solo-nube (creadas por usuarios) y solo-local.
+  static List<Map<String, dynamic>> _mergeChurches({
+    required List<Map<String, dynamic>> local,
+    required List<Map<String, dynamic>> remote,
+  }) {
+    final byId = <String, Map<String, dynamic>>{};
+    for (final c in local) {
+      final id = '${c['_id'] ?? ''}';
+      if (id.isEmpty) continue;
+      byId[id] = Map<String, dynamic>.from(c);
+    }
+    for (final c in remote) {
+      final id = '${c['_id'] ?? ''}';
+      if (id.isEmpty) continue;
+      final prev = byId[id];
+      byId[id] = {
+        if (prev != null) ...prev,
+        ...c,
+        '_id': id,
+        'localOnly': false,
+      };
+    }
+    final list = byId.values.toList();
+    // Usuarios primero (no seed), luego seed — más visibles las “de antes”.
+    list.sort((a, b) {
+      final aUser = a['seed'] == true ? 1 : 0;
+      final bUser = b['seed'] == true ? 1 : 0;
+      if (aUser != bUser) return aUser.compareTo(bUser);
+      return '${a['nombre']}'.compareTo('${b['nombre']}');
+    });
+    return list;
+  }
+
+  void _applySearchFilter() {
+    final q = _searchCtrl.text.trim().toLowerCase();
+    if (q.isEmpty) {
+      _filtered = List.from(_churches);
+      _searched = false;
+      return;
+    }
+    _searched = true;
+    _filtered = _churches.where((c) {
+      final nombre = '${c['nombre'] ?? ''}'.toLowerCase();
+      final ciudad = '${c['ciudad'] ?? ''}'.toLowerCase();
+      return nombre.contains(q) || ciudad.contains(q);
+    }).toList();
   }
 
   /// Fallback local (web sin Firebase o sin red).
@@ -212,11 +300,13 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
   void _showChurchSheet(Map<String, dynamic> data, String docId) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => _ChurchDetailSheet(
         docId: docId,
+        initialData: data,
         onJoined: () {
           Navigator.pop(ctx);
           _loadIglesias();
@@ -247,21 +337,49 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
     required double latitud,
     required double longitud,
   }) async {
-    final user = FirebaseAuth.instance.currentUser;
-    // Anyone can add a church; only real accounts count as attending.
+    final ok = await ensureFirebase();
+    if (!ok) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Sin conexión a Firebase. No se pudo agregar.'),
+          ),
+        );
+      }
+      return;
+    }
+    User? user;
+    try {
+      user = FirebaseAuth.instance.currentUser;
+    } catch (_) {}
     final loggedIn = user != null && !user.isAnonymous;
     final uid = user?.uid;
-    await _db.collection('iglesias').add({
-      'nombre': nombre,
-      'ciudad': ciudad,
-      'descripcion': descripcion,
-      'latitud': latitud,
-      'longitud': longitud,
-      'miembros': loggedIn ? 1 : 0,
-      'asistentes': loggedIn && uid != null ? [uid] : <String>[],
-      'creado_por': uid ?? '',
-    });
-    await _loadIglesias();
+    try {
+      await FirebaseFirestore.instance.collection('iglesias').add({
+        'nombre': nombre,
+        'ciudad': ciudad,
+        'descripcion': descripcion,
+        'latitud': latitud,
+        'longitud': longitud,
+        'miembros': loggedIn ? 1 : 0,
+        'asistentes': loggedIn && uid != null ? [uid] : <String>[],
+        'creado_por': uid ?? '',
+        'seed': false,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+      await _loadIglesias();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Iglesia agregada')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('No se pudo guardar: $e')),
+        );
+      }
+    }
   }
 
   void _openAddSheet() {
@@ -547,10 +665,12 @@ class _MapaIglesiasScreenState extends State<MapaIglesiasScreen> {
 
 class _ChurchDetailSheet extends StatefulWidget {
   final String docId;
+  final Map<String, dynamic> initialData;
   final VoidCallback onJoined;
 
   const _ChurchDetailSheet({
     required this.docId,
+    required this.initialData,
     required this.onJoined,
   });
 
@@ -560,6 +680,16 @@ class _ChurchDetailSheet extends StatefulWidget {
 
 class _ChurchDetailSheetState extends State<_ChurchDetailSheet> {
   bool _joining = false;
+  late Map<String, dynamic> _data;
+
+  bool get _localOnly =>
+      widget.initialData['localOnly'] == true || !firebaseReady;
+
+  @override
+  void initState() {
+    super.initState();
+    _data = Map<String, dynamic>.from(widget.initialData);
+  }
 
   Future<void> _promptLogin() async {
     final go = await showDialog<bool>(
@@ -586,7 +716,6 @@ class _ChurchDetailSheetState extends State<_ChurchDetailSheet> {
       ),
     );
     if (go == true && mounted) {
-      // Mantener el sheet abierto debajo; al volver, unir si ya hay cuenta.
       await Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const CommunityScreen()),
@@ -600,9 +729,11 @@ class _ChurchDetailSheetState extends State<_ChurchDetailSheet> {
   }
 
   Future<void> _joinChurch(String uid) async {
-    if (_joining) return;
+    if (_joining || _localOnly) return;
     setState(() => _joining = true);
     try {
+      final ok = await ensureFirebase();
+      if (!ok) return;
       final ref =
           FirebaseFirestore.instance.collection('iglesias').doc(widget.docId);
       final joined = await FirebaseFirestore.instance.runTransaction((tx) async {
@@ -624,11 +755,200 @@ class _ChurchDetailSheetState extends State<_ChurchDetailSheet> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
+  Widget _buildBody(Map<String, dynamic> data) {
+    User? user;
+    try {
+      user = firebaseReady ? FirebaseAuth.instance.currentUser : null;
+    } catch (_) {}
     final uid = user?.uid;
     final needsLogin = user == null || user.isAnonymous;
+    final asistentes = (data['asistentes'] as List<dynamic>? ?? [])
+        .map((e) => '$e')
+        .toList();
+    final yaAsiste =
+        !needsLogin && uid != null && asistentes.contains(uid);
+
+    VoidCallback? onAttend;
+    if (_localOnly) {
+      onAttend = null;
+    } else if (yaAsiste || _joining) {
+      onAttend = null;
+    } else if (needsLogin) {
+      onAttend = _promptLogin;
+    } else {
+      onAttend = () => _joinChurch(uid!);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '${data['nombre'] ?? 'Iglesia'}',
+          style: TextStyle(
+            fontFamily: 'DM Sans',
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: AppColors.emerald900,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            Icon(Icons.location_on_rounded,
+                size: 16, color: AppColors.emerald500),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                '${data['ciudad'] ?? 'México'}',
+                style: TextStyle(
+                  fontFamily: 'DM Sans',
+                  fontSize: 13,
+                  color: AppColors.emerald600,
+                ),
+              ),
+            ),
+            if (!_localOnly) ...[
+              Icon(Icons.people_rounded,
+                  size: 16, color: AppColors.emerald500),
+              const SizedBox(width: 4),
+              Text(
+                '${asistentes.length}',
+                style: TextStyle(
+                  fontFamily: 'DM Sans',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.emerald800,
+                ),
+              ),
+            ],
+          ],
+        ),
+        if ((data['descripcion']?.toString().trim() ?? '').isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text(
+            data['descripcion'].toString(),
+            style: TextStyle(
+              fontFamily: 'DM Sans',
+              fontSize: 13,
+              height: 1.4,
+              color: AppColors.emerald700,
+            ),
+          ),
+        ],
+        const SizedBox(height: 20),
+        if (!_localOnly)
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: onAttend,
+              icon: Icon(
+                yaAsiste
+                    ? Icons.check_rounded
+                    : Icons.volunteer_activism_rounded,
+                size: 20,
+              ),
+              label: Text(
+                yaAsiste ? 'Ya asistes aquí' : 'Yo asisto aquí',
+                style: const TextStyle(
+                  fontFamily: 'DM Sans',
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              style: FilledButton.styleFrom(
+                backgroundColor:
+                    yaAsiste ? AppColors.emerald200 : AppColors.emerald600,
+                foregroundColor:
+                    yaAsiste ? AppColors.emerald600 : Colors.white,
+                disabledBackgroundColor: AppColors.emerald200,
+                disabledForegroundColor: AppColors.emerald600,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+            ),
+          ),
+        if (!_localOnly && needsLogin) ...[
+          const SizedBox(height: 8),
+          Text(
+            'Solo se pide cuenta para marcar asistencia',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'DM Sans',
+              fontSize: 11,
+              color: AppColors.emerald400,
+            ),
+          ),
+        ],
+        if (_localOnly) ...[
+          Text(
+            'Vista local (sin conexión a la nube). Puedes ver la ubicación.',
+            style: TextStyle(
+              fontFamily: 'DM Sans',
+              fontSize: 12,
+              color: AppColors.emerald500,
+            ),
+          ),
+          const SizedBox(height: 12),
+        ] else
+          const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              final lat = data['latitud'];
+              final lng = data['longitud'];
+              if (lat != null && lng != null) {
+                launchUrl(
+                  Uri.parse(
+                    'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng',
+                  ),
+                );
+              }
+            },
+            icon: const Icon(Icons.directions_rounded, size: 20),
+            label: const Text(
+              'Cómo llegar',
+              style: TextStyle(fontWeight: FontWeight.w600),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.emerald700,
+              side: BorderSide(color: AppColors.emerald600),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget body = _buildBody(_data);
+
+    // Si hay nube, refresca miembros/asistentes sin vaciar la ficha.
+    if (!_localOnly && firebaseReady) {
+      body = StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('iglesias')
+            .doc(widget.docId)
+            .snapshots(),
+        builder: (context, snap) {
+          if (snap.hasData && snap.data!.exists) {
+            final remote = snap.data!.data() as Map<String, dynamic>;
+            _data = {
+              ..._data,
+              ...remote,
+              '_id': widget.docId,
+            };
+          }
+          return _buildBody(_data);
+        },
+      );
+    }
 
     return SafeArea(
       child: Padding(
@@ -648,153 +968,7 @@ class _ChurchDetailSheetState extends State<_ChurchDetailSheet> {
               ),
             ),
             const SizedBox(height: 16),
-            StreamBuilder<DocumentSnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('iglesias')
-                  .doc(widget.docId)
-                  .snapshots(),
-              builder: (context, snap) {
-                if (!snap.hasData || !snap.data!.exists) {
-                  return const SizedBox.shrink();
-                }
-                final data = snap.data!.data() as Map<String, dynamic>;
-                final asistentes = (data['asistentes'] as List<dynamic>? ?? [])
-                    .map((e) => '$e')
-                    .toList();
-                final yaAsiste =
-                    !needsLogin &&
-                    uid != null &&
-                    asistentes.contains(uid);
-
-                VoidCallback? onAttend;
-                if (yaAsiste || _joining) {
-                  onAttend = null;
-                } else if (needsLogin) {
-                  onAttend = _promptLogin;
-                } else {
-                  onAttend = () => _joinChurch(uid!);
-                }
-
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(data['nombre'] ?? '',
-                        style: TextStyle(
-                            fontFamily: 'DM Sans',
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.emerald900)),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(Icons.location_on_rounded,
-                            size: 16, color: AppColors.emerald500),
-                        const SizedBox(width: 4),
-                        Text(data['ciudad'] ?? '',
-                            style: TextStyle(
-                                fontFamily: 'DM Sans',
-                                fontSize: 13,
-                                color: AppColors.emerald600)),
-                        const Spacer(),
-                        Icon(Icons.people_rounded,
-                            size: 16, color: AppColors.emerald500),
-                        const SizedBox(width: 4),
-                        Text('${asistentes.length}',
-                            style: TextStyle(
-                                fontFamily: 'DM Sans',
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.emerald800)),
-                      ],
-                    ),
-                    if ((data['descripcion']?.toString().trim() ?? '')
-                        .isNotEmpty) ...[
-                      const SizedBox(height: 12),
-                      Text(data['descripcion'].toString(),
-                          style: TextStyle(
-                              fontFamily: 'DM Sans',
-                              fontSize: 13,
-                              height: 1.4,
-                              color: AppColors.emerald700)),
-                    ],
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton.icon(
-                        onPressed: onAttend,
-                        icon: Icon(
-                            yaAsiste
-                                ? Icons.check_rounded
-                                : Icons.volunteer_activism_rounded,
-                            size: 20),
-                        label: Text(
-                            yaAsiste
-                                ? 'Ya asistes aquí'
-                                : 'Yo asisto aquí',
-                            style: TextStyle(
-                                fontFamily: 'DM Sans',
-                                fontWeight: FontWeight.w600)),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: yaAsiste
-                              ? AppColors.emerald200
-                              : AppColors.emerald600,
-                          foregroundColor: yaAsiste
-                              ? AppColors.emerald600
-                              : Colors.white,
-                          disabledBackgroundColor: AppColors.emerald200,
-                          disabledForegroundColor: AppColors.emerald600,
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(14)),
-                        ),
-                      ),
-                    ),
-                    if (needsLogin) ...[
-                      const SizedBox(height: 8),
-                      Text(
-                        'Solo se pide cuenta para marcar asistencia',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: 'DM Sans',
-                            fontSize: 11,
-                            color: AppColors.emerald400),
-                      ),
-                    ],
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          final lat = data['latitud'];
-                          final lng = data['longitud'];
-                          if (lat != null && lng != null) {
-                            launchUrl(Uri.parse(
-                              'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng',
-                            ));
-                          }
-                        },
-                        icon: Icon(Icons.directions_rounded,
-                            size: 20),
-                        label: Text('Cómo llegar',
-                            style:
-                                TextStyle(fontWeight: FontWeight.w600)),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.emerald700,
-                          side: BorderSide(color: AppColors.emerald600),
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(14)),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
+            body,
           ],
         ),
       ),

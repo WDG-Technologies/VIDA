@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 
 import '../theme/app_theme.dart';
 import '../utils/download_image.dart';
-import '../widgets/responsive_body.dart';
+import '../utils/platform_caps.dart';
 import '../widgets/verse_picker_sheet.dart';
 
 enum _TextAlign { top, center, bottom }
@@ -76,18 +76,22 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
       await downloadPngBytes(bytes, 'vida_${DateTime.now().millisecondsSinceEpoch}.png');
 
       if (mounted) {
+        final msg = PlatformCaps.isWeb
+            ? 'Imagen descargada'
+            : 'Listo para compartir';
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Imagen descargada'),
+          SnackBar(
+            content: Text(msg),
             behavior: SnackBarBehavior.floating,
           ),
         );
       }
     } catch (e) {
       if (mounted) {
+        final verb = PlatformCaps.isWeb ? 'descargar' : 'compartir';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al descargar: $e'),
+            content: Text('Error al $verb: $e'),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -310,8 +314,12 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                   child: CircularProgressIndicator(
                       strokeWidth: 2, color: Colors.white),
                 )
-              : const Icon(Icons.download_rounded),
-          label: Text(_capturing ? 'Descargando…' : 'Descargar imagen'),
+              : Icon(PlatformCaps.isWeb
+                  ? Icons.download_rounded
+                  : Icons.share_rounded),
+          label: Text(_capturing
+              ? (PlatformCaps.isWeb ? 'Descargando…' : 'Compartiendo…')
+              : (PlatformCaps.isWeb ? 'Descargar imagen' : 'Compartir imagen')),
         ),
       ],
     );
@@ -325,7 +333,12 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final desktop = Breakpoints.isDesktop(context);
+    final desktop = PlatformCaps.imageEditorDesktopLayout(
+      MediaQuery.sizeOf(context).width,
+    );
+    final shareIcon =
+        PlatformCaps.isWeb ? Icons.download_rounded : Icons.share_rounded;
+    final shareTip = PlatformCaps.isWeb ? 'Descargar' : 'Compartir';
 
     return Scaffold(
       appBar: AppBar(
@@ -349,8 +362,8 @@ class _ImageEditorScreenState extends State<ImageEditorScreen> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
-                  : const Icon(Icons.download_rounded),
-              tooltip: 'Descargar',
+                  : Icon(shareIcon),
+              tooltip: shareTip,
             ),
         ],
       ),

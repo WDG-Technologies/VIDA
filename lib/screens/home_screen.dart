@@ -256,18 +256,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      FadeIn(
-        index: 7,
-        child: ToolCard(
-          icon: Icons.collections_rounded,
-          title: 'Crear imagen',
-          subtitle: 'Versículo sobre un fondo',
-          onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const GalleryScreen()),
+      if (PlatformCaps.canBrowseImageGallery(
+          MediaQuery.sizeOf(context).width))
+        FadeIn(
+          index: 7,
+          child: ToolCard(
+            icon: Icons.collections_rounded,
+            title: 'Crear imagen',
+            subtitle: 'Versículo sobre un fondo',
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const GalleryScreen()),
+            ),
           ),
         ),
-      ),
       if (PlatformCaps.homeWidgets)
         FadeIn(
           index: 8,

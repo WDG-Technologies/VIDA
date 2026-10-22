@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,6 +19,7 @@ class IglesiaSeedService {
 
   /// Idempotente: doc id = osm_id; merge no duplica.
   static Future<int> ensureSeeded({bool force = false}) async {
+    if (Firebase.apps.isEmpty) return 0;
     final prefs = await SharedPreferences.getInstance();
     if (!force && (prefs.getBool(prefsKey) ?? false)) return 0;
 

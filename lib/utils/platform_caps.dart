@@ -21,4 +21,16 @@ class PlatformCaps {
 
   /// Actualización vía APK (móvil). En web se abre releases en el navegador.
   static bool get apkUpdates => !kIsWeb;
+
+  /// Galería libre / “Crear imagen” desde Inicio.
+  /// Nativo: siempre. Web: solo pantallas anchas (no móvil).
+  /// En web móvil se crea solo desde un versículo (Biblia / del día).
+  static bool canBrowseImageGallery(double width) {
+    if (!kIsWeb) return true;
+    return width >= 700;
+  }
+
+  /// Layout de editor a dos columnas (solo web desktop).
+  static bool imageEditorDesktopLayout(double width) =>
+      kIsWeb && width >= 1000;
 }

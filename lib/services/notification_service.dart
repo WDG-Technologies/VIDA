@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Color;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -12,12 +14,17 @@ import 'web_alerts.dart';
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
   static bool _initialized = false;
+  static bool _tzReady = false;
   static String _tzId = 'America/Mexico_City';
   static final List<String> _debugLog = <String>[];
+  static Future<void>? _rescheduleInFlight;
+  static DateTime? _lastRescheduleAt;
+  static Timer? _persistTrailTimer;
 
   static const _motivationalId = 1001;
   static const _dailyVerseIdBase = 1010;
-  static const _dailyVerseHorizonDays = 7;
+  /// Pocos slots: menos AlarmManager IPC y menos riesgo de crash nativo.
+  static const _dailyVerseHorizonDays = 3;
   static const _testId = 1003;
   static const _testVerseId = 1004;
   static const _hour = 10;
@@ -82,7 +89,32 @@ class NotificationService {
     ),
   );
 
-  static NotificationDetails _dailyDetailsFor(String title, String body) {
+  /// Detalles ligeros para *programar* (se serializan en SharedPreferences).
+  /// Evitar BigTextStyle aquí: hincha el parcel y puede tumbar BootReceiver.
+  static NotificationDetails _scheduleDetails(String channel) {
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        channel,
+        channel == _chDaily ? 'Versículo del día' : 'Motivación',
+        channelDescription: channel == _chDaily
+            ? 'Recordatorio diario del versículo'
+            : 'Recordatorios espirituales',
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: 'ic_stat_vida',
+        color: const Color(0xFF059669),
+        playSound: true,
+        enableVibration: true,
+      ),
+      iOS: const DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+    );
+  }
+
+  static NotificationDetails _dailyShowDetails(String title, String body) {
     return NotificationDetails(
       android: AndroidNotificationDetails(
         _chDaily,
@@ -111,14 +143,17 @@ class NotificationService {
   static void _d(String msg) {
     final line = '${DateTime.now().toIso8601String()} $msg';
     _debugLog.add(line);
-    if (_debugLog.length > 80) {
-      _debugLog.removeRange(0, _debugLog.length - 80);
+    if (_debugLog.length > 60) {
+      _debugLog.removeRange(0, _debugLog.length - 60);
     }
     debugPrint('[VIDA:Notif] $msg');
-    // Persist last trail best-effort (no await in hot path).
-    SharedPreferences.getInstance().then((p) {
-      p.setStringList(_kDebugTrail, List<String>.from(_debugLog));
-    }).catchError((_) {});
+    // Debounce writes — writing SharedPreferences on every log caused thrash.
+    _persistTrailTimer?.cancel();
+    _persistTrailTimer = Timer(const Duration(seconds: 2), () {
+      SharedPreferences.getInstance().then((p) {
+        p.setStringList(_kDebugTrail, List<String>.from(_debugLog));
+      }).catchError((_) {});
+    });
   }
 
   static Future<void> init() async {
@@ -127,8 +162,6 @@ class NotificationService {
 
     await _configureLocalTimeZone();
 
-    // Iconos candidatos: el shrinker de release a veces elimina drawables
-    // solo referenciados desde Dart → fallback a launcher.
     const iconCandidates = <String>[
       '@drawable/ic_stat_vida',
       '@mipmap/ic_launcher',
@@ -140,9 +173,9 @@ class NotificationService {
         final settings = InitializationSettings(
           android: AndroidInitializationSettings(icon),
           iOS: const DarwinInitializationSettings(
-            requestAlertPermission: true,
-            requestBadgePermission: true,
-            requestSoundPermission: true,
+            requestAlertPermission: false,
+            requestBadgePermission: false,
+            requestSoundPermission: false,
           ),
         );
         await _plugin.initialize(
@@ -164,16 +197,27 @@ class NotificationService {
       }
     }
     if (lastErr != null) {
-      throw lastErr!;
+      // No tumbar la app: notificaciones quedan desactivadas.
+      _d('init aborted: $lastErr');
+      return;
     }
 
-    await _ensureAndroidChannels();
+    try {
+      await _ensureAndroidChannels();
+    } catch (e) {
+      _d('channels fail: $e');
+    }
     _initialized = true;
     _d('init() ok tz=$_tzId');
   }
 
   static Future<void> _configureLocalTimeZone() async {
-    tzdata.initializeTimeZones();
+    if (_tzReady) return;
+    try {
+      tzdata.initializeTimeZones();
+    } catch (e) {
+      _d('initializeTimeZones: $e');
+    }
     var id = 'America/Mexico_City';
     try {
       final info = await FlutterTimezone.getLocalTimezone();
@@ -187,6 +231,7 @@ class NotificationService {
     try {
       tz.setLocalLocation(tz.getLocation(id));
       _tzId = id;
+      _tzReady = true;
       return;
     } catch (e) {
       _d('getLocation($id) fail: $e');
@@ -203,6 +248,7 @@ class NotificationService {
     try {
       tz.setLocalLocation(tz.getLocation(mapped));
       _tzId = mapped;
+      _tzReady = true;
       return;
     } catch (e) {
       _d('alias $mapped fail: $e');
@@ -216,6 +262,7 @@ class NotificationService {
       tz.setLocalLocation(tz.UTC);
       _tzId = 'UTC';
     }
+    _tzReady = true;
   }
 
   static Future<void> _ensureAndroidChannels() async {
@@ -252,23 +299,30 @@ class NotificationService {
     _d('channels created');
   }
 
-  /// Pide permiso de notificaciones + alarmas exactas (Android 12+/13+).
-  static Future<bool> requestPermission() async {
+  /// Pide permiso de notificaciones. Exact alarms solo bajo demanda.
+  static Future<bool> requestPermission({bool askExactAlarms = false}) async {
     if (kIsWeb) return WebAlerts.requestPermission();
     if (!_initialized) await init();
+    if (!_initialized) return false;
 
     var granted = true;
     final android = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     if (android != null) {
-      final n = await android.requestNotificationsPermission();
-      _d('requestNotificationsPermission=$n');
-      if (n == false) granted = false;
       try {
-        final exact = await android.requestExactAlarmsPermission();
-        _d('requestExactAlarmsPermission=$exact');
+        final n = await android.requestNotificationsPermission();
+        _d('requestNotificationsPermission=$n');
+        if (n == false) granted = false;
       } catch (e) {
-        _d('requestExactAlarmsPermission err: $e');
+        _d('requestNotificationsPermission err: $e');
+      }
+      if (askExactAlarms) {
+        try {
+          final exact = await android.requestExactAlarmsPermission();
+          _d('requestExactAlarmsPermission=$exact');
+        } catch (e) {
+          _d('requestExactAlarmsPermission err: $e');
+        }
       }
     }
     final ios = _plugin.resolvePlatformSpecificImplementation<
@@ -288,12 +342,18 @@ class NotificationService {
   static Future<bool> areNotificationsAllowed() async {
     if (kIsWeb) return WebAlerts.isGranted();
     if (!_initialized) await init();
+    if (!_initialized) return false;
     final android = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     if (android != null) {
-      final v = await android.areNotificationsEnabled() ?? true;
-      _d('areNotificationsEnabled=$v');
-      return v;
+      try {
+        final v = await android.areNotificationsEnabled() ?? true;
+        _d('areNotificationsEnabled=$v');
+        return v;
+      } catch (e) {
+        _d('areNotificationsEnabled err: $e');
+        return true;
+      }
     }
     return true;
   }
@@ -309,6 +369,7 @@ class NotificationService {
       return;
     }
     if (!_initialized) await init();
+    if (!_initialized) return;
     try {
       await _plugin.show(
         id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
@@ -323,7 +384,6 @@ class NotificationService {
     }
   }
 
-  /// Aviso inmediato para comprobar permisos/canal.
   static Future<bool> showTestNotification() async {
     if (kIsWeb) {
       await WebAlerts.show(
@@ -333,6 +393,7 @@ class NotificationService {
       return true;
     }
     if (!_initialized) await init();
+    if (!_initialized) return false;
     final ok = await requestPermission();
     if (!ok && !await areNotificationsAllowed()) {
       _d('showTest aborted: permission denied');
@@ -342,8 +403,7 @@ class NotificationService {
       await _plugin.show(
         id: _testId,
         title: 'VIDA · debug',
-        body:
-            'OK · tz=$_tzId · ${DateTime.now().toIso8601String()}',
+        body: 'OK · tz=$_tzId · ${DateTime.now().toIso8601String()}',
         notificationDetails: _details,
       );
       _d('showTest ok');
@@ -354,7 +414,6 @@ class NotificationService {
     }
   }
 
-  /// Muestra YA el versículo del día (texto completo) y reprograma la cola.
   static Future<bool> showTodayVerseNow() async {
     if (kIsWeb) {
       final v = await DailyVerseService.forToday();
@@ -365,6 +424,7 @@ class NotificationService {
       return true;
     }
     if (!_initialized) await init();
+    if (!_initialized) return false;
     final ok = await requestPermission();
     if (!ok && !await areNotificationsAllowed()) return false;
 
@@ -376,7 +436,7 @@ class NotificationService {
         id: _testVerseId,
         title: title,
         body: body,
-        notificationDetails: _dailyDetailsFor(title, body),
+        notificationDetails: _dailyShowDetails(title, body),
         payload: 'vida://inicio',
       );
       _d('showTodayVerseNow ok ref=$title');
@@ -391,8 +451,11 @@ class NotificationService {
   static Future<void> scheduleAwayReminder() async {
     if (kIsWeb) return;
     if (!_initialized) await init();
+    if (!_initialized) return;
 
-    await _plugin.cancel(id: _motivationalId);
+    try {
+      await _plugin.cancel(id: _motivationalId);
+    } catch (_) {}
     if (!await areAwayRemindersEnabled()) {
       _d('away disabled — skip');
       return;
@@ -409,16 +472,15 @@ class NotificationService {
       title: 'VIDA',
       body: message,
       when: when,
-      details: _details,
-      // Un solo disparo; se reprograma al abrir la app.
+      details: _scheduleDetails(_chMotivation),
     );
     _d('away schedule ${ok ? 'ok' : 'FAIL'} when=$when');
   }
 
-  /// Programa el versículo real para los próximos [_dailyVerseHorizonDays] días (8:00 local).
   static Future<void> scheduleDailyVerseReminder() async {
     if (kIsWeb) return;
     if (!_initialized) await init();
+    if (!_initialized) return;
     await _cancelDailyVerseSlots();
     if (!await areDailyVerseRemindersEnabled()) {
       _d('daily verse disabled — skip');
@@ -442,19 +504,22 @@ class NotificationService {
       next = next.add(const Duration(days: 1));
     }
 
+    // Precargar versículos una sola vez.
+    await DailyVerseService.loadAll();
+
     var scheduled = 0;
     for (var i = 0; i < _dailyVerseHorizonDays; i++) {
       final when = next.add(Duration(days: i));
       final verse = await DailyVerseService.forToday(when);
       final title = verse.referencia;
-      final body = _clip(verse.versiculo);
+      final body = _clip(verse.versiculo, 180);
       final id = _dailyVerseIdBase + i;
       final ok = await _zonedScheduleSafe(
         id: id,
         title: title,
         body: body,
         when: when,
-        details: _dailyDetailsFor(title, body),
+        details: _scheduleDetails(_chDaily),
         payload: 'vida://inicio',
       );
       _d(
@@ -467,33 +532,62 @@ class NotificationService {
   }
 
   static Future<void> _cancelDailyVerseSlots() async {
-    for (var i = 0; i < _dailyVerseHorizonDays; i++) {
+    // Cancelar horizonte viejo (7) y nuevo (3) por si actualizan desde build anterior.
+    for (var i = 0; i < 7; i++) {
       try {
         await _plugin.cancel(id: _dailyVerseIdBase + i);
       } catch (_) {}
     }
-    // Legacy single-id from older builds.
     try {
       await _plugin.cancel(id: 1002);
     } catch (_) {}
   }
 
-  /// Reprograma todos los recordatorios (tras abrir la app / reanudar).
-  static Future<void> rescheduleAll() async {
+  /// Reprograma recordatorios. Seguro ante llamadas concurrentes (launch+resume).
+  static Future<void> rescheduleAll({bool force = false}) async {
     if (kIsWeb) return;
-    if (!_initialized) await init();
-    _d('rescheduleAll()');
-    await scheduleAwayReminder();
-    await scheduleDailyVerseReminder();
+
+    final existing = _rescheduleInFlight;
+    if (existing != null) {
+      _d('rescheduleAll coalesced');
+      return existing;
+    }
+
+    if (!force &&
+        _lastRescheduleAt != null &&
+        DateTime.now().difference(_lastRescheduleAt!) <
+            const Duration(seconds: 20)) {
+      _d('rescheduleAll debounced');
+      return;
+    }
+
+    final fut = () async {
+      try {
+        if (!_initialized) await init();
+        if (!_initialized) return;
+        _d('rescheduleAll()');
+        await scheduleAwayReminder();
+        await scheduleDailyVerseReminder();
+        _lastRescheduleAt = DateTime.now();
+      } catch (e) {
+        _d('rescheduleAll FAIL: $e');
+      }
+    }();
+
+    _rescheduleInFlight = fut.whenComplete(() {
+      if (identical(_rescheduleInFlight, fut)) _rescheduleInFlight = null;
+    });
+    return _rescheduleInFlight!;
   }
 
+  /// Solo modos seguros. Nunca `alarmClock` (exige exact + rompe BootReceiver
+  /// si el usuario quita SCHEDULE_EXACT_ALARM).
   static Future<bool> _zonedScheduleSafe({
     required int id,
     required String title,
     required String body,
     required tz.TZDateTime when,
     required NotificationDetails details,
-    DateTimeComponents? match,
     String? payload,
   }) async {
     final android = _plugin.resolvePlatformSpecificImplementation<
@@ -507,9 +601,8 @@ class NotificationService {
 
     final modes = <AndroidScheduleMode>[
       if (canExact) AndroidScheduleMode.exactAllowWhileIdle,
-      if (canExact) AndroidScheduleMode.alarmClock,
       AndroidScheduleMode.inexactAllowWhileIdle,
-      if (!canExact) AndroidScheduleMode.exactAllowWhileIdle,
+      AndroidScheduleMode.inexact,
     ];
 
     for (final mode in modes) {
@@ -521,7 +614,6 @@ class NotificationService {
           scheduledDate: when,
           notificationDetails: details,
           androidScheduleMode: mode,
-          matchDateTimeComponents: match,
           payload: payload,
         );
         _d('zonedSchedule id=$id mode=$mode OK');
@@ -533,7 +625,6 @@ class NotificationService {
     return false;
   }
 
-  /// Informe completo para diagnóstico en Perfil.
   static Future<String> debugReport() async {
     if (kIsWeb) return 'Web: usa Notification API del navegador';
     if (!_initialized) {
@@ -543,6 +634,7 @@ class NotificationService {
         return 'init FAIL: $e';
       }
     }
+    if (!_initialized) return 'init incomplete (plugin failed)';
 
     final android = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
@@ -576,7 +668,8 @@ class NotificationService {
       ..writeln('dailyVerse=${await areDailyVerseRemindersEnabled()}')
       ..writeln('pending=${pending.length}');
     for (final p in pending) {
-      buf.writeln('  • id=${p.id} title=${p.title} body=${_clip(p.body ?? '', 80)}');
+      buf.writeln(
+          '  • id=${p.id} title=${p.title} body=${_clip(p.body ?? '', 80)}');
     }
     try {
       final v = await DailyVerseService.forToday();
@@ -605,7 +698,9 @@ class NotificationService {
       await requestPermission();
       await scheduleAwayReminder();
     } else if (_initialized) {
-      await _plugin.cancel(id: _motivationalId);
+      try {
+        await _plugin.cancel(id: _motivationalId);
+      } catch (_) {}
     }
   }
 
@@ -629,11 +724,12 @@ class NotificationService {
   static Future<void> showMotivational() async {
     if (!await areAwayRemindersEnabled()) return;
     if (!_initialized) await init();
+    if (!_initialized) return;
     final message = _messageFor(DateTime.now());
 
     try {
       await _plugin.show(
-        id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
         title: 'VIDA',
         body: message,
         notificationDetails: _details,
