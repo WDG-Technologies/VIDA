@@ -23,6 +23,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('VIDA'), findsWidgets);
     expect(find.text('Personaliza tu experiencia'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 3));
   });
 
   testWidgets('VidaApp renders home when name is stored', (tester) async {
@@ -32,5 +33,6 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(find.textContaining('Test'), findsWidgets);
     expect(find.text('VIDA'), findsWidgets);
+    await tester.pump(const Duration(seconds: 3));
   });
 }

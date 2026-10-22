@@ -73,6 +73,7 @@ Android widget code lives in `android/app/src/main/kotlin/com/vida/project/` —
 - **Widget info XMLs**: `res/xml/contra_pecado_widget_info.xml` and `favorito_widget_info.xml` — min 294×146 dp, 24 h refresh.
 - **Manifest receivers**: Both providers declared in `AndroidManifest.xml` with `.ContraPecadoWidgetProvider` / `.FavoritoWidgetProvider`.
 - **Pin‑duplication guard**: `ContraPecadoScreen._toggle` checks `first_launch_pin` before calling `requestPinWidget` to avoid placing a second widget if already pinned on first launch. `_repin` always requests a pin (user explicitly wants to re‑add).
+- **iOS builds (xcross)**: Built on Linux/Windows with xcross — see `ios/XCROSS.md`. Requires Flutter **3.47.6** exactly, a patched xcross (`tool/xcross-plan-reader.patch`), vendored FlutterFire in `third_party/` (`tool/vendor_flutterfire_ios.py`), and `path_provider_foundation` pinned to 2.5.1. xcross skips CocoaPods-only plugins, so `PlatformCaps.homeWidgets` is false on iOS. iOS tab bar and VIDA hero use `cupertino_native_ui` (native Liquid Glass) behind `PlatformCaps.nativeIosControls`.
 - **iOS**: Widget sources in `ios/VidaWidgets/` (`ContraPecadoWidget` + `FavoritoWidget` in one WidgetBundle). App Group `group.com.vida.project`. One-time Xcode target setup: see `ios/WIDGETS.md`.
 
 ## Resources

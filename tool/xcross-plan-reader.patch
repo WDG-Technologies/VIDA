@@ -1,0 +1,35 @@
+diff --git a/packages/xcross/lib/src/shared/flutter/swiftpm/plan_reader.dart b/packages/xcross/lib/src/shared/flutter/swiftpm/plan_reader.dart
+index 55c520c..645ed8a 100644
+--- a/packages/xcross/lib/src/shared/flutter/swiftpm/plan_reader.dart
++++ b/packages/xcross/lib/src/shared/flutter/swiftpm/plan_reader.dart
+@@ -11,6 +11,9 @@ import 'package:xcross/src/shared/flutter/swiftpm/response_file_reader.dart';
+ @internal
+ const String pluginsProductName = 'FlutterPluginsGenerated';
+ 
++String _stripVerbatim(String path) =>
++    path.startsWith(r'\\?\') ? path.substring(4) : path;
++
+ @internal
+ final class SwiftPmPlanReader {
+   SwiftPmPlanReader({required this.fileSystem, required this.responseFiles});
+@@ -63,11 +66,17 @@ final class SwiftPmPlanReader {
+             throw const FormatException('Missing generated header path');
+           }
+           final header = p.normalize(arguments[index]);
+-          if (!p.isAbsolute(header) ||
+-              !p.isWithin(p.normalize(p.absolute(targetBuildDir)), header) ||
+-              !header.endsWith('-Swift.h')) {
++          if (!p.isAbsolute(header) || !header.endsWith('-Swift.h')) {
+             throw const FormatException('Invalid generated header path');
+           }
++          // Host-tool targets (e.g. SwiftProtobuf build plugins) emit their
++          // headers under the host triple; they are not iOS interop headers.
++          if (!p.isWithin(
++            p.normalize(p.absolute(_stripVerbatim(targetBuildDir))),
++            _stripVerbatim(header),
++          )) {
++            continue;
++          }
+           includes.add(p.dirname(header));
+         }
+       }

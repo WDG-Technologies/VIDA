@@ -1,6 +1,7 @@
 ﻿import 'dart:async';
 
 import 'package:app_links/app_links.dart';
+import 'package:cupertino_native_ui/cupertino_native_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:home_widget/home_widget.dart';
@@ -546,6 +547,49 @@ class _AppShellState extends State<AppShell> {
             const VerticalDivider(width: 1),
             Expanded(child: stack),
           ],
+        ),
+      );
+    }
+
+    if (PlatformCaps.nativeIosControls) {
+      return Scaffold(
+        extendBody: true,
+        body: stack,
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+            child: Center(
+              heightFactor: 1,
+              child: CupertinoNativeTabBar(
+                currentIndex: _selectedIndex,
+                onTap: _onTabSelected,
+                activeColor: AppColors.emerald600,
+                items: const [
+                  CupertinoNativeTab(
+                    id: 'inicio',
+                    title: 'Inicio',
+                    icon: CupertinoNativeIcon.named('house.fill'),
+                  ),
+                  CupertinoNativeTab(
+                    id: 'biblia',
+                    title: 'Biblia',
+                    icon: CupertinoNativeIcon.named('book.fill'),
+                  ),
+                  CupertinoNativeTab(
+                    id: 'vida',
+                    title: 'VIDA',
+                    icon: CupertinoNativeIcon.named('leaf.fill'),
+                  ),
+                  CupertinoNativeTab(
+                    id: 'perfil',
+                    title: 'Perfil',
+                    icon: CupertinoNativeIcon.named('person.fill'),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       );
     }

@@ -1,17 +1,14 @@
 ﻿import 'dart:math';
 
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb;
+import 'package:cupertino_native_ui/cupertino_native_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../data/vida_algorithm.dart';
 import '../theme/app_theme.dart';
+import '../utils/platform_caps.dart';
 import '../widgets/responsive_body.dart';
-
-bool get _useLiquidGlass =>
-    !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
 
 class VidaScreen extends StatefulWidget {
   const VidaScreen({super.key});
@@ -183,7 +180,7 @@ class _VidaScreenState extends State<VidaScreen>
                         const SizedBox(height: 20),
                         Expanded(
                           child: Center(
-                            child: _useLiquidGlass
+                            child: PlatformCaps.nativeIosControls
                                 ? _IosLiquidHero(
                                     isDark: isDark,
                                     analyzing: _analyzing,
@@ -382,48 +379,31 @@ class _IosLiquidHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = LiquidGlassSettings(
-      thickness: 28,
-      blur: 10,
-      chromaticAberration: 0.012,
-      lightIntensity: 0.72,
-      ambientStrength: 0.18,
-      refractiveIndex: 1.28,
-      saturation: 1.35,
-      glassColor: AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.14),
-    );
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        GestureDetector(
-          onTap: onTap,
-          child: LiquidGlassLayer(
-            settings: settings,
-            child: LiquidGlass(
-              shape: const LiquidOval(),
-              glassContainsChild: false,
-              child: SizedBox(
-                width: 148,
-                height: 148,
-                child: Center(
-                  child: analyzing
-                      ? SizedBox(
-                          width: 36,
-                          height: 36,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                            color: isDark ? Colors.white : AppColors.primary,
-                          ),
-                        )
-                      : Icon(
-                          Icons.eco_rounded,
-                          size: 60,
-                          color: isDark ? Colors.white : AppColors.primary,
-                        ),
-                ),
-              ),
-            ),
+        CupertinoNativeGlassContainer(
+          shape: CupertinoGlassShape.circle,
+          width: 148,
+          height: 148,
+          interactive: true,
+          tint: AppColors.primary.withValues(alpha: isDark ? 0.18 : 0.14),
+          onPressed: onTap,
+          child: Center(
+            child: analyzing
+                ? SizedBox(
+                    width: 36,
+                    height: 36,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      color: isDark ? Colors.white : AppColors.primary,
+                    ),
+                  )
+                : Icon(
+                    Icons.eco_rounded,
+                    size: 60,
+                    color: isDark ? Colors.white : AppColors.primary,
+                  ),
           ),
         ),
         const SizedBox(height: 14),

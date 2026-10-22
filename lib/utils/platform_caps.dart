@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 
 /// Capacidades por plataforma (web vs nativo).
 class PlatformCaps {
@@ -6,8 +7,11 @@ class PlatformCaps {
 
   static bool get isWeb => kIsWeb;
 
-  /// Widgets de pantalla de inicio (Android/iOS).
-  static bool get homeWidgets => !kIsWeb;
+  /// Widgets de pantalla de inicio (solo Android).
+  /// iOS se compila con xcross, que omite `home_widget` (solo trae podspec de
+  /// CocoaPods); sus llamadas lanzarían MissingPluginException. Ver ios/XCROSS.md.
+  static bool get homeWidgets =>
+      !kIsWeb && defaultTargetPlatform != TargetPlatform.iOS;
 
   /// Notificaciones locales / recordatorios programados (plugin nativo).
   static bool get localNotifications => !kIsWeb;
@@ -21,6 +25,10 @@ class PlatformCaps {
 
   /// Actualización vía APK (móvil). En web se abre releases en el navegador.
   static bool get apkUpdates => !kIsWeb;
+
+  /// Controles UIKit/SwiftUI reales (Liquid Glass en iOS 26+).
+  static bool get nativeIosControls =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
 
   /// Galería libre / “Crear imagen” desde Inicio.
   /// Nativo: siempre. Web: solo pantallas anchas (no móvil).

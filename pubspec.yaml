@@ -28,12 +28,12 @@ dependencies:
   timezone: ^0.11.1
   flutter_timezone: ^5.1.0
   image_picker: ^1.2.3
-  liquid_glass_renderer: ^0.2.0-dev.4
   firebase_crashlytics: ^4.3.10
   firebase_analytics: ^11.6.0
   app_links: ^7.0.0
   http: ^1.6.0
   web: ^1.1.1
+  cupertino_native_ui: ^0.2.0
 
 dev_dependencies:
   flutter_test:
@@ -46,9 +46,24 @@ dependency_overrides:
     path: third_party/firebase_auth_web
   firebase_core_web:
     path: third_party/firebase_core_web
+  # iOS Package.swift patched for Windows paths (tool/vendor_flutterfire_ios.py).
+  firebase_core:
+    path: third_party/firebase_core
+  cloud_firestore:
+    path: third_party/cloud_firestore
+  firebase_auth:
+    path: third_party/firebase_auth
+  firebase_crashlytics:
+    path: third_party/firebase_crashlytics
+  firebase_analytics:
+    path: third_party/firebase_analytics
+  # 2.6.0 pulls objective_c native assets, which xcross cannot strip on Windows.
+  path_provider_foundation: 2.5.1
 
 flutter:
   uses-material-design: true
+  config:
+    enable-swift-package-manager: true
 
   fonts:
     - family: DM Sans
